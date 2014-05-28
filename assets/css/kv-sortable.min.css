@@ -1,0 +1,11 @@
+/*!
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
+ * @package yii2-sortable
+ * @version 1.0.0
+ *
+ * Sortable widget styling using Bootstrap 3.0 theme
+ * Built for Yii Framework 2.0
+ * Author: Kartik Visweswaran
+ * Year: 2014
+ * For more Yii related demos visit http://demos.krajee.com
+ */.sortable{-moz-user-select:none}.sortable li{border:1px solid #ddd;list-style:none outside none;margin:5px;padding:10px;cursor:default}.sortable li.disabled{cursor:not-allowed}.sortable li:focus,.sortable li:hover{background-color:#eee}.sortable.grid{overflow:hidden}.sortable.grid li{float:left;min-width:80px;min-height:80px;text-align:center}.sortable .handle{cursor:move}.sortable.connected{float:left;min-height:100px;min-width:200px}.sortable li.disabled{opacity:.5}.sortable li.sortable-placeholder{background:none repeat scroll 0 0 rgba(0,0,0,0);border:1px dashed #CCC;padding:20px}
