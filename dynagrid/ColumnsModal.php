@@ -18,7 +18,7 @@ use yii\base\InvalidConfigException;
 use yii\bootstrap\ButtonDropdown;
 
 /**
- * Render Columns within a bootstrap modal dialog.
+ * Dynagrid Columns within a bootstrap modal dialog.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
