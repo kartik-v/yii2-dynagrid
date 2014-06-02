@@ -1,9 +1,9 @@
 yii2-dynagrid
 =============
 
-The **yii2-dynagrid**  module is a great enhancement to the [kartik-v/yii2-grid](https://github.com/kartik-v/yii2-grid) module. It turbo charges your grid view 
-by making it dynamic and personalized for each user. It allows users the ability to set and save their own grid configuration. The major features provided 
-by this module are:
+The **yii2-dynagrid**  module is a great complementary addition to the [kartik-v/yii2-grid](https://github.com/kartik-v/yii2-grid) module, enhancing
+it with personalization features. It turbo charges your grid view by making it dynamic and personalized for each user. It allows users the ability to 
+set and save their own grid configuration. The major features provided by this module are:
 
 - Personalize, set, and save grid page size at runtime. You can set the minimum and maximum page size allowed.
 - Personalize the grid columns display through drag and drop. Reorder grid columns and set the visibility of needed columns, and allow users to save this setting. 
