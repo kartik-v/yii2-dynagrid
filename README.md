@@ -10,7 +10,7 @@ set and save their own grid configuration. The major features provided by this m
   Control which columns can be reordered by users through predefined columns setup. Predetermine which of your desired columns will be always fixed to the left or right by 
   default.
 - Personalize grid appearance and set the grid theme. This will offer advanced customization to the grid layout. It allows users to virtually style grid 
-  anyway they want, based on how you define themes and extend them to your users. Since the extension uses the [yii2-grid]((https://github.com/kartik-v/yii2-grid)
+  anyway they want, based on how you define themes and extend them to your users. Since the extension uses the [yii2-grid](https://github.com/kartik-v/yii2-grid)
   extension,it offers all the styling options the **yii2-grid** extension provides, including the various grid column enhancements, bootstrap panels, and other grid styles. 
   This will allow you to easily setup themes for users in   many ways. You have an ability to setup multiple themes in your module configuration, and allow users to select one of them. The extension by 
   default includes some predefined themes for you to get started.
