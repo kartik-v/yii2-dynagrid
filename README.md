@@ -95,7 +95,7 @@ $columns = [
     ['class'=>'kartik\grid\CheckboxColumn',  'order'=>DynaGrid::ORDER_FIX_RIGHT],
 ];
     
-DynaGrid::widget([
+echo DynaGrid::widget([
     'columns' => $columns,
     'storage'=>DynaGrid::TYPE_COOKIE,
     'gridOptions'=>[
