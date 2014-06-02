@@ -47,32 +47,37 @@ class DynaGrid extends \yii\base\Widget
      * @var string the type of storage for the dynagrid configuration.
      * - [[DynaGrid::TYPE_SESSION]]: Save the config in a session variable for the current session.
      * - [[DynaGrid::TYPE_COOKIE]]: Save the config in a cookie for retrieval. You need to setup the
-     *   [[Module::cookieSettings]] parameter to control the cookie expiry and other settings.
+     *   [[Module::cookieSettings]] property to control the cookie expiry and other settings.
      * - [[DynaGrid::TYPE_DB]]: Save the config to a database. You need to setup the [[Module::dbSettings]]
-     *   parameter to control the database table and attributes for storage.
+     *   property to setup the database table and attributes for storage.
      */
     public $storage;
 
     /**
+     * @var boolean whether settings are stored specific to each user
+     */
+    public $userSpecific;
+
+    /**
      * @var array widget options for \kartik\widgets\GridView that will be rendered
-     * by the dynagrid widget
+     * by the DynaGrid widget
      */
     public $gridOptions;
 
     /**
-     * @var bool whether the dynagrid configuration button class should match
+     * @var bool whether the DynaGrid configuration button class should match
      * the grid panel style.
      */
     public $matchPanelStyle;
 
     /**
      * @var array the HTML attributes for the toggle button which will
-     * render the dynagrid configuration form within a Bootstrap Modal
+     * render the DynaGrid configuration form within a Bootstrap Modal container.
      */
     public $toggleButton;
 
     /**
-     * @var array HTML options for the dynagrid widget
+     * @var array HTML options for the DynaGrid widget
      */
     public $options;
 
@@ -82,17 +87,13 @@ class DynaGrid extends \yii\base\Widget
     public $sortableOptions;
 
     /**
-     * @var boolean whether settings are stored specific to each user
-     */
-    public $userSpecific;
-
-    /**
      * @var array the grid columns configuration
      */
     public $columns;
 
     /**
-     * @var string the submission message to display after applying configuration
+     * @var string the message to display after applying and submitting the configuration and 
+     * until refreshed grid is reloaded
      */
     public $submitMessage;
 

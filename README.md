@@ -70,6 +70,7 @@ The DynaGrid widget can be used to render the personalized & dynamic version of 
 
 ```php
 use kartik\widgets\DynaGrid;
+use kartik\grid\GridView;
 $columns = [
     ['class'=>'kartik\grid\SerialColumn', 'order'=>DynaGrid::ORDER_FIX_LEFT],
     'id',
