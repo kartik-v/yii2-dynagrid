@@ -94,7 +94,7 @@ class DynaGrid extends \yii\base\Widget
     /**
      * @var array the HTML attributes for the sortable columns header
      */
-    public $sortableHeader = ['class' => 'alert alert-info dynagrid-column-header'];
+    public $sortableHeader = ['class' => 'alert alert-info dynagrid-sortable-header'];
 
     /**
      * @var array the grid columns configuration

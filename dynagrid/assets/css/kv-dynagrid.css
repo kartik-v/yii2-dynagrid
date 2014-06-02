@@ -25,11 +25,11 @@
     border-top: 1px solid #eee;
     border-bottom: 1px solid #eee;
 }
-.dynagrid-column-separator {
+.dynagrid-sortable-separator {
     font-size:3em;
     color: #999;
 }
-.dynagrid-column-header {
+.dynagrid-sortable-header {
     font-weight: bold;
     opacity: 1!important;
 }
