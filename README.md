@@ -1,7 +1,7 @@
 yii2-dynagrid
 =============
 
-The ** yii2-dynagrid **  module is a great enhancement to the [kartik-v/yii2-grid](https://github.com/kartik-v/yii2-grid) module. It turbo charges your grid view 
+The **yii2-dynagrid**  module is a great enhancement to the [kartik-v/yii2-grid](https://github.com/kartik-v/yii2-grid) module. It turbo charges your grid view 
 by making it dynamic and personalized for each user. It allows users the ability to set and save their own grid configuration. The major features provided 
 by this module are:
 

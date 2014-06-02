@@ -1,4 +1,3 @@
-** yii2-dynagrid ** 
 Copyright (c) 2014, Kartik Visweswaran  
 Krajee.com  
 All rights reserved.  

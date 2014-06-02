@@ -1,6 +1,6 @@
 version 1.0.0
 =============
-Initial release. The major features provided by the ** yii2-dynagrid ** module are:
+Initial release. The major features provided by the **yii2-dynagrid** module are:
 
 - Personalize, set, and save grid page size at runtime. You can set the minimum and maximum page size allowed.
 - Personalize the grid columns display. Reorder grid columns and set the visibility of needed columns, and save this setting. Control which 
