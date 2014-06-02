@@ -58,7 +58,7 @@ $module = Yii::$app->getModule('dynagrid');
             <?= Sortable::widget($options1);?>
         </div>
         <div class="col-sm-2 text-center">
-            <div style="font-size:3em; color: #999;"><i class="glyphicon glyphicon-resize-horizontal"></i></div>
+            <div class="dynagrid-column-separator"><i class="glyphicon glyphicon-resize-horizontal"></i></div>
         </div>
         <div class="col-sm-5">
             <?= Sortable::widget($options2);?>
