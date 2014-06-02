@@ -165,7 +165,10 @@ class DynaGrid extends \yii\base\Widget
             throw new InvalidConfigException('The "dynagrid" module MUST be setup in your Yii configuration file and assigned to "\kartik\dynagrid\Module" class.');
         }
         foreach ($this->_module->dynaGridOptions as $key => $setting) {
-            if (!isset($this->$key)) {
+            if (is_array($setting) && !empty($setting) && !empty($this->$key)) {
+                $this->$key = ArrayHelper::merge($setting, $this->$key);
+            }
+            elseif (!isset($this->$key)) {
                 $this->$key = $setting;
             }
         }
@@ -535,8 +538,10 @@ class DynaGrid extends \yii\base\Widget
                 'content' => $this->getColumnLabel($key, $column),
                 'options' => ['id' => $key]
             ];
-
-            if ($isArray && in_array($key, $this->_visibleKeys) && !$disabled) {
+            if ($isArray && ArrayHelper::getValue($column, 'visible', true) === false) {
+                $this->_hiddenColumns[] = $widgetColumns + ['disabled' => $disabled];
+            }
+            elseif ($isArray && in_array($key, $this->_visibleKeys) && !$disabled) {
                 $this->_visibleColumns[] = $widgetColumns;
             } else {
                 $this->_hiddenColumns[] = $widgetColumns + ['disabled' => $disabled];
