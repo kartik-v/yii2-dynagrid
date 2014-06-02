@@ -54,6 +54,11 @@ class DynaGrid extends \yii\base\Widget
     public $storage;
 
     /**
+     * @var string the initial grid theme to be set
+     */
+    public $theme;
+
+    /**
      * @var boolean whether settings are stored specific to each user
      */
     public $userSpecific;
@@ -128,11 +133,6 @@ class DynaGrid extends \yii\base\Widget
     private $_pageSize;
 
     /**
-     * @var string the grid theme
-     */
-    private $_theme;
-
-    /**
      * @var Module the current module
      */
     private $_module;
@@ -178,8 +178,8 @@ class DynaGrid extends \yii\base\Widget
         if (empty($this->gridOptions['dataProvider']) || !$this->gridOptions['dataProvider'] instanceof yii\data\ActiveDataProvider) {
             throw new InvalidConfigException("You must assign a valid data provider to gridOptions['dataProvider'].");
         }
-        if (empty($this->_theme)) {
-            $this->_theme = $this->_module->defaultTheme;
+        if (empty($this->theme)) {
+            $this->theme = $this->_module->defaultTheme;
         }
         if (empty($this->_pageSize)) {
             $this->_pageSize = $this->_module->defaultPageSize;
@@ -265,7 +265,7 @@ class DynaGrid extends \yii\base\Widget
         $config = Json::encode([
             'page' => $this->_pageSize,
             'keys' => $this->_visibleKeys,
-            'theme' => $this->_theme
+            'theme' => $this->theme
         ]);
         switch ($this->storage) {
             case self::TYPE_SESSION:
@@ -305,7 +305,7 @@ class DynaGrid extends \yii\base\Widget
             return;
         }
         $this->_pageSize = ArrayHelper::getValue($data, 'page', $this->_module->defaultPageSize);
-        $this->_theme = ArrayHelper::getValue($data, 'theme', $this->_module->defaultTheme);
+        $this->theme = ArrayHelper::getValue($data, 'theme', $this->_module->defaultTheme);
         if (!empty($data['keys'])) {
             $this->_visibleKeys = $data['keys'];
         }
@@ -342,7 +342,7 @@ class DynaGrid extends \yii\base\Widget
      */
     protected function applyTheme()
     {
-        $theme = $this->_module->themeConfig[$this->_theme];
+        $theme = $this->_module->themeConfig[$this->theme];
         if (!is_array($theme) || empty($theme)) {
             return;
         }
@@ -410,7 +410,7 @@ class DynaGrid extends \yii\base\Widget
         $model->hiddenColumns = $this->_hiddenColumns;
         $model->visibleColumns = $this->_visibleColumns;
         $model->pageSize = $this->_pageSize;
-        $model->theme = $this->_theme;
+        $model->theme = $this->theme;
         $model->widgetOptions = $this->sortableOptions;
         $themes = array_keys($this->_module->themeConfig);
         $model->themeList = array_combine($themes, $themes);
