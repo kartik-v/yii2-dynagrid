@@ -246,7 +246,7 @@ class DynaGrid extends \yii\base\Widget
             $this->_visibleKeys = []; //take visible keys from grid config
             $this->_pageSize = $this->_module->defaultPageSize; //take pagesize from module configuration
             foreach ($this->_columns as $key => $column) {
-                if ($this->isReorderable($column)) {
+                if ($this->isReorderable($column) && ArrayHelper::getValue($column, 'visible', true) === true) {
                     $this->_visibleKeys[] = $key;
                 }
             }
@@ -384,7 +384,7 @@ class DynaGrid extends \yii\base\Widget
             }
             $column = $this->_columns[$key];
             $newColumns = $column;
-            unset($column['order']);
+            unset($column['order'], $column['visible']);
             $columns[] = $column;
         }
         foreach ($this->columns as $column) {
@@ -538,12 +538,11 @@ class DynaGrid extends \yii\base\Widget
                 'content' => $this->getColumnLabel($key, $column),
                 'options' => ['id' => $key]
             ];
-            if ($isArray && ArrayHelper::getValue($column, 'visible', true) === false) {
-                $this->_hiddenColumns[] = $widgetColumns + ['disabled' => $disabled];
-            }
-            elseif ($isArray && in_array($key, $this->_visibleKeys) && !$disabled) {
+
+            if ($isArray && in_array($key, $this->_visibleKeys) && !$disabled) {
                 $this->_visibleColumns[] = $widgetColumns;
-            } else {
+            }
+            else {
                 $this->_hiddenColumns[] = $widgetColumns + ['disabled' => $disabled];
             }
         }
