@@ -65,7 +65,7 @@ Setup the module in your Yii configuration file as shown below:
 
 ### DynaGrid
 
-The DynaGrid widget can be used to render kartik\Grid\GridView in the following way:
+The DynaGrid widget can be used to render the personalized & dynamic version of `kartik\Grid\GridView` in the following way:
 
 ```php
 use kartik\widgets\DynaGrid;
