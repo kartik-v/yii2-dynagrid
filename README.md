@@ -108,13 +108,6 @@ DynaGrid::widget([
     ]
 ]);
 ```
-    
-You can use this widget 
-
-```php
-use kartik\dynagrid\DynaGrid;
-
-```
 
 ## License
 
