@@ -92,6 +92,11 @@ class DynaGrid extends \yii\base\Widget
     public $sortableOptions;
 
     /**
+     * @var array the HTML attributes for the sortable columns header
+     */
+    public $sortableHeader = ['class' => 'alert alert-info dynagrid-column-header'];
+
+    /**
      * @var array the grid columns configuration
      */
     public $columns;
@@ -517,9 +522,9 @@ class DynaGrid extends \yii\base\Widget
     protected function getSortableHeader($label)
     {
         return [[
-            'content' => '<label class="control-label">' . $label . '</label>',
+            'content' => $label,
             'disabled' => true,
-            'options' => ['class' => 'alert alert-info', 'style' => 'opacity:1']
+            'options' => $this->sortableHeader
         ]];
     }
 

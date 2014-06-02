@@ -29,3 +29,7 @@
     font-size:3em;
     color: #999;
 }
+.dynagrid-column-header {
+    font-weight: bold;
+    opacity: 1!important;
+}
