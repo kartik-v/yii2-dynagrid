@@ -3,8 +3,9 @@ version 1.0.0
 Initial release. The major features provided by the **yii2-dynagrid** module are:
 
 - Personalize, set, and save grid page size at runtime. You can set the minimum and maximum page size allowed.
-- Personalize the grid columns display. Reorder grid columns and set the visibility of needed columns, and save this setting. Control which 
-  columns can be reordered by users through setup. Predetermine  your desired columns to be fixed to the left or right by default.
+- Personalize the grid columns display through drag and drop. Reorder grid columns and set the visibility of needed columns, and allow users to save this setting. 
+  Control which columns can be reordered by users through predefined columns setup. Predetermine which of your desired columns will be always fixed to the left or right by 
+  default.
 - Personalize grid appearance and set the grid theme. This will offer advanced customization to the grid layout. It allows users to virtually style grid 
   anyway they want, based on how you define themes and extend them to your users. With yii2-grid extension, and panels, you can easily setup themes for 
   users in many ways. You have an ability to setup multiple themes in your module configuration, and allow users to select one of them. The extension by 
