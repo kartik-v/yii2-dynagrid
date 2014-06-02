@@ -10,12 +10,19 @@
  * For more Yii related demos visit http://demos.krajee.com
  */
 (function ($) {
+    var isEmpty = function (value, trim) {
+        return value === null || value === undefined || value == []
+            || value === '' || trim && $.trim(value) === '';
+    };
 
     var Dynagrid = function (element, options) {
         this.$element = $(element);
+        this.submitMessage = options.submitMessage;
         this.init();
         this.listen();
     };
+
+    var isSubmitted = false;
 
     Dynagrid.prototype = {
         constructor: Dynagrid,
@@ -28,24 +35,43 @@
             self.$visibleKeys = $form.find('input[name="visibleKeys"]');
             self.$btnSubmit = $form.find('.dynagrid-submit');
             self.$btnReset = $form.find('.dynagrid-reset');
+            self.$formContainer = self.$form.parent();
             self.setColumnKeys();
             self.visibleContent = self.$visibleEl.html();
             self.hiddenContent = self.$hiddenEl.html();
+            self.visibleSortableOptions = window[self.$visibleEl.data('pluginOptions')];
+            self.hiddenSortableOptions = window[self.$hiddenEl.data('pluginOptions')];
         },
         listen: function () {
             var self = this;
             self.$btnSubmit.on('click', function () {
                 self.setColumnKeys();
                 self.$visibleKeys.val(self.visibleKeys);
+                self.$form.hide();
+                self.$formContainer.prepend(self.submitMessage);
                 self.$form.serialize();
-                self.$form.submit();
+                setTimeout(function () {
+                    self.$form.submit();
+                }, 1000);
             });
             self.$btnReset.on('click', function () {
                 self.$visibleEl.html(self.visibleContent);
                 self.$hiddenEl.html(self.hiddenContent);
                 self.setColumnKeys();
-                self.$visibleEl.sortable();
-                self.$hiddenEl.sortable();
+                self.$formContainer.find('.dynagrid-submit-message').remove();
+                self.$visibleEl.sortable(self.visibleSortableOptions);
+                self.$hiddenEl.sortable(self.hiddenSortableOptions);
+            });
+            self.$form.on('submit', function (e) {
+                var $form = $(this), chkError = '';
+                $form.find('.help-block').each(function () {
+                    chkError = $(this).text();
+                    if (!isEmpty(chkError.trim())) {
+                        $form.show();
+                        $form.parent().find('.dynagrid-submit-message').remove();
+                        return;
+                    }
+                });
             });
         },
         setColumnKeys: function () {
@@ -76,5 +102,7 @@
         });
     };
 
-    $.fn.dynagrid.defaults = {};
+    $.fn.dynagrid.defaults = {
+        submitMessage: 'Applying configuration &hellip;',
+    };
 }(jQuery));

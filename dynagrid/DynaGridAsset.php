@@ -21,7 +21,7 @@ class DynaGridAsset extends AssetBundle
 
 	public function init()
 	{
-		$this->setSourcePath(__DIR__ . '/../assets');
+		$this->setSourcePath(__DIR__ . '/assets');
 		$this->setupAssets('js', ['js/kv-dynagrid']);
 		$this->setupAssets('css', ['css/kv-dynagrid']);
 		parent::init();

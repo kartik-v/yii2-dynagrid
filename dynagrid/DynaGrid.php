@@ -51,25 +51,58 @@ class DynaGrid extends \yii\base\Widget
      * - [[DynaGrid::TYPE_DB]]: Save the config to a database. You need to setup the [[Module::dbSettings]]
      *   parameter to control the database table and attributes for storage.
      */
-    public $storage = self::TYPE_SESSION;
+    public $storage;
+
+    /**
+     * @var array widget options for \kartik\widgets\GridView that will be rendered
+     * by the dynagrid widget
+     */
+    public $gridOptions;
+
+    /**
+     * @var bool whether the dynagrid configuration button class should match
+     * the grid panel style.
+     */
+    public $matchPanelStyle;
+
+    /**
+     * @var array the HTML attributes for the toggle button which will
+     * render the dynagrid configuration form within a Bootstrap Modal
+     */
+    public $toggleButton;
+
+    /**
+     * @var array HTML options for the dynagrid widget
+     */
+    public $options;
 
     /**
      * @var array the sortable widget options
      */
-    public $sortableOptions = [];
-
-    /**
-     * @var array widget options for \kartik\widgets\GridView
-     */
-    public $gridOptions = [];
+    public $sortableOptions;
 
     /**
      * @var boolean whether settings are stored specific to each user
      */
-    public $userSpecific = true;
+    public $userSpecific;
 
     /**
-     * @var array the cached dynagrid columns configuration
+     * @var array the grid columns configuration
+     */
+    public $columns;
+
+    /**
+     * @var string the submission message to display after applying configuration
+     */
+    public $submitMessage;
+
+    /**
+     * @var array HTML attributes for the submission message container
+     */
+    public $submitMessageOptions;
+
+    /**
+     * @var array the cached columns configuration
      */
     private $_columns = [];
 
@@ -125,30 +158,45 @@ class DynaGrid extends \yii\base\Widget
      */
     public function init()
     {
+        parent::init();
         $this->_module = Yii::$app->getModule('dynagrid');
         if ($this->_module == null || !$this->_module instanceof Module) {
             throw new InvalidConfigException('The "dynagrid" module MUST be setup in your Yii configuration file and assigned to "\kartik\dynagrid\Module" class.');
         }
-        if (empty($this->gridOptions['columns']) || !is_array($this->gridOptions['columns'])) {
-            throw new InvalidConfigException("The gridOptions['columns'] must be setup as a valid array.");
+        foreach ($this->_module->dynaGridOptions as $key => $setting) {
+            if (!isset($this->$key)) {
+                $this->$key = $setting;
+            }
         }
-        if (empty($this->gridOptions['dataProvider']) || !$this->gridOptions['dataProvider'] instanceof yii\data\DataProvider) {
+        if (empty($this->columns) || !is_array($this->columns)) {
+            throw new InvalidConfigException("The 'columns' configuration must be setup as a valid array.");
+        }
+        if (empty($this->gridOptions['dataProvider']) || !$this->gridOptions['dataProvider'] instanceof yii\data\ActiveDataProvider) {
             throw new InvalidConfigException("You must assign a valid data provider to gridOptions['dataProvider'].");
-        }
-        $this->options['id'] = ArrayHelper::getValue($this->options, 'id', $this->getId());
-        $this->_requestSubmit = $this->options['id'] . '-dynagrid';
-        if (empty($this->_pageSize)) {
-            $this->_pageSize = $this->_module->defaultPageSize;
         }
         if (empty($this->_theme)) {
             $this->_theme = $this->_module->defaultTheme;
         }
+        if (empty($this->_pageSize)) {
+            $this->_pageSize = $this->_module->defaultPageSize;
+        }
+        $this->options['id'] = ArrayHelper::getValue($this->options, 'id', $this->getId());
+        $this->_requestSubmit = $this->options['id'] . '-dynagrid';
         $this->_model = new DynaGridConfig;
         $this->_isSubmit = !empty($_POST[$this->_requestSubmit]) && $this->_model->load(Yii::$app->request->post()) && $this->_model->validate();
-        $storageId = $this->userSpecific ? $this->options['id'] . '_' . Yii::$app->user->id : $this->options['id'];
-        $this->applyPageSize();
-        $this->applyTheme();
+        $this->prepareColumns();
+        $this->configureColumns();
+        $this->applyGridConfig();
+        $this->renderGrid();
+    }
 
+    /**
+     * Save grid configuration to storage if configuration changed
+     * else load the grid configuration from storage
+     */
+    protected function applyGridConfig()
+    {
+        $storageId = $this->userSpecific ? $this->options['id'] . '_' . Yii::$app->user->id : $this->options['id'];
         if ($this->_isSubmit) {
             $data = [
                 'page' => $this->_model->pageSize,
@@ -156,229 +204,16 @@ class DynaGrid extends \yii\base\Widget
                 'keys' => explode(',', $_POST['visibleKeys'])
             ];
             $this->parseData($data);
-            $this->setWidgetColumns($this->_model);
             $this->saveGridConfig($storageId);
-            $this->applyColumns();
             Yii::$app->controller->refresh();
         } else { //load from storage
             $this->loadGridConfig($storageId);
-            $this->applyColumns();
-        }
-        parent::init();
-        $this->configureColumns();
-        if (!$this->_isSubmit) {
-            $this->setWidgetColumns($this->_model);
+            $this->setWidgetColumns();
             $this->loadAttributes($this->_model);
         }
-    }
-
-    public function run()
-    {
-        $this->renderGrid();
-        parent::run();
-    }
-
-    /**
-     * Renders the dynamic grid view
-     */
-    protected function renderGrid()
-    {
-        $dynagrid = $this->render($this->_module->configView, ['model' => $this->_model]);
-        $checkPanel = !empty($this->gridOptions['panel']) && is_array($this->gridOptions['panel']);
-        if ($checkPanel && !empty($this->gridOptions['panel']['before'])) {
-            $this->gridOptions['panel']['before'] = str_replace('{dynagrid}', $dynagrid, $this->gridOptions['panel']['before']);
-        }
-        if ($checkPanel && !empty($this->gridOptions['panel']['after'])) {
-            $this->gridOptions['panel']['after'] = str_replace('{dynagrid}', $dynagrid, $this->gridOptions['panel']['after']);
-        }
-        $this->gridOptions['layout'] = str_replace('{dynagrid}', $dynagrid, $this->gridOptions['layout']);
-        $this->registerAssets();
-        $this->prepareColumns();
-        echo GridView::widget($this->gridOptions);
-    }
-
-    /**
-     * Applies the configured theme
-     */
-    protected function applyTheme()
-    {
-        $theme = $this->_module->themeConfig[$this->_theme];
-        if (!is_array($theme) || empty($theme)) {
-            return;
-        }
-        $this->gridOptions = ArrayHelper::merge($this->gridOptions, $theme);
-    }
-
-    /**
-     * Applies the page size
-     */
-    protected function applyPageSize()
-    {
-        if (!empty($this->_pageSize)) {
-            $dataProvider = $this->gridOptions['dataProvider'];
-            $pagination = $dataProvider->getPagination();
-            $pagination->pageSize = $this->_pageSize;
-            $dataProvider->setPagination($pagination);
-            $this->gridOptions['dataProvider'] = $dataProvider;
-        }
-    }
-
-    /**
-     * Applies the configured columns
-     */
-    protected function applyColumns()
-    {
-        $columns = [];
-        foreach ($this->_columns as $column) {
-            $order = ArrayHelper::getValue($column, 'order', self::ORDER_MIDDLE);
-            if ($order == self::ORDER_FIX_LEFT) {
-                $columns[] = $column;
-            }
-        }
-        foreach ($this->_columns as $key => $column) {
-            $order = ArrayHelper::getValue($column, 'order', self::ORDER_MIDDLE);
-            if ($order == self::ORDER_MIDDLE) {
-                $columns[] = $column;
-            }
-        }
-        foreach ($this->_columns as $column) {
-            $order = ArrayHelper::getValue($column, 'order', self::ORDER_MIDDLE);
-            if ($order == self::ORDER_FIX_RIGHT) {
-                $columns[] = $column;
-            }
-        }
-        $this->gridOptions['columns'] = $columns;
-    }
-
-    /**
-     * Load configuration attributes into DynaGridConfig model
-     *
-     * @param Model $model
-     */
-    protected function loadAttributes($model)
-    {
-        $model->id = $this->_requestSubmit;
-        $model->hiddenColumns = $this->_hiddenColumns;
-        $model->visibleColumns = $this->_visibleColumns;
-        $model->pageSize = $this->_pageSize;
-        $model->theme = $this->_theme;
-        $model->widgetOptions = $this->sortableOptions;
-        $themes = array_keys($this->_module->themeConfig);
-        $model->themeList = array_combine($themes, $themes);
-    }
-
-    /**
-     * Prepares the columns for the dynagrid
-     */
-    protected function prepareColumns()
-    {
-        $this->_columns = $this->gridOptions['columns'];
-
-        $columns = [];
-        foreach ($this->gridOptions['columns'] as $column) {
-            if (is_array($column)) {
-                unset($column['order']);
-            }
-            $columns[] = $column;
-        }
-        $this->gridOptions['columns'] = $columns;
-    }
-
-    /**
-     * Reconfigure columns with unique keys
-     */
-    protected function configureColumns()
-    {
-        $columnsByKey = [];
-        $parsedCols = [];
-        $i = 0;
-        foreach ($this->_columns as $column) {
-            $columnKey = $this->getColumnKey($column);
-            for ($j = 0; true; $j++) {
-                $suffix = ($j) ? '_' . $j : '';
-                $columnKey .= $suffix;
-                if (!array_key_exists($columnKey, $columnsByKey)) {
-                    break;
-                }
-            }
-            $columnsByKey[$columnKey] = $column;
-            $i++;
-        }
-        $this->_columns = $columnsByKey;
-    }
-
-    /**
-     * Finds the matches for a string column format
-     *
-     * @param string $column
-     * @return mixed
-     * @throws \yii\base\InvalidConfigException
-     */
-    protected function matchColumnString($column)
-    {
-        $matches = [];
-        if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $column, $matches)) {
-            throw new InvalidConfigException("Invalid column configuration for '{$column}'. The column must be specified in the format of 'attribute', 'attribute:format' or 'attribute:format:label'.");
-        }
-        return $matches;
-    }
-
-    /**
-     * Generate an unique column key
-     *
-     * @param mixed $column
-     * @return mixed
-     */
-    protected function getColumnKey($column)
-    {
-        if (!is_array($column)) {
-            $matches = $this->matchColumnString($column);
-            $columnKey = $matches[1];
-        } elseif (!empty($column['attribute'])) {
-            $columnKey = $column['attribute'];
-        } elseif (!empty($column['label'])) {
-            $columnKey = $column['label'];
-        } elseif (!empty($column['header'])) {
-            $columnKey = $column['header'];
-        } elseif (!empty($column['class'])) {
-            $columnKey = $column['class'];
-        } else {
-            $columnKey = null;
-        }
-        return hash('crc32', $columnKey);
-    }
-
-    /**
-     * Fetch and return the relevant column data from database
-     *
-     * @param string col the column type
-     * @param array $params the query parameters
-     * @return bool|null|string
-     */
-    protected function getDataFromDb($col, $params)
-    {
-        $settings = $this->_module->dbSettings;
-        $table = $settings['tableName'];
-        $data = $settings[$col];
-        return Yii::$app->db->createCommand("SELECT {$data} FROM {$table} WHERE {$idCol} = :id")->queryScalar($params);
-    }
-
-    /**
-     * Parses the encoded grid configuration and gets the theme, pagesize, and visible keys.
-     *
-     * @param string $rawData the stored data to be parsed
-     */
-    protected function parseData($rawData)
-    {
-        $data = is_array($rawData) ? $rawData : Json::decode($rawData);
-        if (!is_array($data) || empty($data)) {
-            return;
-        }
-        $this->_pageSize = ArrayHelper::getValue($data, 'page', $this->_module->defaultPageSize);
-        $this->_theme = ArrayHelper::getValue($data, 'theme', $this->_module->defaultTheme);
-        if (!empty($data['keys'])) {
-            $this->_visibleKeys = $data['keys'];
-        }
+        $this->applyPageSize();
+        $this->applyTheme();
+        $this->applyColumns();
     }
 
     /**
@@ -455,6 +290,221 @@ class DynaGrid extends \yii\base\Widget
     }
 
     /**
+     * Parses the encoded grid configuration and gets the theme, pagesize, and visible keys.
+     *
+     * @param string $rawData the stored data to be parsed
+     */
+    protected function parseData($rawData)
+    {
+        $data = is_array($rawData) ? $rawData : Json::decode($rawData);
+        if (!is_array($data) || empty($data)) {
+            return;
+        }
+        $this->_pageSize = ArrayHelper::getValue($data, 'page', $this->_module->defaultPageSize);
+        $this->_theme = ArrayHelper::getValue($data, 'theme', $this->_module->defaultTheme);
+        if (!empty($data['keys'])) {
+            $this->_visibleKeys = $data['keys'];
+        }
+    }
+
+    /**
+     * Renders the dynamic grid view
+     */
+    protected function renderGrid()
+    {
+        $buttonClass = ($this->matchPanelStyle && !empty($this->gridOptions['panel'])) ?
+            'btn btn-' . ArrayHelper::getValue($this->gridOptions['panel'], 'type', 'default') :
+            'btn btn-default';
+        Html::addCssClass($this->toggleButton, $buttonClass);
+        if (empty($this->toggleButton['label'])) {
+            $this->toggleButton['label'] = '<i class="glyphicon glyphicon-wrench"></i> ' . Yii::t('kvdynagrid', 'Personalize');
+        }
+        $dynagrid = $this->render($this->_module->configView, ['model' => $this->_model, 'toggleButton' => $this->toggleButton]);
+        $checkPanel = !empty($this->gridOptions['panel']) && is_array($this->gridOptions['panel']);
+        if ($checkPanel && !empty($this->gridOptions['panel']['before'])) {
+            $this->gridOptions['panel']['before'] = str_replace('{dynagrid}', $dynagrid, $this->gridOptions['panel']['before']);
+        }
+        if ($checkPanel && !empty($this->gridOptions['panel']['after'])) {
+            $this->gridOptions['panel']['after'] = str_replace('{dynagrid}', $dynagrid, $this->gridOptions['panel']['after']);
+        }
+        $layout = ArrayHelper::getValue($this->gridOptions, 'layout', '{summary} {items} {pager}');
+        $this->gridOptions['layout'] = str_replace('{dynagrid}', $dynagrid, $layout);
+        $this->registerAssets();
+        echo Html::tag('div', GridView::widget($this->gridOptions), $this->options);
+    }
+
+    /**
+     * Applies the configured theme
+     */
+    protected function applyTheme()
+    {
+        $theme = $this->_module->themeConfig[$this->_theme];
+        if (!is_array($theme) || empty($theme)) {
+            return;
+        }
+        $this->gridOptions = ArrayHelper::merge($this->gridOptions, $theme);
+    }
+
+    /**
+     * Applies the page size
+     */
+    protected function applyPageSize()
+    {
+        if (!empty($this->_pageSize)) {
+            $dataProvider = $this->gridOptions['dataProvider'];
+            $pagination = $dataProvider->getPagination();
+            $pagination->pageSize = $this->_pageSize;
+            $dataProvider->setPagination($pagination);
+            $this->gridOptions['dataProvider'] = $dataProvider;
+        }
+    }
+
+    /**
+     * Applies the configured columns
+     */
+    protected function applyColumns()
+    {
+        $columns = [];
+        $newColumns = [];
+        foreach ($this->columns as $column) {
+            $order = ArrayHelper::getValue($column, 'order', self::ORDER_MIDDLE);
+            if ($order == self::ORDER_FIX_LEFT) {
+                $newColumns = $column;
+                unset($column['order']);
+                $columns[] = $column;
+            }
+        }
+        foreach ($this->_visibleKeys as $key) {
+            if (empty($this->_columns[$key])) {
+                continue;
+            }
+            $column = $this->_columns[$key];
+            $newColumns = $column;
+            unset($column['order']);
+            $columns[] = $column;
+        }
+        foreach ($this->columns as $column) {
+            $order = ArrayHelper::getValue($column, 'order', self::ORDER_MIDDLE);
+            if ($order == self::ORDER_FIX_RIGHT) {
+                $newColumns = $column;
+                unset($column['order']);
+                $columns[] = $column;
+            }
+        }
+        $this->columns = $newColumns;
+        $this->gridOptions['columns'] = $columns;
+    }
+
+    /**
+     * Load configuration attributes into DynaGridConfig model
+     *
+     * @param Model $model
+     */
+    protected function loadAttributes($model)
+    {
+        $model->id = $this->_requestSubmit;
+        $model->hiddenColumns = $this->_hiddenColumns;
+        $model->visibleColumns = $this->_visibleColumns;
+        $model->pageSize = $this->_pageSize;
+        $model->theme = $this->_theme;
+        $model->widgetOptions = $this->sortableOptions;
+        $themes = array_keys($this->_module->themeConfig);
+        $model->themeList = array_combine($themes, $themes);
+    }
+
+    /**
+     * Prepares the columns for the dynagrid
+     */
+    protected function prepareColumns()
+    {
+        $this->_columns = $this->columns;
+        $columns = [];
+        foreach ($this->columns as $column) {
+            if (is_array($column)) {
+                unset($column['order']);
+            }
+            $columns[] = $column;
+        }
+        $this->gridOptions['columns'] = $columns;
+    }
+
+    /**
+     * Reconfigure columns with unique keys
+     */
+    protected function configureColumns()
+    {
+        $columnsByKey = [];
+        foreach ($this->_columns as $column) {
+            $columnKey = $this->getColumnKey($column);
+            for ($j = 0; true; $j++) {
+                $suffix = ($j) ? '_' . $j : '';
+                $columnKey .= $suffix;
+                if (!array_key_exists($columnKey, $columnsByKey)) {
+                    break;
+                }
+            }
+            $columnsByKey[$columnKey] = $column;
+        }
+        $this->_columns = $columnsByKey;
+    }
+
+    /**
+     * Finds the matches for a string column format
+     *
+     * @param string $column
+     * @return mixed
+     * @throws \yii\base\InvalidConfigException
+     */
+    protected function matchColumnString($column)
+    {
+        $matches = [];
+        if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $column, $matches)) {
+            throw new InvalidConfigException("Invalid column configuration for '{$column}'. The column must be specified in the format of 'attribute', 'attribute:format' or 'attribute:format: label'.");
+        }
+        return $matches;
+    }
+
+    /**
+     * Generate an unique column key
+     *
+     * @param mixed $column
+     * @return mixed
+     */
+    protected function getColumnKey($column)
+    {
+        if (!is_array($column)) {
+            $matches = $this->matchColumnString($column);
+            $columnKey = $matches[1];
+        } elseif (!empty($column['attribute'])) {
+            $columnKey = $column['attribute'];
+        } elseif (!empty($column['label'])) {
+            $columnKey = $column['label'];
+        } elseif (!empty($column['header'])) {
+            $columnKey = $column['header'];
+        } elseif (!empty($column['class'])) {
+            $columnKey = $column['class'];
+        } else {
+            $columnKey = null;
+        }
+        return hash('crc32', $columnKey);
+    }
+
+    /**
+     * Fetch and return the relevant column data from database
+     *
+     * @param string col the column type
+     * @param array $params the query parameters
+     * @return bool|null|string
+     */
+    protected function getDataFromDb($col, $params)
+    {
+        $settings = $this->_module->dbSettings;
+        $table = $settings['tableName'];
+        $data = $settings[$col];
+        return Yii::$app->db->createCommand("SELECT {$data} FROM {$table} WHERE {$idCol} = :id")->queryScalar($params);
+    }
+
+    /**
      * Generates the config for sortable widget header
      *
      * @param string $label
@@ -472,10 +522,10 @@ class DynaGrid extends \yii\base\Widget
     /**
      * Sets widget columns for display in \kartik\widgets\Sortable
      */
-    protected function setWidgetColumns($model)
+    protected function setWidgetColumns()
     {
-        $this->_visibleColumns = $this->getSortableHeader($model->getAttributeLabel('visibleColumns'));
-        $this->_hiddenColumns = $this->getSortableHeader($model->getAttributeLabel('hiddenColumns'));
+        $this->_visibleColumns = $this->getSortableHeader($this->_model->getAttributeLabel('visibleColumns'));
+        $this->_hiddenColumns = $this->getSortableHeader($this->_model->getAttributeLabel('hiddenColumns'));
         $isArray = is_array($this->_visibleKeys);
         foreach ($this->_columns as $key => $column) {
             $order = ArrayHelper::getValue($column, 'order', self::ORDER_MIDDLE);
@@ -584,6 +634,10 @@ class DynaGrid extends \yii\base\Widget
     {
         $view = $this->getView();
         DynaGridAsset::register($view);
-        $view->registerJs("$('input[name=\"{$this->_requestSubmit}\"]').dynagrid();");
+        Html::addCssClass($this->submitMessageOptions, 'dynagrid-submit-message');
+        $options = Json::encode([
+            'submitMessage' => Html::tag('div', $this->submitMessage, $this->submitMessageOptions)
+        ]);
+        $view->registerJs("$('[name=\"{$this->_requestSubmit}\"]').dynagrid({$options});");
     }
 }

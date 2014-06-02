@@ -1,11 +1,25 @@
 yii2-dynagrid
 =============
 
-A Yii 2.0 extension that makes a Yii 2 GridView dynamic by controlling sorting and visibility of columns. You can use the standard `yii\grid\GridView`
-widget with this extension or the enhanced `kartik\grid\GridView` extension from the yii2-grid package.The extension inspired largely by the 
-[ecolumns](http://www.yiiframework.com/extension/ecolumns/) extension in Yii 1.0.
+The yii2-dynagrid module is a great enhancement to the [kartik-v/yii2-grid](https://github.com/kartik-v/yii2-grid) module. It turbo charges your grid view 
+by making it dynamic and personalized for each user. It allows users the ability to set and save their own grid configuration. The major features provided 
+by this module are:
 
-> NOTE: This extension depends on the [kartik-v/yii2-widgets](https://github.com/kartik-v/yii2-widgets) extension which in turn depends on the 
+- Personalize, set, and save grid page size at runtime. You can set the minimum and maximum page size allowed.
+- Personalize the grid columns display. Reorder grid columns and set the visibility of needed columns, and save this setting. Control which 
+  columns can be reordered by users through setup. Predetermine  your desired columns to be fixed to the left or right by default.
+- Personalize grid appearance and set the grid theme. This will offer advanced customization to the grid layout. It allows users to virtually style grid 
+  anyway they want, based on how you define themes and extend them to your users. With yii2-grid extension, and panels, you can easily setup themes for 
+  users in many ways. You have an ability to setup multiple themes in your module configuration, and allow users to select one of them. The extension by 
+  default includes some predefined themes for you to get started.
+- Allow you to save the dynamic grid configuration specific to each user or global level. One of the following storage options are made available to store 
+  the personalized grid configuration:
+  - Session Storage (default)
+  - Cookie Storage 
+  - Database Storage
+- The extension automatically validates and loads the saved configuration based on the stored settings.
+
+> NOTE: This extension depends on the [kartik-v/yii2-grid](https://github.com/kartik-v/yii2-grid) extension which in turn depends on the 
 [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2/tree/master/extensions/bootstrap) extension. Check the 
 [composer.json](https://github.com/kartik-v/yii2-dynagrid/blob/master/composer.json) for this extension's requirements and dependencies. 
 Note: Yii 2 framework is still in active development, and until a fully stable Yii2 release, your core yii2-bootstrap packages (and its dependencies) 
@@ -13,7 +27,7 @@ may be updated when you install or update this extension. You may need to lock y
 for extension break if you do not wish to auto update dependencies.
 
 ### Demo
-You can see detailed [documentation](http://demos.krajee.com/dynagrid) on usage of the extension.
+You can see detailed [documentation](http://demos.krajee.com/dynagrid) on usage of the extension or view a [complete demo](http://demos.krajee.com/dynagrid-demo).
 
 ## Installation
 
@@ -39,7 +53,7 @@ to the ```require``` section of your `composer.json` file.
 
 ```php
 use kartik\dynagrid\Columns;
-$columns = Columns::widget([
+$columns = DynaGrid::widget([
     // to be done
 ]); 
 ```

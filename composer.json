@@ -1,6 +1,6 @@
 {
     "name": "kartik-v/yii2-dynagrid",
-    "description": "Make the Yii 2 GridView dynamic by controlling sorting and visibility of columns.",
+    "description": "Turbo charge the Yii 2 GridView with personalized columns, page size, and themes.",
     "keywords": ["yii2", "extension", "widget", "dynamic", "grid", "columns", "order", "sort", "visibility", "hide", "show", "reorder"],
     "homepage": "https://github.com/kartik-v/yii2-dynagrid",
     "type": "yii2-extension",

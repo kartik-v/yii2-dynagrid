@@ -10,7 +10,6 @@ namespace kartik\dynagrid\models;
 
 use Yii;
 use yii\base\Model;
-use yii\helpers\ArrayHelper;
 
 /**
  * Model for the dynagrid configuration
@@ -30,29 +29,24 @@ class DynaGridConfig extends Model
     public $visibleKeys;
     public $theme;
 
-    public function rules() {
+    public function rules()
+    {
         $module = Yii::$app->getModule('dynagrid');
         return [
             [['id', 'hiddenColumns', 'visibleColumns', 'pageSize', 'theme', 'hiddenKeys', 'visibleKeys'], 'safe'],
-            ['pageSize', 'integer', 'min'=>0, 'max'=>$module->maxPageSize],
-            ['pageSize', 'default', 'value'=>$module->defaultPageSize],
-            ['theme', 'default', 'value'=>$module->defaultTheme],
+            ['pageSize', 'integer', 'min' => $module->minPageSize, 'max' => $module->maxPageSize],
+            ['pageSize', 'default', 'value' => $module->defaultPageSize],
+            ['theme', 'default', 'value' => $module->defaultTheme],
         ];
     }
 
-    public function attributeLabels() {
+    public function attributeLabels()
+    {
         return [
             'hiddenColumns' => Yii::t('kvdynagrid', 'Hidden/Fixed Columns'),
             'visibleColumns' => Yii::t('kvdynagrid', 'Visible Columns'),
-            'pageSize' => Yii::t('kvdynagrid', 'Page Size'),
-            'theme' => Yii::t('kvdynagrid', 'Theme'),
+            'pageSize' => Yii::t('kvdynagrid', 'Grid Page Size'),
+            'theme' => Yii::t('kvdynagrid', 'Grid Theme'),
         ];
-    }
-
-    public function parseColumns($columns) {
-        $items = [];
-        foreach ($columns as $key => $value) {
-
-        }
     }
 }

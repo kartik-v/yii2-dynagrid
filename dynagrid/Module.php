@@ -10,6 +10,7 @@ namespace kartik\dynagrid;
 
 use Yii;
 use kartik\grid\GridView;
+use yii\helpers\ArrayHelper;
 
 /**
  * The dynamic grid module for Yii Framework 2.0.
@@ -19,7 +20,7 @@ use kartik\grid\GridView;
  */
 class Module extends \yii\base\Module
 {
-    const LAYOUT_1 = "{dynagrid}\n{summary}\n{items}\n{pager}";
+    const LAYOUT_1 = "<hr>{dynagrid}<hr>\n{summary}\n{items}\n{pager}";
     const LAYOUT_2 = "{dynagrid}";
     const COOKIE_EXPIRY = 8640000; // 100 days
 
@@ -58,12 +59,17 @@ class Module extends \yii\base\Module
     /**
      * @var int the default pagesize for the gridview. Defaults to 10.
      */
-    public $defaultPageSize = 5;
+    public $defaultPageSize = 10;
+
+    /**
+     * @var int the minimum pagesize for the gridview. Defaults to 5.
+     */
+    public $minPageSize = 5;
 
     /**
      * @var int the maximum pagesize for the gridview. Defaults to 100.
      */
-    public $maxPageSize = 50;
+    public $maxPageSize = 100;
 
     /**
      * @var int the default theme for the gridview. Defaults to 'panel-primary'.
@@ -71,14 +77,14 @@ class Module extends \yii\base\Module
     public $defaultTheme = 'panel-primary';
 
     /**
-     * @var string the controller action for validating and saving the dynagrid configuration
-     */
-    public $configAction = '/dynagrid/config/setup';
-
-    /**
      * @var string the view for displaying and saving the dynagrid configuration
      */
     public $configView = 'config';
+
+    /**
+     * @var array the default global configuration for the kartik\dynagrid\DynaGrid widget
+     */
+    public $dynaGridOptions = [];
 
     /**
      * @var array the the internalization configuration for this module
@@ -88,11 +94,14 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
-        $this->initSettings();
         $this->initI18N();
+        $this->initSettings();
 
     }
 
+    /**
+     * Initialize module level settings
+     */
     public function initSettings()
     {
         $this->dbSettings += [
@@ -104,9 +113,24 @@ class Module extends \yii\base\Module
             'httpOnly' => true,
             'expire' => time() + self::COOKIE_EXPIRY,
         ];
+        $this->dynaGridOptions = ArrayHelper::merge([
+            'storage' => DynaGrid::TYPE_SESSION,
+            'gridOptions' => [],
+            'matchPanelStyle' => true,
+            'toggleButton' => [],
+            'options' => [],
+            'sortableOptions' => [],
+            'userSpecific' => true,
+            'columns' => [],
+            'submitMessage' => Yii::t('kvdynagrid', 'Saving and applying configuration') . ' &hellip;',
+            'submitMessageOptions' => [],
+        ], $this->dynaGridOptions);
 
     }
 
+    /**
+     * Initialize i18n configuration for the module
+     */
     public function initI18N()
     {
         Yii::setAlias('@kvdynagrid', dirname(__FILE__));
