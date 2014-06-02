@@ -100,13 +100,11 @@ $columns = [
 echo DynaGrid::widget([
     'columns' => $columns,
     'storage'=>DynaGrid::TYPE_COOKIE,
+    'theme'=>'panel-danger',
     'gridOptions'=>[
         'dataProvider'=>$dataProvider,
         'filterModel'=>$searchModel,
-        'panel'=>[
-            'type'=>GridView::TYPE_DANGER,
-            'heading'=>'<h3 class="panel-title">Library</h3>'
-        ],
+        'panel'=>['heading'=>'<h3 class="panel-title">Library</h3>'],
     ]
 ]);
 ```
