@@ -29,7 +29,7 @@ may be updated when you install or update this extension. You may need to lock y
 for extension break if you do not wish to auto update dependencies.
 
 ### Demo
-You can see detailed [documentation](http://demos.krajee.com/dynagrid) on usage of the extension or view a [complete demo](http://demos.krajee.com/dynagrid-demo).
+You can see detailed [documentation](http://demos.krajee.com/dynagrid) or view a [complete demo](http://demos.krajee.com/dynagrid-demo) on usage of the extension.
 
 ## Installation
 
