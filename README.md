@@ -50,13 +50,70 @@ to the ```require``` section of your `composer.json` file.
 
 ## Usage
 
-### Columns
+### Module
+
+Setup the module in your Yii configuration file as shown below:
 
 ```php
-use kartik\dynagrid\Columns;
-$columns = DynaGrid::widget([
-    // to be done
-]); 
+'modules' => [
+   'dynagrid' =>  [
+        'class' => '\kartik\dynagrid\Module',
+        // other settings (refer documentation)
+    ]
+],
+```
+
+### DynaGrid
+
+The DynaGrid widget can be used to render kartik\Grid\GridView in the following way:
+
+```php
+use kartik\widgets\DynaGrid;
+$columns = [
+    ['class'=>'kartik\grid\SerialColumn', 'order'=>DynaGrid::ORDER_FIX_LEFT],
+    'id',
+    'name',
+    [
+        'attribute'=>'publish_date',
+        'filterType'=>GridView::FILTER_DATE,
+        'format'=>'raw',
+        'width'=>'170px',
+        'filterWidgetOptions' => [
+            'pluginOptions' => ['format' => 'yyyy-mm-dd']
+        ],
+    ],
+    [
+        'class'=>'kartik\grid\BooleanColumn',
+        'attribute'=>'status', 
+        'vAlign'=>'middle',
+    ],
+    [
+        'class'=>'kartik\grid\ActionColumn',
+        'dropdown'=>false,
+        'order'=>DynaGrid::ORDER_FIX_RIGHT
+    ],
+    ['class'=>'kartik\grid\CheckboxColumn',  'order'=>DynaGrid::ORDER_FIX_RIGHT],
+];
+    
+DynaGrid::widget([
+    'columns' => $columns,
+    'storage'=>DynaGrid::TYPE_COOKIE,
+    'gridOptions'=>[
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'panel'=> [
+            'type'=>GridView::TYPE_DANGER,
+            'heading'=>'<h3 class="panel-title">Library</h3>'
+        ],
+    ]
+]);
+```
+    
+You can use this widget 
+
+```php
+use kartik\dynagrid\DynaGrid;
+
 ```
 
 ## License
