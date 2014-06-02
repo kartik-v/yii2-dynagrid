@@ -44,7 +44,7 @@ class DynaGridConfig extends Model
     public function attributeLabels()
     {
         return [
-            'hiddenColumns' => Yii::t('kvdynagrid', 'Hidden/Fixed Columns'),
+            'hiddenColumns' => Yii::t('kvdynagrid', 'Hidden / Fixed Columns'),
             'visibleColumns' => Yii::t('kvdynagrid', 'Visible Columns'),
             'pageSize' => Yii::t('kvdynagrid', 'Grid Page Size'),
             'theme' => Yii::t('kvdynagrid', 'Grid Theme'),

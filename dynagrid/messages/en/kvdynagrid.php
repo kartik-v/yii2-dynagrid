@@ -27,7 +27,7 @@ return [
     'Grid Theme' => '',
     'Select a theme to style your grid.' => '',
     'Visible Columns' => '',
-    'Hidden/Fixed Columns' => '',
+    'Hidden / Fixed Columns' => '',
     'Configure Order and Display of Grid Columns' => '',
     'rows per page' => '',
 ];
