@@ -99,9 +99,9 @@ DynaGrid::widget([
     'columns' => $columns,
     'storage'=>DynaGrid::TYPE_COOKIE,
     'gridOptions'=>[
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'panel'=> [
+        'dataProvider'=>$dataProvider,
+        'filterModel'=>$searchModel,
+        'panel'=>[
             'type'=>GridView::TYPE_DANGER,
             'heading'=>'<h3 class="panel-title">Library</h3>'
         ],
