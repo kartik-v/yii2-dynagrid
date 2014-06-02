@@ -34,6 +34,7 @@ class DynaGridConfig extends Model
         $module = Yii::$app->getModule('dynagrid');
         return [
             [['id', 'hiddenColumns', 'visibleColumns', 'pageSize', 'theme', 'hiddenKeys', 'visibleKeys'], 'safe'],
+            [['pageSize', 'theme'], 'required'],
             ['pageSize', 'integer', 'min' => $module->minPageSize, 'max' => $module->maxPageSize],
             ['pageSize', 'default', 'value' => $module->defaultPageSize],
             ['theme', 'default', 'value' => $module->defaultTheme],
