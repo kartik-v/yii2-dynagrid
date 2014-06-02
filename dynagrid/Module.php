@@ -41,6 +41,16 @@ class Module extends \yii\base\Module
     public $dbSettings = [];
 
     /**
+     * @var array the default global configuration for the kartik\dynagrid\DynaGrid widget
+     */
+    public $dynaGridOptions = [];
+
+    /**
+     * @var string the view for displaying and saving the dynagrid configuration
+     */
+    public $configView = 'config';
+
+    /**
      * @var array the theme configuration for the gridview
      */
     public $themeConfig = [
@@ -57,6 +67,11 @@ class Module extends \yii\base\Module
     ];
 
     /**
+     * @var int the default theme for the gridview. Defaults to 'panel-primary'.
+     */
+    public $defaultTheme = 'panel-primary';
+
+    /**
      * @var int the default pagesize for the gridview. Defaults to 10.
      */
     public $defaultPageSize = 10;
@@ -70,21 +85,6 @@ class Module extends \yii\base\Module
      * @var int the maximum pagesize for the gridview. Defaults to 100.
      */
     public $maxPageSize = 100;
-
-    /**
-     * @var int the default theme for the gridview. Defaults to 'panel-primary'.
-     */
-    public $defaultTheme = 'panel-primary';
-
-    /**
-     * @var string the view for displaying and saving the dynagrid configuration
-     */
-    public $configView = 'config';
-
-    /**
-     * @var array the default global configuration for the kartik\dynagrid\DynaGrid widget
-     */
-    public $dynaGridOptions = [];
 
     /**
      * @var array the the internalization configuration for this module
