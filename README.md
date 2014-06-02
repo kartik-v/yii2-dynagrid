@@ -28,8 +28,9 @@ Note: Yii 2 framework is still in active development, and until a fully stable Y
 may be updated when you install or update this extension. You may need to lock your composer package versions for your specific app, and test 
 for extension break if you do not wish to auto update dependencies.
 
-> Warning: You need to be careful, in case you are using the new <code>\kartik\grid\FormulaColumn</code> in your grid layout. The reordering of 
-columns by users will render your formulae invalid, since the column indices will change.
+> Warning: You need to be careful, in case you are using the new `\kartik\grid\FormulaColumn` in your grid layout. The reordering of 
+columns by users will render your formulae invalid, since the column indices will change. It is recommended, you set the order of all 
+such formulae columns and its dependencies to the `DynaGrid::ORDER_FIX_LEFT`, so that such column positions are pre-fixed.
 
 ### Demo
 You can see detailed [documentation](http://demos.krajee.com/dynagrid) on usage of the extension or view a [complete demo](http://demos.krajee.com/dynagrid-demo).
