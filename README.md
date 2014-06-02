@@ -111,7 +111,7 @@ echo DynaGrid::widget([
 
 > Warning: You need to be careful, in case you are using the new `\kartik\grid\FormulaColumn` in your grid layout. The reordering of 
 columns by users will render your formulae invalid, since the column indices will change. It is recommended, you set the order of all 
-such formulae columns and its dependencies to the `DynaGrid::ORDER_FIX_LEFT`, so that such column positions are pre-fixed.
+such formulae columns and its dependencies to `DynaGrid::ORDER_FIX_LEFT`, so that such column positions are pre-fixed.
 
 ## License
 
