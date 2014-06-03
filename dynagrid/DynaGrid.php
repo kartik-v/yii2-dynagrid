@@ -102,7 +102,7 @@ class DynaGrid extends \yii\base\Widget
     public $columns;
 
     /**
-     * @var string the message to display after applying and submitting the configuration and 
+     * @var string the message to display after applying and submitting the configuration and
      * until refreshed grid is reloaded
      */
     public $submitMessage;
@@ -172,8 +172,7 @@ class DynaGrid extends \yii\base\Widget
         foreach ($this->_module->dynaGridOptions as $key => $setting) {
             if (is_array($setting) && !empty($setting) && !empty($this->$key)) {
                 $this->$key = ArrayHelper::merge($setting, $this->$key);
-            }
-            elseif (!isset($this->$key)) {
+            } elseif (!isset($this->$key)) {
                 $this->$key = $setting;
             }
         }
@@ -229,6 +228,7 @@ class DynaGrid extends \yii\base\Widget
      * Load grid configuration from specific storage
      *
      * @param mixed $id
+     * @throws \yii\base\InvalidConfigException
      */
     protected function loadGridConfig($id)
     {
@@ -264,6 +264,7 @@ class DynaGrid extends \yii\base\Widget
      * Save grid configuration to storage
      *
      * @param mixed $id
+     * @throws \yii\base\InvalidConfigException
      */
     protected function saveGridConfig($id)
     {
@@ -534,7 +535,7 @@ class DynaGrid extends \yii\base\Widget
     }
 
     /**
-     * Sets widget columns for display in \kartik\widgets\Sortable
+     * Sets widget columns for display in [[\kartik\sortable\Sortable]]
      */
     protected function setWidgetColumns()
     {
@@ -551,8 +552,7 @@ class DynaGrid extends \yii\base\Widget
 
             if ($isArray && in_array($key, $this->_visibleKeys) && !$disabled) {
                 $this->_visibleColumns[] = $widgetColumns;
-            }
-            else {
+            } else {
                 $this->_hiddenColumns[] = $widgetColumns + ['disabled' => $disabled];
             }
         }
@@ -589,14 +589,13 @@ class DynaGrid extends \yii\base\Widget
     protected function getAttributeLabel($attribute)
     {
         $provider = $this->gridOptions['dataProvider'];
+        /** @var Model $model */
         if ($provider instanceof yii\data\ActiveDataProvider && $provider->query instanceof yii\db\ActiveQueryInterface) {
-            /** @var Model $model */
             $model = new $provider->query->modelClass;
             return $model->getAttributeLabel($attribute);
         } else {
             $models = $provider->getModels();
             if (($model = reset($models)) instanceof Model) {
-                /** @var Model $model */
                 return $model->getAttributeLabel($attribute);
             } else {
                 return Inflector::camel2words($attribute);
@@ -609,6 +608,7 @@ class DynaGrid extends \yii\base\Widget
      *
      * @param mixed $key
      * @param mixed $column
+     * @return string
      */
     protected function getColumnLabel($key, $column)
     {
@@ -637,6 +637,9 @@ class DynaGrid extends \yii\base\Widget
         }
     }
 
+    /**
+     * Registers client assets
+     */
     protected function registerAssets()
     {
         $view = $this->getView();
