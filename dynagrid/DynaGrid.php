@@ -389,7 +389,12 @@ class DynaGrid extends \yii\base\Widget
             }
             $column = $this->_columns[$key];
             $newColumns = $column;
-            unset($column['order'], $column['visible']);
+            if (isset($column['order'])) {
+                unset($column['order']);
+            }
+            if (isset($column['visible'])) {
+                unset($column['visible']);
+            }
             $columns[] = $column;
         }
         foreach ($this->columns as $column) {
@@ -624,16 +629,8 @@ class DynaGrid extends \yii\base\Widget
                 } elseif (!empty($column['attribute'])) {
                     $label = $this->getAttributeLabel($column['attribute']);
                 } elseif (!empty($column['class'])) {
-                    $class = $column['class'];
-                    /*
-                    $col = Yii::createObject(['class' => $class, 'grid' => $this]);
-                    if (!$col instanceof yii\grid\CheckboxColumn) {
-                        $label = $col->renderHeaderCell();
-                    } else {
-                        $label = Inflector::camel2words(end(explode("\\", $class)));
-                    }
-                    */
-                    $label = Inflector::camel2words(end(explode("\\", $class)));
+                    $class = explode("\\", $column['class']);
+                    $label = Inflector::camel2words(end($class));
                 }
             }
             return trim(strip_tags(str_replace(['<br>', '<br/>'], ' ', $label)));
