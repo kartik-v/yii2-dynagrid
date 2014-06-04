@@ -53,14 +53,19 @@ to the ```require``` section of your `composer.json` file.
 
 ### Module
 
-Setup the module in your Yii configuration file as shown below:
+Setup the module in your Yii configuration file with a name `dynagrid` as shown below. In addition, you must also register 
+the `gridview` module as described in the [yii2-grid documentation](http://demos.krajee.com/grid#module).
 
 ```php
 'modules' => [
    'dynagrid' =>  [
         'class' => '\kartik\dynagrid\Module',
         // other settings (refer documentation)
-    ]
+    ],
+    'gridview' =>  [
+        'class' => '\kartik\grid\Module',
+        // other module settings
+    ],
 ],
 ```
 
