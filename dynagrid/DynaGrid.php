@@ -285,7 +285,7 @@ class DynaGrid extends \yii\base\Widget
             case self::TYPE_DB:
                 $db = Yii::$app->db;
                 extract($this->_module->dbSettings);
-                $params = [$idAttr => $id];
+                $params = [':id' => $id];
                 $data = [$dataAttr => $config];
                 if ($this->getDataFromDb('idAttr', $params)) {
                     $db->createCommand()->update($tableName, $data, $params)->execute();
@@ -514,9 +514,11 @@ class DynaGrid extends \yii\base\Widget
     protected function getDataFromDb($col, $params)
     {
         $settings = $this->_module->dbSettings;
-        $table = $settings['tableName'];
-        $data = $settings[$col];
-        return Yii::$app->db->createCommand("SELECT {$data} FROM {$table} WHERE {$idCol} = :id", $params)->queryScalar();
+        $query = (new \yii\db\Query())
+            ->select($settings[$col])
+            ->from($settings['tableName'])
+            ->where($settings['idAttr'] . ' = :id', $params);
+        return $query->scalar();
     }
 
     /**
