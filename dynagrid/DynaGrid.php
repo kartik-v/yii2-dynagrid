@@ -241,7 +241,7 @@ class DynaGrid extends \yii\base\Widget
                 $config = Yii::$app->request->cookies->getValue($id, false);
                 break;
             case self::TYPE_DB:
-                $config = $this->getDataFromDb('dataAttr', [':id' => $id]);
+                $config = $this->getDataFromDb('dataAttr', $id);
                 break;
             default:
                 throw new InvalidConfigException('Unknown storage: ' . $this->storage);
@@ -285,9 +285,9 @@ class DynaGrid extends \yii\base\Widget
             case self::TYPE_DB:
                 $db = Yii::$app->db;
                 extract($this->_module->dbSettings);
-                $params = [':id' => $id];
+                $params = [$idAttr => $id];
                 $data = [$dataAttr => $config];
-                if ($this->getDataFromDb('idAttr', $params)) {
+                if ($this->getDataFromDb('idAttr', $id)) {
                     $db->createCommand()->update($tableName, $data, $params)->execute();
                 } else {
                     $data[$idAttr] = $id;
@@ -508,16 +508,16 @@ class DynaGrid extends \yii\base\Widget
      * Fetch and return the relevant column data from database
      *
      * @param string col the column type
-     * @param array $params the query parameters
+     * @param string $id the primary key value
      * @return bool|null|string
      */
-    protected function getDataFromDb($col, $params)
+    protected function getDataFromDb($col, $id)
     {
         $settings = $this->_module->dbSettings;
         $query = (new \yii\db\Query())
             ->select($settings[$col])
             ->from($settings['tableName'])
-            ->where($settings['idAttr'] . ' = :id', $params);
+            ->where([$settings['idAttr'] => $id]);
         return $query->scalar();
     }
 
