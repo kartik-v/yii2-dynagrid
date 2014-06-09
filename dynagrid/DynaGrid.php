@@ -506,7 +506,7 @@ class DynaGrid extends \yii\base\Widget
     /**
      * Fetch and return the relevant column data from database
      *
-     * @param string col the column type
+     * @param string $col the column type
      * @param string $id the primary key value
      * @return bool|null|string
      */
