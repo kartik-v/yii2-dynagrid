@@ -21,7 +21,7 @@ set and save their own grid configuration. The major features provided by this m
   - Database Storage
 - The extension automatically validates and loads the saved configuration based on the stored settings.
 
-> NOTE: This extension depends on the [kartik-v/yii2-grid](https://github.com/kartik-v/yii2-grid) extension which in turn depends on the 
+> NOTE: This extension depends on the [kartik-v/yii2-grid](https://github.com/kartik-v/yii2-grid) and [kartik-v/yii2-sortable](https://github.com/kartik-v/yii2-sortable) extensions which in turn depends on the 
 [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2/tree/master/extensions/bootstrap) extension. Check the 
 [composer.json](https://github.com/kartik-v/yii2-dynagrid/blob/master/composer.json) for this extension's requirements and dependencies. 
 Note: Yii 2 framework is still in active development, and until a fully stable Yii2 release, your core yii2-bootstrap packages (and its dependencies) 
