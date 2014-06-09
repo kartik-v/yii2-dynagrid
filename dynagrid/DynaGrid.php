@@ -516,7 +516,7 @@ class DynaGrid extends \yii\base\Widget
         $settings = $this->_module->dbSettings;
         $table = $settings['tableName'];
         $data = $settings[$col];
-        return Yii::$app->db->createCommand("SELECT {$data} FROM {$table} WHERE {$idCol} = :id")->queryScalar($params);
+        return Yii::$app->db->createCommand("SELECT {$data} FROM {$table} WHERE {$idCol} = :id", $params)->queryScalar();
     }
 
     /**
