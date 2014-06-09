@@ -285,10 +285,9 @@ class DynaGrid extends \yii\base\Widget
             case self::TYPE_DB:
                 $db = Yii::$app->db;
                 extract($this->_module->dbSettings);
-                $params = [$idAttr => $id];
                 $data = [$dataAttr => $config];
                 if ($this->getDataFromDb('idAttr', $id)) {
-                    $db->createCommand()->update($tableName, $data, $params)->execute();
+                    $db->createCommand()->update($tableName, $data, [$idAttr => $id])->execute();
                 } else {
                     $data[$idAttr] = $id;
                     $db->createCommand()->insert($tableName, $data)->execute();
