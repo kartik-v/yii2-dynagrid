@@ -351,7 +351,7 @@ class DynaGrid extends \yii\base\Widget
         if (!is_array($theme) || empty($theme)) {
             return;
         }
-        $this->gridOptions = ArrayHelper::merge($this->gridOptions, $theme);
+        $this->gridOptions = ArrayHelper::merge($theme, $this->gridOptions);
     }
 
     /**
