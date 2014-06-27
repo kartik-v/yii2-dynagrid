@@ -74,7 +74,7 @@ the `gridview` module as described in the [yii2-grid documentation](http://demos
 The DynaGrid widget can be used to render the personalized & dynamic version of `kartik\Grid\GridView` in the following way:
 
 ```php
-use kartik\widgets\DynaGrid;
+use kartik\dynagrid\DynaGrid;
 use kartik\grid\GridView;
 $columns = [
     ['class'=>'kartik\grid\SerialColumn', 'order'=>DynaGrid::ORDER_FIX_LEFT],
