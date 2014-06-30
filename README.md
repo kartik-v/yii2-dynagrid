@@ -57,13 +57,13 @@ Setup the module in your Yii configuration file with a name `dynagrid` as shown 
 the `gridview` module as described in the [yii2-grid documentation](http://demos.krajee.com/grid#module).
 
 ```php
-'modules' => [
-   'dynagrid' =>  [
-        'class' => '\kartik\dynagrid\Module',
+'modules'=>[
+   'dynagrid'=>[
+        'class'=>'\kartik\dynagrid\Module',
         // other settings (refer documentation)
     ],
-    'gridview' =>  [
-        'class' => '\kartik\grid\Module',
+    'gridview'=>[
+        'class'=>'\kartik\grid\Module',
         // other module settings
     ],
 ],
@@ -85,8 +85,8 @@ $columns = [
         'filterType'=>GridView::FILTER_DATE,
         'format'=>'raw',
         'width'=>'170px',
-        'filterWidgetOptions' => [
-            'pluginOptions' => ['format' => 'yyyy-mm-dd']
+        'filterWidgetOptions'=>[
+            'pluginOptions'=>['format'=>'yyyy-mm-dd']
         ],
     ],
     [
@@ -103,14 +103,15 @@ $columns = [
 ];
     
 echo DynaGrid::widget([
-    'columns' => $columns,
+    'columns'=>$columns,
     'storage'=>DynaGrid::TYPE_COOKIE,
     'theme'=>'panel-danger',
     'gridOptions'=>[
         'dataProvider'=>$dataProvider,
         'filterModel'=>$searchModel,
         'panel'=>['heading'=>'<h3 class="panel-title">Library</h3>'],
-    ]
+    ],
+    'options'=>['id'=>'dynagrid-1'] // a unique identifier is important
 ]);
 ```
 

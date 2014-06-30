@@ -165,6 +165,9 @@ class DynaGrid extends \yii\base\Widget
     public function init()
     {
         parent::init();
+        if (empty($this->options['id'])) {
+            throw new InvalidConfigException("You must setup a unique identifier for DynaGrid within \"options['id']\".");
+        }
         $this->_module = Yii::$app->getModule('dynagrid');
         if ($this->_module == null || !$this->_module instanceof Module) {
             throw new InvalidConfigException('The "dynagrid" module MUST be setup in your Yii configuration file and assigned to "\kartik\dynagrid\Module" class.');
@@ -188,7 +191,6 @@ class DynaGrid extends \yii\base\Widget
         if (empty($this->_pageSize)) {
             $this->_pageSize = $this->_module->defaultPageSize;
         }
-        $this->options['id'] = ArrayHelper::getValue($this->options, 'id', $this->getId());
         $this->_requestSubmit = $this->options['id'] . '-dynagrid';
         $this->_model = new DynaGridConfig;
         $this->_isSubmit = !empty($_POST[$this->_requestSubmit]) && $this->_model->load(Yii::$app->request->post()) && $this->_model->validate();
