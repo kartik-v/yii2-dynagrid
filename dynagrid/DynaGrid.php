@@ -545,6 +545,7 @@ class DynaGrid extends \yii\base\Widget
         $this->_visibleColumns = $this->getSortableHeader($this->_model->getAttributeLabel('visibleColumns'));
         $this->_hiddenColumns = $this->getSortableHeader($this->_model->getAttributeLabel('hiddenColumns'));
         $isArray = is_array($this->_visibleKeys);
+        $visibleSettings = [];
         foreach ($this->_columns as $key => $column) {
             $order = ArrayHelper::getValue($column, 'order', self::ORDER_MIDDLE);
             $disabled = ($order == self::ORDER_MIDDLE) ? false : true;
@@ -554,10 +555,13 @@ class DynaGrid extends \yii\base\Widget
             ];
 
             if ($isArray && in_array($key, $this->_visibleKeys) && !$disabled) {
-                $this->_visibleColumns[] = $widgetColumns;
+                $visibleSettings[$key] = $widgetColumns;
             } else {
                 $this->_hiddenColumns[] = $widgetColumns + ['disabled' => $disabled];
             }
+        }
+        foreach ($this->_visibleKeys as $key) {
+            $this->_visibleColumns[] = $visibleSettings[$key];
         }
     }
 
