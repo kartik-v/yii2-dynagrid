@@ -62,6 +62,11 @@ class DynaGrid extends \yii\base\Widget
      * @var boolean whether settings are stored specific to each user
      */
     public $userSpecific;
+    
+    /**
+     * @var boolean whether to show the personalize button. Defaults to `true`.
+     */
+    public $showPersonalize = true;
 
     /**
      * @var array widget options for \kartik\widgets\GridView that will be rendered
@@ -330,7 +335,10 @@ class DynaGrid extends \yii\base\Widget
         if (empty($this->toggleButton['label'])) {
             $this->toggleButton['label'] = '<i class="glyphicon glyphicon-wrench"></i> ' . Yii::t('kvdynagrid', 'Personalize');
         }
-        $dynagrid = $this->render($this->_module->configView, ['model' => $this->_model, 'toggleButton' => $this->toggleButton]);
+        $dynagrid = '';
+        if ($this->showPersonalize) {
+            $dynagrid = $this->render($this->_module->configView, ['model' => $this->_model, 'toggleButton' => $this->toggleButton]);
+        }
         $checkPanel = !empty($this->gridOptions['panel']) && is_array($this->gridOptions['panel']);
         if ($checkPanel && !empty($this->gridOptions['panel']['before'])) {
             $this->gridOptions['panel']['before'] = str_replace('{dynagrid}', $dynagrid, $this->gridOptions['panel']['before']);
