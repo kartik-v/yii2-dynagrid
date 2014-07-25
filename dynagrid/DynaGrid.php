@@ -335,7 +335,7 @@ class DynaGrid extends \yii\base\Widget
         if (empty($this->toggleButton['label'])) {
             $this->toggleButton['label'] = '<i class="glyphicon glyphicon-wrench"></i> ' . Yii::t('kvdynagrid', 'Personalize');
         }
-        $dynagrid = '';
+       $dynagrid = '&nbsp;';
         if ($this->showPersonalize) {
             $dynagrid = $this->render($this->_module->configView, ['model' => $this->_model, 'toggleButton' => $this->toggleButton]);
         }
