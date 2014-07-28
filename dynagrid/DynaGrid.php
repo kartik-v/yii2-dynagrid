@@ -569,7 +569,9 @@ class DynaGrid extends \yii\base\Widget
             }
         }
         foreach ($this->_visibleKeys as $key) {
-            $this->_visibleColumns[] = $visibleSettings[$key];
+            if (!empty($visibleSettings[$key])) {
+                $this->_visibleColumns[] = $visibleSettings[$key];
+            }
         }
     }
 
