@@ -49,7 +49,6 @@
                 self.$visibleKeys.val(self.visibleKeys);
                 self.$form.hide();
                 self.$formContainer.prepend(self.submitMessage);
-                self.$form.serialize();
                 setTimeout(function () {
                     self.$form.submit();
                 }, 1000);
