@@ -552,8 +552,12 @@ class DynaGrid extends \yii\base\Widget
     {
         $this->_visibleColumns = $this->getSortableHeader($this->_model->getAttributeLabel('visibleColumns'));
         $this->_hiddenColumns = $this->getSortableHeader($this->_model->getAttributeLabel('hiddenColumns'));
-        $isArray = is_array($this->_visibleKeys);
         $visibleSettings = [];
+        
+        // Ensure visible keys is not empty. If it is so, then grid will display all columns.
+        $this->_visibleKeys = array_filter($this->_visibleKeys);
+        $showAll = !is_array($this->_visibleKeys) || empty($this->_visibleKeys);
+        
         foreach ($this->_columns as $key => $column) {
             $order = ArrayHelper::getValue($column, 'order', self::ORDER_MIDDLE);
             $disabled = ($order == self::ORDER_MIDDLE) ? false : true;
@@ -562,15 +566,22 @@ class DynaGrid extends \yii\base\Widget
                 'options' => ['id' => $key]
             ];
 
-            if ($isArray && in_array($key, $this->_visibleKeys) && !$disabled) {
+            if ($showAll && !$disabled) {
+                $visibleSettings[$key] = $widgetColumns;
+            } elseif (in_array($key, $this->_visibleKeys) && !$disabled) {
                 $visibleSettings[$key] = $widgetColumns;
             } else {
                 $this->_hiddenColumns[] = $widgetColumns + ['disabled' => $disabled];
             }
         }
-        foreach ($this->_visibleKeys as $key) {
-            if (!empty($visibleSettings[$key])) {
-                $this->_visibleColumns[] = $visibleSettings[$key];
+        if ($showAll) {
+            $this->_visibleColumns = $visibleSettings;
+            $this->_visibleKeys = array_keys($this->_visibleColumns);
+        } else {
+            foreach ($this->_visibleKeys as $key) {
+                if (!empty($visibleSettings[$key])) {
+                    $this->_visibleColumns[] = $visibleSettings[$key];
+                }
             }
         }
     }
