@@ -676,6 +676,6 @@ class DynaGrid extends \yii\base\Widget
         $options = Json::encode([
             'submitMessage' => Html::tag('div', $this->submitMessage, $this->submitMessageOptions)
         ]);
-        $view->registerJs("$('[name=\"{$this->_requestSubmit}\"]').dynagrid({$options});");
+        $view->registerJs("jQuery('[name=\"{$this->_requestSubmit}\"]').dynagrid({$options});");
     }
 }
