@@ -120,47 +120,47 @@ class DynaGrid extends \yii\base\Widget
     /**
      * @var array the cached columns configuration
      */
-    private $_columns = [];
+    protected $_columns = [];
 
     /**
      * @var array the user configured visible widget columns
      */
-    private $_visibleColumns = [];
+    protected $_visibleColumns = [];
 
     /**
      * @var array the hidden widget columns for user configuration
      */
-    private $_hiddenColumns = [];
+    protected $_hiddenColumns = [];
 
     /**
      * @var array the stored visible keys
      */
-    private $_visibleKeys = [];
+    protected $_visibleKeys = [];
 
     /**
      * @var integer the grid pagesize
      */
-    private $_pageSize;
+    protected $_pageSize;
 
     /**
      * @var Module the current module
      */
-    private $_module;
+    protected $_module;
 
     /**
      * @var string request param name which will show the grid configuration submitted
      */
-    private $_requestSubmit;
+    protected $_requestSubmit;
 
     /**
      * @var kartik\dynagrid\models\DynaGridConfig model
      */
-    private $_model;
+    protected $_model;
 
     /**
      * @var bool flag to check if the grid configuration form has been submitted
      */
-    private $_isSubmit = false;
+    protected $_isSubmit = false;
 
     /**
      * Initializes the widget
@@ -361,7 +361,7 @@ class DynaGrid extends \yii\base\Widget
         if (!is_array($theme) || empty($theme)) {
             return;
         }
-        $this->gridOptions = ArrayHelper::merge($theme, $this->gridOptions);
+        $this->gridOptions = ArrayHelper::merge($this->gridOptions, $theme);
     }
 
     /**
