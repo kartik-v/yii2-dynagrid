@@ -161,6 +161,18 @@ class DynaGrid extends \yii\base\Widget
      * @var bool flag to check if the grid configuration form has been submitted
      */
     protected $_isSubmit = false;
+    
+    /**
+     * @var bool flag to check if the pjax is enabled for the grid
+     */
+    protected $_isPjax;
+    
+    /**
+     * @var string the identifier for the modal dialog
+     */
+    protected $_modalId;
+    
+    protected $_pjaxId;
 
     /**
      * Initializes the widget
@@ -174,6 +186,8 @@ class DynaGrid extends \yii\base\Widget
             throw new InvalidConfigException("You must setup a unique identifier for DynaGrid within \"options['id']\".");
         }
         $this->_module = Yii::$app->getModule('dynagrid');
+        $this->_modalId = $this->options['id'] . '-modal';
+        $this->_pjaxId = $this->options['id'] . '-pjax';
         if ($this->_module == null || !$this->_module instanceof Module) {
             throw new InvalidConfigException('The "dynagrid" module MUST be setup in your Yii configuration file and assigned to "\kartik\dynagrid\Module" class.');
         }
@@ -202,6 +216,10 @@ class DynaGrid extends \yii\base\Widget
         $this->prepareColumns();
         $this->configureColumns();
         $this->applyGridConfig();
+        $this->_isPjax = ArrayHelper::getValue($this->gridOptions, 'pjax', false);
+        if ($this->_isPjax) {
+            $this->gridOptions['pjaxSettings']['options']['id'] = $this->_pjaxId;
+        }
         $this->renderGrid();
     }
 
@@ -334,10 +352,13 @@ class DynaGrid extends \yii\base\Widget
         Html::addCssClass($this->toggleButton, $buttonClass);
         if (empty($this->toggleButton['label'])) {
             $this->toggleButton['label'] = '<i class="glyphicon glyphicon-wrench"></i> ' . Yii::t('kvdynagrid', 'Personalize');
+            if (empty($this->toggleButton['data-pjax'])) {
+                $this->toggleButton['data-pjax'] = false;
+            }
         }
        $dynagrid = '&nbsp;';
         if ($this->showPersonalize) {
-            $dynagrid = $this->render($this->_module->configView, ['model' => $this->_model, 'toggleButton' => $this->toggleButton]);
+            $dynagrid = $this->render($this->_module->configView, ['model' => $this->_model, 'toggleButton' => $this->toggleButton, 'id'=>$this->_modalId]);
         }
         $checkPanel = !empty($this->gridOptions['panel']) && is_array($this->gridOptions['panel']);
         if ($checkPanel && !empty($this->gridOptions['panel']['before'])) {
@@ -361,7 +382,7 @@ class DynaGrid extends \yii\base\Widget
         if (!is_array($theme) || empty($theme)) {
             return;
         }
-        $this->gridOptions = ArrayHelper::merge($this->gridOptions, $theme);
+        $this->gridOptions = ArrayHelper::merge($theme, $this->gridOptions);
     }
 
     /**
@@ -676,6 +697,22 @@ class DynaGrid extends \yii\base\Widget
         $options = Json::encode([
             'submitMessage' => Html::tag('div', $this->submitMessage, $this->submitMessageOptions)
         ]);
-        $view->registerJs("jQuery('[name=\"{$this->_requestSubmit}\"]').dynagrid({$options});");
+        $dynagrid = $this->options['id'];
+        $id = "jQuery('[name=\"{$this->_requestSubmit}\"]')";
+
+        // move the modal after the dynagrid container to avoid runtime conflict
+        $js = "jQuery('#{$dynagrid}').after(jQuery('#{$this->_modalId}'));\n";
+
+        // the core dynagrid form validation
+        $js .= "{$id}.dynagrid({$options});\n";
+        
+        // pjax related reset
+        if ($this->_isPjax) {
+            $js .= "jQuery('#{$this->_pjaxId}').on('pjax:complete', function() {\n
+                {$id}.dynagrid({$options});\n
+                {$id}.dynagrid('reset');\n
+            });";
+        }
+        $view->registerJs($js);
     }
 }

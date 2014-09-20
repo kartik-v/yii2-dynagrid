@@ -1,6 +1,15 @@
+version 1.1.0
+=============
+**Date:** 19-Sep-2014 
+
+- (bug #21): Ensure correct merging of gridOptions with theme options.
+- (enh #22): modified entire modal to be auto-moved after the dynagrid container
+- (enh #23): added support for Pjax based rendering
+
+
 version 1.0.0
 =============
-** Date:** 19-Sep-2014 
+**Date:** 19-Sep-2014 
 
 Initial release (01-May-2014). The major features provided by the **yii2-dynagrid** module are:
 

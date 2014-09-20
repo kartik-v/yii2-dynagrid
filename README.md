@@ -28,6 +28,10 @@ Note: Yii 2 framework is still in active development, and until a fully stable Y
 may be updated when you install or update this extension. You may need to lock your composer package versions for your specific app, and test 
 for extension break if you do not wish to auto update dependencies.
 
+## Latest Release
+The latest version of the module is v1.1.0 released on 20-Sep-2014. Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-dynagrid/blob/master/CHANGE.md) for details.
+With v1.1.0, the DynaGrid includes Pjax support. To enable Pjax processing, set `gridOptions['pjax']` property to `true` and control pjax behavior using `gridOptions['pjaxSettings']`.
+
 ### Demo
 You can see detailed [documentation](http://demos.krajee.com/dynagrid) or view a [complete demo](http://demos.krajee.com/dynagrid-demo) on usage of the extension.
 

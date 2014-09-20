@@ -1,6 +1,12 @@
 <?php
+/**
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
+ * @package yii2-dynagrid
+ * @version 1.1.0
+ */
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use kartik\widgets\ActiveForm;
 use yii\bootstrap\Modal;
@@ -30,10 +36,11 @@ $module = Yii::$app->getModule('dynagrid');
     Modal::begin([
         'header' => '<h3 class="modal-title"><i class="glyphicon glyphicon-wrench"></i> ' . Yii::t('kvdynagrid', 'Personalize Grid Configuration') . '</h3>',
         'toggleButton' => $toggleButton,
-        'size' => Modal::SIZE_LARGE
+        'size' => Modal::SIZE_LARGE,
+        'options' => ['id'=>$id]
     ]);
 ?>
-<?php $form = ActiveForm::begin(); ?>
+<?php $form = ActiveForm::begin(['options'=>['data-pjax'=>false]]); ?>
 <div class="dynagrid-config-form">
     <div class = "row">
         <div class="col-sm-5">
@@ -48,8 +55,8 @@ $module = Yii::$app->getModule('dynagrid');
                 ->hint(Yii::t('kvdynagrid', 'Select a theme to style your grid.'))?>
         </div>
         <div class="col-sm-2">
-            <?= Html::button('<i class="glyphicon glyphicon-save"></i> ' . Yii::t('kvdynagrid', 'Apply'), ['type'=>'button', 'class' => 'dynagrid-submit btn btn-block btn-primary']) ?>
-            <?= Html::resetButton('<i class="glyphicon glyphicon-repeat"></i> ' . Yii::t('kvdynagrid', 'Reset'), ['class' => 'dynagrid-reset btn btn-block btn-danger']) ?>
+            <?= Html::button('<i class="glyphicon glyphicon-save"></i> ' . Yii::t('kvdynagrid', 'Apply'), ['type'=>'button', 'class' => 'dynagrid-submit btn btn-block btn-primary', 'data-pjax'=>false]) ?>
+            <?= Html::resetButton('<i class="glyphicon glyphicon-repeat"></i> ' . Yii::t('kvdynagrid', 'Reset'), ['class' => 'dynagrid-reset btn btn-block btn-danger', 'data-pjax'=>false]) ?>
         </div>
     </div>
     <div class="dynagrid-column-label"><?= Yii::t('kvdynagrid', 'Configure Order and Display of Grid Columns')?></div>

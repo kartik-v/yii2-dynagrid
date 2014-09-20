@@ -1,6 +1,6 @@
 /*!
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version 1.0.0
+ * @version 1.1.0
  *
  * JQuery Plugin for yii2-dynagrid.
  * 
@@ -72,6 +72,15 @@
                     }
                 });
             });
+        },
+        reset: function () {
+            var self = this;
+            self.$visibleEl.html(self.visibleContent);
+            self.$hiddenEl.html(self.hiddenContent);
+            self.setColumnKeys();
+            self.$formContainer.find('.dynagrid-submit-message').remove();
+            self.$visibleEl.sortable(self.visibleSortableOptions);
+            self.$hiddenEl.sortable(self.hiddenSortableOptions);
         },
         setColumnKeys: function () {
             var self = this;
