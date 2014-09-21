@@ -5,6 +5,7 @@ version 1.1.0
 - (bug #21): Ensure correct merging of gridOptions with theme options.
 - (enh #22): modified entire modal to be auto-moved after the dynagrid container
 - (enh #23): added support for Pjax based rendering
+- (enh #24): Enhance dynagrid to be more extensible by allowing to change grid options at runtime.
 
 
 version 1.0.0

@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-dynagrid
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 namespace kartik\dynagrid;
@@ -220,7 +220,15 @@ class DynaGrid extends \yii\base\Widget
         if ($this->_isPjax) {
             $this->gridOptions['pjaxSettings']['options']['id'] = $this->_pjaxId;
         }
-        $this->renderGrid();
+        $this->initGrid();
+    }
+
+    /**
+     * Runs the widget
+     */
+    public function run() {
+        echo Html::tag('div', GridView::widget($this->gridOptions), $this->options);
+        parent::run();
     }
 
     /**
@@ -342,9 +350,9 @@ class DynaGrid extends \yii\base\Widget
     }
 
     /**
-     * Renders the dynamic grid view
+     * Initializes the grid view for dynagrid
      */
-    protected function renderGrid()
+    protected function initGrid()
     {
         $buttonClass = ($this->matchPanelStyle && !empty($this->gridOptions['panel'])) ?
             'btn btn-' . ArrayHelper::getValue($this->gridOptions['panel'], 'type', 'default') :
@@ -370,7 +378,6 @@ class DynaGrid extends \yii\base\Widget
         $layout = ArrayHelper::getValue($this->gridOptions, 'layout', '{summary} {items} {pager}');
         $this->gridOptions['layout'] = str_replace('{dynagrid}', $dynagrid, $layout);
         $this->registerAssets();
-        echo Html::tag('div', GridView::widget($this->gridOptions), $this->options);
     }
 
     /**
