@@ -2,9 +2,9 @@
 
 return [
     // string, required, root directory of all source files
-    'sourcePath' => __DIR__,
+    'sourcePath' => __DIR__ . DIRECTORY_SEPARATOR . '..',
     // string, required, root directory containing message translations.
-    'messagePath' => __DIR__ . DIRECTORY_SEPARATOR . 'messages',
+    'messagePath' => __DIR__,
     // array, required, list of language codes that the extracted messages
     // should be translated to. For example, ['zh-CN', 'de'].
     'languages' => ['da', 'en', 'ru'],

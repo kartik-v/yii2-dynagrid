@@ -6,6 +6,8 @@ it with personalization features. It turbo charges your grid view by making it d
 set and save their own grid configuration. The major features provided by this module are:
 
 - Personalize, set, and save grid page size at runtime. You can set the minimum and maximum page size allowed.
+- Personalize, set, and save grid data filters at runtime. A user can define and save his/her own personalized grid data filters.
+- Personalize, set, and save grid column sorts at runtime. A user can define and save his/her own personalized grid column sorts.
 - Personalize the grid columns display through drag and drop. Reorder grid columns and set the visibility of needed columns, and allow users to save this setting. 
   Control which columns can be reordered by users through predefined columns setup. Predetermine which of your desired columns will be always fixed to the left or right by 
   default.
@@ -14,7 +16,7 @@ set and save their own grid configuration. The major features provided by this m
   extension,it offers all the styling options the **yii2-grid** extension provides, including the various grid column enhancements, bootstrap panels, and other grid styles. 
   This will allow you to easily setup themes for users in   many ways. You have an ability to setup multiple themes in your module configuration, and allow users to select one of them. The extension by 
   default includes some predefined themes for you to get started.
-- Allow you to save the dynamic grid configuration specific to each user or global level. One of the following storage options are made available to store 
+- Allow you to save the dynamic grid configuration specific to each user or global level. Implements a `DynaGridStore` object to manage dynagrid personalizations independent of storage. One of the following storage options are made available to store 
   the personalized grid configuration:
   - Session Storage (default)
   - Cookie Storage 
@@ -24,13 +26,11 @@ set and save their own grid configuration. The major features provided by this m
 > NOTE: This extension depends on the [kartik-v/yii2-grid](https://github.com/kartik-v/yii2-grid) and [kartik-v/yii2-sortable](https://github.com/kartik-v/yii2-sortable) extensions which in turn depends on the 
 [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2/tree/master/extensions/bootstrap) extension. Check the 
 [composer.json](https://github.com/kartik-v/yii2-dynagrid/blob/master/composer.json) for this extension's requirements and dependencies. 
-Note: Yii 2 framework is still in active development, and until a fully stable Yii2 release, your core yii2-bootstrap packages (and its dependencies) 
-may be updated when you install or update this extension. You may need to lock your composer package versions for your specific app, and test 
-for extension break if you do not wish to auto update dependencies.
 
 ## Latest Release
-The latest version of the module is v1.1.0 released on 20-Sep-2014. Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-dynagrid/blob/master/CHANGE.md) for details.
-With v1.1.0, the DynaGrid includes Pjax support. To enable Pjax processing, set `gridOptions['pjax']` property to `true` and control pjax behavior using `gridOptions['pjaxSettings']`.
+The latest version of the module is v1.2.0 released on 25-Oct-2014. Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-dynagrid/blob/master/CHANGE.md) for details.
+- With v1.2.0, the Dynagrid is revamped to include a `DynaGridStore` object and ability to save, update, or delete grid personalizations including grid filter and sort.
+- With v1.1.0, the DynaGrid includes Pjax support. To enable Pjax processing, set `gridOptions['pjax']` property to `true` and control pjax behavior using `gridOptions['pjaxSettings']`.
 
 ### Demo
 You can see detailed [documentation](http://demos.krajee.com/dynagrid) or view a [complete demo](http://demos.krajee.com/dynagrid-demo) on usage of the extension.

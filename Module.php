@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-dynagrid
- * @version 1.1.0
+ * @version 1.2.0
  */
 
 namespace kartik\dynagrid;
@@ -21,9 +21,9 @@ use yii\helpers\ArrayHelper;
 class Module extends \yii\base\Module
 {
     const LAYOUT_1 = "<hr>{dynagrid}<hr>\n{summary}\n{items}\n{pager}";
-    const LAYOUT_2 = "{dynagrid}";
+    const LAYOUT_2 = "&nbsp;";
     const COOKIE_EXPIRY = 8640000; // 100 days
-
+        
     /**
      * @var array the settings for the cookie to be used in saving the dynagrid setup
      * @see \yii\web\Cookie
@@ -36,9 +36,25 @@ class Module extends \yii\base\Module
      * - tableName: string, the name of the database table, that will store the dynagrid settings.
      *   Defaults to `tbl_dynagrid`.
      * - idAttr: string, the attribute name for the configuration id . Defaults to `id`.
+     * - filterAttr: string, the attribute name for the filter setting id. Defaults to `filter_id`.
+     * - sortAttr: string, the attribute name for the filter setting id. Defaults to `sort_id`.
      * - dataAttr: string, the attribute name for grid column data configuration. Defaults to `data`.
      */
     public $dbSettings = [];
+
+    /**
+     * @var array the settings for the detail database table to store the dynagrid filter and sort settings.
+     * The following parameters are supported:
+     * - tableName: string, the name of the database table, that will store the dynagrid settings.
+     *   Defaults to `tbl_dynagrid_dtl`.
+     * - idAttr: string, the attribute name for the detail configuration id. Defaults to `id`.
+     * - categoryAttr: string, the attribute name for the detail category (values currently possible are 'filter' or 'sort').
+     *   Defaults to `category`.
+     * - nameAttr: string, the attribute name for the filter or sort name. Defaults to `name`.
+     * - dataAttr: string, the attribute name for grid detail (filter/sort) configuration. Defaults to `data`.
+     * - dynaGridIdAttr: string, the attribute name for the dynagrid identifier. Defaults to `dynagrid_id`.
+     */
+    public $dbSettingsDtl = [];
 
     /**
      * @var array the default global configuration for the kartik\dynagrid\DynaGrid widget
@@ -49,6 +65,18 @@ class Module extends \yii\base\Module
      * @var string the view for displaying and saving the dynagrid configuration
      */
     public $configView = 'config';
+
+    /**
+     * @var string the view for displaying and saving the dynagrid detail settings
+     * for filter and sort
+     */
+    public $settingsView = 'settings';
+    
+    /**
+     * @var mixed the action URL for displaying the dynagrid detail configuration settings
+     * on the dynagrid detail settings form
+     */   
+    public $settingsConfigAction = '/dynagrid/settings/get-config';
 
     /**
      * @var array the theme configuration for the gridview
@@ -87,6 +115,21 @@ class Module extends \yii\base\Module
     public $maxPageSize = 100;
 
     /**
+     * @var mixed the action (url) used for creating a filter or sort setting
+     */
+    public $createAction = '/dynagrid/settings/create';
+
+    /**
+     * @var mixed the action (url) used for creating a filter or sort setting
+     */
+    public $updateAction = '/dynagrid/settings/update';
+
+    /**
+     * @var mixed the action (url) used for deleting a filter or sort setting
+     */
+    public $deleteAction = '/dynagrid/settings/delete';
+    
+    /**
      * @var array the the internalization configuration for this module
      */
     public $i18n = [];
@@ -107,7 +150,17 @@ class Module extends \yii\base\Module
         $this->dbSettings += [
             'tableName' => 'tbl_dynagrid',
             'idAttr' => 'id',
+            'filterAttr' => 'filter_id',
+            'sortAttr' => 'sort_id',
             'dataAttr' => 'data'
+        ];
+        $this->dbSettingsDtl += [
+            'tableName' => 'tbl_dynagrid_dtl',
+            'idAttr' => 'id',
+            'categoryAttr' => 'category',
+            'nameAttr' => 'name',
+            'dataAttr' => 'data',
+            'dynaGridIdAttr' => 'dynagrid_id'
         ];
         $this->cookieSettings += [
             'httpOnly' => true,
@@ -117,13 +170,15 @@ class Module extends \yii\base\Module
             'storage' => DynaGrid::TYPE_SESSION,
             'gridOptions' => [],
             'matchPanelStyle' => true,
-            'toggleButton' => [],
+            'toggleButtonGrid' => [],
             'options' => [],
             'sortableOptions' => [],
             'userSpecific' => true,
             'columns' => [],
             'submitMessage' => Yii::t('kvdynagrid', 'Saving and applying configuration') . ' &hellip;',
-            'submitMessageOptions' => [],
+            'deleteMessage' => Yii::t('kvdynagrid', 'Trashing all personalizations') . ' &hellip;',
+            'deleteConfirmation' => Yii::t('kvdynagrid', 'Are you sure you want to delete the setting?'),
+            'messageOptions' => [],
         ], $this->dynaGridOptions);
 
     }

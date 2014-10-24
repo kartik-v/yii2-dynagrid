@@ -1,3 +1,14 @@
+version 1.2.0
+=============
+**Date:** 25-Oct-2014 
+
+- (enh #25): Implement dynagrid storage as an object.
+- (enh #26): Add support to save grid search/filters.
+- (enh #27): Add support to save grid sort.
+- (enh #28): Add support to delete and modify personalization settings at grid level, or filter and sort level.
+- (enh #29): Enhance refresh of dynagrid active form and plugin elements for PJAX reload.
+
+
 version 1.1.0
 =============
 **Date:** 19-Sep-2014 
@@ -11,7 +22,7 @@ version 1.1.0
 
 version 1.0.0
 =============
-**Date:** 19-Sep-2014 
+**Date:** 01-May-2014
 
 Initial release (01-May-2014). The major features provided by the **yii2-dynagrid** module are:
 

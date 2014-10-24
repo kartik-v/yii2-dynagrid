@@ -1,6 +1,6 @@
 /*!
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version 1.1.0
+ * @version 1.2.0
  *
  * JQuery Plugin for yii2-dynagrid.
  * 
@@ -14,10 +14,26 @@
         return value === null || value === undefined || value == []
             || value === '' || trim && $.trim(value) === '';
     };
-
+    
+    var getFormObjectId = function($element) {
+        var id = $element.attr('name');
+        return id.toLowerCase().replace(/-/g, '_') + '_activeform'
+    };
+    
+    var cacheActiveForm = function($element) {
+        var $form = $element.closest('form'), objActiveForm = $form.data('yiiActiveForm'), 
+            id = getFormObjectId($element);
+        if (isEmpty(id) || isEmpty(objActiveForm)) {
+            return;
+        }
+        window[id] = objActiveForm;
+    };
+    
     var Dynagrid = function (element, options) {
         this.$element = $(element);
         this.submitMessage = options.submitMessage;
+        this.deleteMessage = options.deleteMessage;
+        this.deleteConfirmation = options.deleteConfirmation;
         this.init();
         this.listen();
     };
@@ -27,15 +43,19 @@
     Dynagrid.prototype = {
         constructor: Dynagrid,
         init: function () {
-            var self = this;
-            self.$form = self.$element.closest('form');
-            var $form = self.$form;
+            var self = this, $modal = self.$element.closest('.modal-dialog'), 
+                obj = getFormObjectId(self.$element), $form = self.$element.closest('form');
+            self.$form = $form;
+            if (isEmpty(window[obj])) {
+                cacheActiveForm(self.$element);
+            }
             self.$visibleEl = $form.find(".sortable-visible");
             self.$hiddenEl = $form.find(".sortable-hidden");
             self.$visibleKeys = $form.find('input[name="visibleKeys"]');
-            self.$btnSubmit = $form.find('.dynagrid-submit');
-            self.$btnReset = $form.find('.dynagrid-reset');
-            self.$formContainer = self.$form.parent();
+            self.$btnSubmit = $modal.find('.dynagrid-submit');
+            self.$btnDelete = $modal.find('.dynagrid-delete');
+            self.$btnReset = $modal.find('.dynagrid-reset');
+            self.$formContainer = $form.parent();
             self.setColumnKeys();
             self.visibleContent = self.$visibleEl.html();
             self.hiddenContent = self.$hiddenEl.html();
@@ -43,44 +63,70 @@
             self.hiddenSortableOptions = window[self.$hiddenEl.data('pluginOptions')];
         },
         listen: function () {
-            var self = this;
+            var self = this, $form = self.$form, $formContainer = self.$formContainer, 
+                objActiveForm = self.$form.data('yiiActiveForm');
             self.$btnSubmit.on('click', function () {
                 self.setColumnKeys();
                 self.$visibleKeys.val(self.visibleKeys);
-                self.$form.hide();
-                self.$formContainer.prepend(self.submitMessage);
+                $form.hide();
+                $formContainer.prepend(self.submitMessage);
                 setTimeout(function () {
-                    self.$form.submit();
+                    $form.submit();
+                }, 1000);
+            });
+            self.$btnDelete.on('click', function () {
+                if (!confirm(self.deleteConfirmation)) {
+                    return;
+                }
+                var $el = $form.find('input[name="deleteFlag"]');
+                $el.val(1);
+                $form.hide();
+                $formContainer.prepend(self.deleteMessage);
+                setTimeout(function () {
+                    $form.submit();
                 }, 1000);
             });
             self.$btnReset.on('click', function () {
                 self.$visibleEl.html(self.visibleContent);
                 self.$hiddenEl.html(self.hiddenContent);
                 self.setColumnKeys();
-                self.$formContainer.find('.dynagrid-submit-message').remove();
+                $formContainer.find('.dynagrid-submit-message').remove();
                 self.$visibleEl.sortable(self.visibleSortableOptions);
                 self.$hiddenEl.sortable(self.hiddenSortableOptions);
+                $form.trigger('reset.yiiActiveForm');
             });
-            self.$form.on('submit', function (e) {
-                var $form = $(this), chkError = '';
-                $form.find('.help-block').each(function () {
-                    chkError = $(this).text();
-                    if (!isEmpty(chkError.trim())) {
+            $form.on('afterValidate', function (e, msg) {
+                for (var key in msg) {
+                    if (msg[key].length > 0) {
                         $form.show();
-                        $form.parent().find('.dynagrid-submit-message').remove();
+                        $formContainer.find('.dynagrid-submit-message').remove();
                         return;
                     }
-                });
+                }
             });
+            
         },
         reset: function () {
-            var self = this;
+            var self = this, $form = self.$element.closest('form'), id, objActiveForm;
             self.$visibleEl.html(self.visibleContent);
             self.$hiddenEl.html(self.hiddenContent);
             self.setColumnKeys();
             self.$formContainer.find('.dynagrid-submit-message').remove();
             self.$visibleEl.sortable(self.visibleSortableOptions);
             self.$hiddenEl.sortable(self.hiddenSortableOptions);
+            if (arguments.length && arguments[0]) { // reset active form and select2
+                id = getFormObjectId(self.$element), objActiveForm = window[id];
+                if (!isEmpty(objActiveForm)) {
+                    $form.yiiActiveForm('destroy');
+                    $form.yiiActiveForm(objActiveForm.attributes, objActiveForm.settings);
+                }
+                $form.find("select").each(function() {
+                    var $el = $(this), idSel = $el.attr('id'), $options = $el.data('pluginOptions');
+                    if (!isEmpty($options)) {
+                        jQuery.when($el.select2(window[$options])).done(initSelect2Loading(idSel));
+                    }
+                });
+            }
         },
         setColumnKeys: function () {
             var self = this;
@@ -111,6 +157,8 @@
     };
 
     $.fn.dynagrid.defaults = {
-        submitMessage: 'Applying configuration &hellip;',
+        submitMessage: '',
+        deleteMessage: '',
+        deleteConfirmation: 'Are you sure you want to delete all your grid personalization settings?'
     };
 }(jQuery));

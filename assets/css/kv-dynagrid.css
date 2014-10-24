@@ -1,6 +1,6 @@
 /*!
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version 1.0.0
+ * @version 1.2.0
  *
  * Styling for yii2-dynagrid.
  * 
@@ -32,4 +32,14 @@
 .dynagrid-sortable-header {
     font-weight: bold;
     opacity: 1!important;
+}
+.dynagrid-settings-text ul {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+    padding-left: 24px;
+    list-style-type: square;
+}
+.dynagrid-settings-text li {
+    line-height: 2em;
 }
