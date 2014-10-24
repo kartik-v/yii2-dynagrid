@@ -80,6 +80,11 @@ class DynaGrid extends \yii\base\Widget
     public $showSort = true;
     
     /**
+     * @var boolean whether to enable multiple sort. Defaults to `true`.
+     */
+    public $enableMultiSort = true;
+    
+    /**
      * @var boolean whether to allow display/setup of the filter in the personalize grid form
      */
     public $allowFilterSetting = true;
@@ -542,7 +547,7 @@ class DynaGrid extends \yii\base\Widget
                 if ($this->allowSortSetting) {
                     $dataProvider = $this->gridOptions['dataProvider'];
                     $sort = $dataProvider->getSort();
-                    $sort->enableMultiSort = true;
+                    $sort->enableMultiSort = $this->enableMultiSort;
                     $dataProvider->setSort($sort);
                     $this->_model->sortId = $this->_sortId;
                     $this->_model->sortList = $store->getDtlList(DynaGridStore::STORE_SORT);
