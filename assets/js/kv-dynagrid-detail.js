@@ -22,6 +22,7 @@
         this.deleteMessage = options.deleteMessage;
         this.deleteConfirmation = options.deleteConfirmation;
         this.configUrl = options.configUrl;
+        this.modalId = options.modalId;
         this.init();
         this.listen();
     };
@@ -29,7 +30,8 @@
     DynagridDetail.prototype = {
         constructor: DynagridDetail,
         init: function () {
-            var self = this;
+            var self = this, $modal = $('#' + self.modalId);
+            $modal.appendTo('body');
             self.$form = self.$element.closest('form');
             self.$formContainer = self.$form.parent();
             var $form = self.$form;
@@ -136,6 +138,7 @@
         submitMessage: '',
         deleteMessage: '',
         deleteConfirmation: 'Are you sure you want to delete all your grid personalization settings?',
-        configUrl: ''
+        configUrl: '',
+        modalId: ''
     };
 }(jQuery));

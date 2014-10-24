@@ -1016,7 +1016,8 @@ class DynaGrid extends \yii\base\Widget
         $options = Json::encode([
             'submitMessage' => Html::tag('div', $this->submitMessage, $this->messageOptions),
             'deleteMessage' => Html::tag('div', $this->deleteMessage, $this->messageOptions),
-            'deleteConfirmation' => $this->deleteConfirmation
+            'deleteConfirmation' => $this->deleteConfirmation,
+            'modalId' => $this->_gridModalId
         ]);
         $dynagrid = $this->options['id'];
         $id = "jQuery('[name=\"{$this->_requestSubmit}\"]')";

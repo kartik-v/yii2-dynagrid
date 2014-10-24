@@ -34,6 +34,7 @@
         this.submitMessage = options.submitMessage;
         this.deleteMessage = options.deleteMessage;
         this.deleteConfirmation = options.deleteConfirmation;
+        this.modalId = options.modalId;
         this.init();
         this.listen();
     };
@@ -43,12 +44,13 @@
     Dynagrid.prototype = {
         constructor: Dynagrid,
         init: function () {
-            var self = this, $modal = self.$element.closest('.modal-dialog'), 
+            var self = this, $modal = $('#' + self.modalId), 
                 obj = getFormObjectId(self.$element), $form = self.$element.closest('form');
             self.$form = $form;
             if (isEmpty(window[obj])) {
                 cacheActiveForm(self.$element);
             }
+            $modal.appendTo('body');
             self.$visibleEl = $form.find(".sortable-visible");
             self.$hiddenEl = $form.find(".sortable-hidden");
             self.$visibleKeys = $form.find('input[name="visibleKeys"]');
@@ -159,6 +161,7 @@
     $.fn.dynagrid.defaults = {
         submitMessage: '',
         deleteMessage: '',
-        deleteConfirmation: 'Are you sure you want to delete all your grid personalization settings?'
+        deleteConfirmation: 'Are you sure you want to delete all your grid personalization settings?',
+        modalId: ''
     };
 }(jQuery));

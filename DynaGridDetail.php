@@ -147,6 +147,7 @@ class DynaGridDetail extends Widget
             'deleteMessage' => Html::tag('div', $this->deleteMessage, $this->messageOptions),
             'deleteConfirmation' => $this->deleteConfirmation,
             'configUrl' => Url::to([$module->settingsConfigAction]),
+            'modalId' => $this->id
         ]);
         $id = "#{$this->model->key}";
         $dynagrid = $this->model->dynaGridId;
