@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-dynagrid
- * @version 1.1.0
+ * @version 1.2.0
  */
 
 namespace kartik\dynagrid;
@@ -333,6 +333,10 @@ class DynaGrid extends \yii\base\Widget
         if (empty($this->gridOptions['dataProvider'])) {
             $this->initDataProvider($this->gridOptions['filterModel']);
         }
+        if (empty($this->gridOptions['filterModel'])) {
+            $this->showFilter = false;
+            $this->allowFilterSetting = false;
+        }
         if (empty($this->theme)) {
             $this->theme = $this->_module->defaultTheme;
         }
@@ -639,6 +643,9 @@ class DynaGrid extends \yii\base\Widget
      */
     protected function applyFilter()
     {
+        if (empty($this->gridOptions['filterModel'])) {
+            return;
+        }
         $class = get_class($this->gridOptions['filterModel']);
         if (!empty($this->_detailConfig[DynaGridStore::STORE_FILTER]) && empty($_GET[$class])) {
             $attributes = $this->_detailConfig[DynaGridStore::STORE_FILTER];

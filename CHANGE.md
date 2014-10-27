@@ -7,6 +7,7 @@ version 1.2.0
 - (enh #27): Add support to save grid sort.
 - (enh #28): Add support to delete and modify personalization settings at grid level, or filter and sort level.
 - (enh #29): Enhance refresh of dynagrid active form and plugin elements for PJAX reload.
+- (bug #30): Fix dynagrid validation when no filterModel is supplied.
 
 
 version 1.1.0
