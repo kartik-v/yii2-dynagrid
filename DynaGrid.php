@@ -402,12 +402,9 @@ class DynaGrid extends \yii\base\Widget
     {
         $config = $this->getGridConfig();
         if ($this->_isSubmit) {
+            $delete = ArrayHelper::getValue($_POST, 'deleteFlag', 0) == 1;
+            $this->saveGridConfig($config, $delete);
             Yii::$app->controller->refresh();
-            if (ArrayHelper::getValue($_POST, 'deleteFlag', 0) == 1) {
-                $this->_store->delete();
-            } else {
-                $this->_store->save($config);
-            }
         } else {
             $this->loadGridConfig($config);
             $this->setWidgetColumns();
@@ -420,6 +417,19 @@ class DynaGrid extends \yii\base\Widget
         $this->applyColumns();
     }
 
+    /**
+     * Update configuration
+     * @param array $config the dynagrid configuration
+     * @param boolean $delete the deletion flag
+     */
+    protected function saveGridConfig($config, $delete) {
+        if ($delete) {
+            $this->_store->delete();
+        } else {
+            $this->_store->save($config);
+        }
+    }
+    
     /**
      * Load grid configuration from specific storage
      *
