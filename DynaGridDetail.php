@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-dynagrid
- * @version 1.2.0
+ * @version 1.3.0
  */
 
 namespace kartik\dynagrid;
@@ -16,7 +16,6 @@ use yii\helpers\Url;
 use yii\base\Model;
 use yii\base\InvalidConfigException;
 use yii\bootstrap\Modal;
-use kartik\widgets\Widget;
 
 /**
  * DynaGrid detail widget to save/store grid sort OR
@@ -25,7 +24,7 @@ use kartik\widgets\Widget;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class DynaGridDetail extends Widget
+class DynaGridDetail extends \kartik\base\Widget
 {
     /**
      * @var string the modal container identifier

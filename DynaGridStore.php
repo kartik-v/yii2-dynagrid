@@ -3,13 +3,12 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-dynagrid
- * @version 1.2.0
+ * @version 1.3.0
  */
 
 namespace kartik\dynagrid;
 
 use Yii;
-use yii\base\Object;
 use yii\web\Cookie;
 use yii\helpers\Json;
 use yii\helpers\Inflector;
@@ -22,7 +21,7 @@ use yii\base\InvalidConfigException;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class DynaGridStore extends Object
+class DynaGridStore extends \yii\base\Object
 {
     const STORE_GRID = 'grid';
     const STORE_FILTER = 'filter';

@@ -1,6 +1,6 @@
 /*!
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version 1.2.0
+ * @version 1.3.0
  *
  * JQuery Plugin for yii2-dynagrid.
  * 
@@ -50,7 +50,7 @@
             if (isEmpty(window[obj])) {
                 cacheActiveForm(self.$element);
             }
-            $modal.appendTo('body');
+            // $modal.appendTo('body');
             self.$visibleEl = $form.find(".sortable-visible");
             self.$hiddenEl = $form.find(".sortable-hidden");
             self.$visibleKeys = $form.find('input[name="visibleKeys"]');

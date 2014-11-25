@@ -1,6 +1,6 @@
 /*!
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version 1.2.0
+ * @version 1.3.0
  *
  * JQuery Plugin for yii2-dynagridDetail. Allows saving/deleting the dynagridDetail 
  * filter or sort details.
@@ -31,7 +31,7 @@
         constructor: DynagridDetail,
         init: function () {
             var self = this, $modal = $('#' + self.modalId);
-            $modal.appendTo('body');
+            //$modal.appendTo('body');
             self.$form = self.$element.closest('form');
             self.$formContainer = self.$form.parent();
             var $form = self.$form;

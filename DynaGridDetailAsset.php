@@ -3,12 +3,10 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-dynagrid
- * @version 1.2.0
+ * @version 1.3.0
  */
 
 namespace kartik\dynagrid;
-
-use kartik\widgets\AssetBundle;
 
 /**
  * Asset bundle for DynaGridDetail Widget
@@ -16,7 +14,7 @@ use kartik\widgets\AssetBundle;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class DynaGridDetailAsset extends AssetBundle
+class DynaGridDetailAsset extends \kartik\base\AssetBundle
 {
 
 	public function init()

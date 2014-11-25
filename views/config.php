@@ -2,16 +2,16 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-dynagrid
- * @version 1.1.0
+ * @version 1.3.0
  */
 
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
-use kartik\widgets\ActiveForm;
-use kartik\widgets\Select2;
-use yii\bootstrap\Modal;
-use kartik\sortable\Sortable;
+use kartik\sortable\Sortable
+use kartik\form\ActiveForm;
+use kartik\select2\Select2;
+use yii\bootstrap\Modal;;
 
 /**
  * @var yii\web\View $this
