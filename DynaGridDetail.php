@@ -125,13 +125,17 @@ class DynaGridDetail extends \kartik\base\Widget
     
     protected function renderDetail() 
     {
+        $delete = false;
         if ($this->_isSubmit) {
             if (ArrayHelper::getValue($_POST, 'deleteDetailFlag', 0) == 1) {
+                $delete = true;
+            }
+            Yii::$app->controller->refresh();
+            if ($delete) {
                 $this->model->deleteSettings();
             } else {
                 $this->model->saveSettings();
             }
-            Yii::$app->controller->refresh();
         } 
     }
     
