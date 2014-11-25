@@ -6,6 +6,7 @@ version 1.3.0
 - Set dependency on Krajee base components
 - Set release to stable
 - Fix #33: Ensure correct form submission for pjax 
+- Fix #34: Correct deletion of filter and sort settings
 
 version 1.2.0
 =============
