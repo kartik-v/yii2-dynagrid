@@ -89,7 +89,10 @@ class DynaGridDetail extends \kartik\base\Widget
      * @var bool flag to check if the grid configuration form has been submitted
      */
     protected $_isSubmit = false;
-
+    
+    /**
+     * @inherit doc
+     */
     public function init()
     {
         if (empty($this->model) || !$this->model instanceof Model) {
@@ -106,7 +109,7 @@ class DynaGridDetail extends \kartik\base\Widget
      */
     public function run()
     {
-        $this->renderDetail();
+        $this->saveDetail();
         $module = Yii::$app->getModule('dynagrid');
         $title = Yii::t('kvdynagrid', "Save / Edit Grid {title}", ['title' => ucfirst($this->model->category)]);
         $icon = "<i class='glyphicon glyphicon-{$this->model->category}'></i> ";
@@ -123,22 +126,30 @@ class DynaGridDetail extends \kartik\base\Widget
         parent::run();
     }
     
-    protected function renderDetail() 
+    /**
+     * Check and validate any detail record 
+     * to save or delete
+     */
+    protected function saveDetail() 
     {
-        $delete = false;
-        if ($this->_isSubmit) {
-            if (ArrayHelper::getValue($_POST, 'deleteDetailFlag', 0) == 1) {
-                $delete = true;
-            }
-            Yii::$app->controller->refresh();
-            if ($delete) {
-                $this->model->deleteSettings();
-            } else {
-                $this->model->saveSettings();
-            }
-        } 
+        if (!$this->_isSubmit) {
+            return;
+        }
+        $delete = ArrayHelper::getValue($_POST, 'deleteDetailFlag', 0) == 1;
+        if ($delete) {
+            $this->model->deleteSettings();
+        } else
+            $this->model->saveSettings();
+        }   
+        Yii::$app->controller->refresh();
+        if ($delete) {
+            $this->model->deleteSettings();
+        }
     }
     
+    /**
+     * Register client assets
+     */
     protected function registerAssets()
     {
         $view = $this->getView();
