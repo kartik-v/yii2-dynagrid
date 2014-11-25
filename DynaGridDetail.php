@@ -138,7 +138,7 @@ class DynaGridDetail extends \kartik\base\Widget
         $delete = ArrayHelper::getValue($_POST, 'deleteDetailFlag', 0) == 1;
         if ($delete) {
             $this->model->deleteSettings();
-        } else
+        } else {
             $this->model->saveSettings();
         }   
         Yii::$app->controller->refresh();
