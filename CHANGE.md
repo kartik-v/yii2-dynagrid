@@ -1,10 +1,11 @@
 version 1.3.0
 =============
-**Date:** 10-Nov-2014
+**Date:** 25-Nov-2014
 
 - PSR4 alias change
 - Set dependency on Krajee base components
 - Set release to stable
+- Fix #33: Ensure correct form submission for pjax 
 
 version 1.2.0
 =============
