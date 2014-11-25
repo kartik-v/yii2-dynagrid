@@ -459,8 +459,8 @@ class DynaGrid extends \yii\base\Widget
             $this->_filterId = $this->_store->fetch('filterAttr');
             $this->_sortId = $this->_store->fetch('sortAttr');
         } else {
-            $this->_filterId = $data[DynaGridStore::STORE_FILTER];
-            $this->_sortId = $data[DynaGridStore::STORE_SORT];
+            $this->_filterId = ArrayHelper::getValue($data, DynaGridStore::STORE_FILTER, '');
+            $this->_sortId = ArrayHelper::getValue($data, DynaGridStore::STORE_SORT, '');
         }
         if (!empty($data['keys'])) {
             $this->_visibleKeys = $data['keys'];

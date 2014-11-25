@@ -8,7 +8,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
-use kartik\sortable\Sortable
+use kartik\sortable\Sortable;
 use kartik\form\ActiveForm;
 use kartik\select2\Select2;
 use yii\bootstrap\Modal;;
