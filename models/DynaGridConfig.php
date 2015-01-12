@@ -1,9 +1,10 @@
 <?php
 
 /**
+ * @package   yii2-dynagrid
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @package yii2-dynagrid
- * @version 1.3.0
+ * @version   1.4.0
  */
 
 namespace kartik\dynagrid\models;
@@ -35,11 +36,27 @@ class DynaGridConfig extends Model
     public $footer = null;
     public $theme;
 
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         $module = Yii::$app->getModule('dynagrid');
         return [
-            [['id', 'hiddenColumns', 'visibleColumns', 'pageSize', 'filterId', 'sortId', 'theme', 'hiddenKeys', 'visibleKeys'], 'safe'],
+            [
+                [
+                    'id',
+                    'hiddenColumns',
+                    'visibleColumns',
+                    'pageSize',
+                    'filterId',
+                    'sortId',
+                    'theme',
+                    'hiddenKeys',
+                    'visibleKeys'
+                ],
+                'safe'
+            ],
             [['pageSize', 'theme'], 'required'],
             ['pageSize', 'integer', 'min' => $module->minPageSize, 'max' => $module->maxPageSize],
             ['pageSize', 'default', 'value' => $module->defaultPageSize],
@@ -47,6 +64,9 @@ class DynaGridConfig extends Model
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function attributeLabels()
     {
         return [

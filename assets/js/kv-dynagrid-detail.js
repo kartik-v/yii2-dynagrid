@@ -1,6 +1,8 @@
 /*!
+ * @package   yii2-dynagrid
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version 1.3.0
+ * @version   1.4.0
  *
  * JQuery Plugin for yii2-dynagridDetail. Allows saving/deleting the dynagridDetail 
  * filter or sort details.
@@ -13,9 +15,9 @@
 (function ($) {
     var isEmpty = function (value, trim) {
         return value === null || value === undefined || value == []
-            || value === '' || trim && $.trim(value) === '';
+        || value === '' || trim && $.trim(value) === '';
     };
-    
+
     var DynagridDetail = function (element, options) {
         this.$element = $(element);
         this.submitMessage = options.submitMessage;
@@ -40,23 +42,23 @@
             self.$list = $form.find('.dynagrid-detail-list');
             self.$name = $form.find('.dynagrid-detail-name');
         },
-        process: function(vUrl) {
+        process: function (vUrl) {
             var self = this;
             $.ajax({
                 type: 'post',
                 url: vUrl,
                 dataType: 'json',
                 data: self.$form.serialize(),
-                beforeSend: function() {
+                beforeSend: function () {
                     self.$form.hide();
                     self.$formContainer.prepend(self.submitMessage);
                 },
-                success: function(data) {
+                success: function (data) {
                     if (data.status == 'success') {
                         self.$formContainer.html(data.content);
                     }
                 }
-            });        
+            });
         },
         listen: function () {
             var self = this, $form = self.$form, $formContainer = self.$formContainer, $list = self.$list;
@@ -93,13 +95,13 @@
                         url: self.configUrl,
                         dataType: 'json',
                         data: self.$form.serialize(),
-                        success: function(data) {
+                        success: function (data) {
                             var $out = $form.find('.dynagrid-settings-text');
                             if (data.status == 'success') {
                                 $form.find('.dynagrid-settings-text').html(data.content);
                             }
                         }
-                    });        
+                    });
 
                 }
             });
@@ -125,7 +127,8 @@
                 options = typeof option === 'object' && option;
 
             if (!data) {
-                $this.data('dynagridDetail', (data = new DynagridDetail(this, $.extend({}, $.fn.dynagridDetail.defaults, options, $(this).data()))));
+                $this.data('dynagridDetail', (data = new DynagridDetail(this,
+                    $.extend({}, $.fn.dynagridDetail.defaults, options, $(this).data()))));
             }
 
             if (typeof option === 'string') {

@@ -1,9 +1,10 @@
 <?php
 
 /**
+ * @package   yii2-dynagrid
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @package yii2-dynagrid
- * @version 1.3.0
+ * @version   1.4.0
  */
 
 namespace kartik\dynagrid;
@@ -22,7 +23,7 @@ use yii\bootstrap\Modal;
  * grid filter (search criteria) configuration.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
- * @since 1.0
+ * @since 1.2.0
  */
 class DynaGridDetail extends \kartik\base\Widget
 {
@@ -40,19 +41,19 @@ class DynaGridDetail extends \kartik\base\Widget
      * @var Model the settings model
      */
     public $model;
-    
+
     /**
-     * @var array the HTML attributes for the toggle button 
+     * @var array the HTML attributes for the toggle button
      * that will open the editable form for the filter or sort.
      */
     public $toggleButton = [];
-    
+
     /**
      * @var string the message to display after applying and submitting the configuration and
      * until refreshed grid is reloaded
      */
     public $submitMessage;
-    
+
     /**
      * @var string the message to display after deleting the configuration and
      * until refreshed grid is reloaded
@@ -78,7 +79,7 @@ class DynaGridDetail extends \kartik\base\Widget
      * @var string the identifier for pjax container
      */
     public $pjaxId;
-    
+
 
     /**
      * @var string request param name which will show the grid configuration submitted
@@ -89,9 +90,9 @@ class DynaGridDetail extends \kartik\base\Widget
      * @var bool flag to check if the grid configuration form has been submitted
      */
     protected $_isSubmit = false;
-    
+
     /**
-     * @inherit doc
+     * @inheritdoc
      */
     public function init()
     {
@@ -104,49 +105,6 @@ class DynaGridDetail extends \kartik\base\Widget
         $this->registerAssets();
     }
 
-    /**
-     * Runs the widget
-     */
-    public function run()
-    {
-        $this->saveDetail();
-        $module = Yii::$app->getModule('dynagrid');
-        $title = Yii::t('kvdynagrid', "Save / Edit Grid {title}", ['title' => ucfirst($this->model->category)]);
-        $icon = "<i class='glyphicon glyphicon-{$this->model->category}'></i> ";
-        Modal::begin([
-            'header' => '<h3 class="modal-title">' . $icon . $title . '</h3>',
-            'toggleButton' => $this->toggleButton,
-            'options'=>['id'=>$this->id]
-        ]);
-        echo $this->render($module->settingsView, [
-            'model' => $this->model,
-            'requestSubmit' => $this->_requestSubmit
-        ]);
-        Modal::end();
-        parent::run();
-    }
-    
-    /**
-     * Check and validate any detail record 
-     * to save or delete
-     */
-    protected function saveDetail() 
-    {
-        if (!$this->_isSubmit) {
-            return;
-        }
-        $delete = ArrayHelper::getValue($_POST, 'deleteDetailFlag', 0) == 1;
-        if ($delete) {
-            $this->model->deleteSettings();
-        } else {
-            $this->model->saveSettings();
-        }   
-        Yii::$app->controller->refresh();
-        if ($delete) {
-            $this->model->deleteSettings();
-        }
-    }
-    
     /**
      * Register client assets
      */
@@ -169,15 +127,60 @@ class DynaGridDetail extends \kartik\base\Widget
 jQuery('{$id}').dynagridDetail({$options});
 jQuery('{$dynagrid}').after(jQuery('{$id}'));
 JS;
-        
+
         // pjax related reset
         if ($this->isPjax) {
             $js .= "jQuery('#{$this->pjaxId}').on('pjax:complete', function() {\n
                 jQuery('{$id}').dynagridDetail({$options});\n
             });";
         }
-    
+
         $view->registerJs($js);
 
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function run()
+    {
+        $this->saveDetail();
+        $module = Yii::$app->getModule('dynagrid');
+        $title = Yii::t('kvdynagrid', "Save / Edit Grid {title}", ['title' => ucfirst($this->model->category)]);
+        $icon = "<i class='glyphicon glyphicon-{$this->model->category}'></i> ";
+        Modal::begin([
+            'header' => '<h3 class="modal-title">' . $icon . $title . '</h3>',
+            'toggleButton' => $this->toggleButton,
+            'options' => ['id' => $this->id]
+        ]);
+        echo $this->render($module->settingsView, [
+            'model' => $this->model,
+            'requestSubmit' => $this->_requestSubmit
+        ]);
+        Modal::end();
+        parent::run();
+    }
+
+    /**
+     * Check and validate any detail record
+     * to save or delete
+     *
+     * @return void
+     */
+    protected function saveDetail()
+    {
+        if (!$this->_isSubmit) {
+            return;
+        }
+        $delete = ArrayHelper::getValue($_POST, 'deleteDetailFlag', 0) == 1;
+        if ($delete) {
+            $this->model->deleteSettings();
+        } else {
+            $this->model->saveSettings();
+        }
+        Yii::$app->controller->refresh();
+        if ($delete) {
+            $this->model->deleteSettings();
+        }
     }
 }

@@ -1,9 +1,10 @@
 <?php
 
 /**
+ * @package   yii2-dynagrid
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @package yii2-dynagrid
- * @version 1.3.0
+ * @version   1.4.0
  */
 
 namespace kartik\dynagrid;
@@ -18,12 +19,12 @@ use yii\helpers\ArrayHelper;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
  */
-class Module extends \yii\base\Module
+class Module extends \kartik\base\Module
 {
     const LAYOUT_1 = "<hr>{dynagrid}<hr>\n{summary}\n{items}\n{pager}";
     const LAYOUT_2 = "&nbsp;";
     const COOKIE_EXPIRY = 8640000; // 100 days
-        
+
     /**
      * @var array the settings for the cookie to be used in saving the dynagrid setup
      * @see \yii\web\Cookie
@@ -48,8 +49,8 @@ class Module extends \yii\base\Module
      * - tableName: string, the name of the database table, that will store the dynagrid settings.
      *   Defaults to `tbl_dynagrid_dtl`.
      * - idAttr: string, the attribute name for the detail configuration id. Defaults to `id`.
-     * - categoryAttr: string, the attribute name for the detail category (values currently possible are 'filter' or 'sort').
-     *   Defaults to `category`.
+     * - categoryAttr: string, the attribute name for the detail category (values currently possible are 'filter' or
+     *     'sort'). Defaults to `category`.
      * - nameAttr: string, the attribute name for the filter or sort name. Defaults to `name`.
      * - dataAttr: string, the attribute name for grid detail (filter/sort) configuration. Defaults to `data`.
      * - dynaGridIdAttr: string, the attribute name for the dynagrid identifier. Defaults to `dynagrid_id`.
@@ -71,20 +72,32 @@ class Module extends \yii\base\Module
      * for filter and sort
      */
     public $settingsView = 'settings';
-    
+
     /**
      * @var mixed the action URL for displaying the dynagrid detail configuration settings
      * on the dynagrid detail settings form
-     */   
+     */
     public $settingsConfigAction = '/dynagrid/settings/get-config';
 
     /**
      * @var array the theme configuration for the gridview
      */
     public $themeConfig = [
-        'simple-default' => ['panel' => false, 'bordered' => false, 'striped' => false, 'hover' => true, 'layout' => self::LAYOUT_1],
+        'simple-default' => [
+            'panel' => false,
+            'bordered' => false,
+            'striped' => false,
+            'hover' => true,
+            'layout' => self::LAYOUT_1
+        ],
         'simple-bordered' => ['panel' => false, 'striped' => false, 'hover' => true, 'layout' => self::LAYOUT_1],
-        'simple-condensed' => ['panel' => false, 'striped' => false, 'condensed' => true, 'hover' => true, 'layout' => self::LAYOUT_1],
+        'simple-condensed' => [
+            'panel' => false,
+            'striped' => false,
+            'condensed' => true,
+            'hover' => true,
+            'layout' => self::LAYOUT_1
+        ],
         'simple-striped' => ['panel' => false, 'layout' => self::LAYOUT_1],
         'panel-default' => ['panel' => ['type' => GridView::TYPE_DEFAULT, 'before' => self::LAYOUT_2]],
         'panel-primary' => ['panel' => ['type' => GridView::TYPE_PRIMARY, 'before' => self::LAYOUT_2]],
@@ -128,22 +141,21 @@ class Module extends \yii\base\Module
      * @var mixed the action (url) used for deleting a filter or sort setting
      */
     public $deleteAction = '/dynagrid/settings/delete';
-    
-    /**
-     * @var array the the internalization configuration for this module
-     */
-    public $i18n = [];
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
+        $this->_msgCat = 'kvdynagrid';
         parent::init();
-        $this->initI18N();
         $this->initSettings();
-
     }
 
     /**
      * Initialize module level settings
+     *
+     * @return void
      */
     public function initSettings()
     {
@@ -181,21 +193,5 @@ class Module extends \yii\base\Module
             'messageOptions' => [],
         ], $this->dynaGridOptions);
 
-    }
-
-    /**
-     * Initialize i18n configuration for the module
-     */
-    public function initI18N()
-    {
-        Yii::setAlias('@kvdynagrid', dirname(__FILE__));
-        if (empty($this->i18n)) {
-            $this->i18n = [
-                'class' => 'yii\i18n\PhpMessageSource',
-                'basePath' => '@kvdynagrid/messages',
-                'forceTranslation' => true
-            ];
-        }
-        Yii::$app->i18n->translations['kvdynagrid'] = $this->i18n;
     }
 }

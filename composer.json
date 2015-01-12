@@ -1,7 +1,20 @@
 {
     "name": "kartik-v/yii2-dynagrid",
     "description": "Turbo charge the Yii 2 GridView with personalized columns, page size, and themes.",
-    "keywords": ["yii2", "extension", "widget", "dynamic", "grid", "columns", "order", "sort", "visibility", "hide", "show", "reorder"],
+    "keywords": [
+        "yii2",
+        "extension",
+        "widget",
+        "dynamic",
+        "grid",
+        "columns",
+        "order",
+        "sort",
+        "visibility",
+        "hide",
+        "show",
+        "reorder"
+    ],
     "homepage": "https://github.com/kartik-v/yii2-dynagrid",
     "type": "yii2-extension",
     "license": "BSD 3-Clause",

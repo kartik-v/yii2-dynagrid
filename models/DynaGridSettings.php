@@ -1,9 +1,10 @@
 <?php
 
 /**
+ * @package   yii2-dynagrid
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @package yii2-dynagrid
- * @version 1.3.0
+ * @version   1.4.0
  */
 
 namespace kartik\dynagrid\models;
@@ -32,13 +33,19 @@ class DynaGridSettings extends Model
     public $key;
     public $data;
     protected $_module;
-    
+
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
         $this->_module = Yii::$app->getModule('dynagrid');
     }
-    
+
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [
@@ -47,6 +54,9 @@ class DynaGridSettings extends Model
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function attributeLabels()
     {
         if ($this->category === DynaGridStore::STORE_FILTER) {
@@ -63,7 +73,12 @@ class DynaGridSettings extends Model
             ];
         }
     }
-    
+
+    /**
+     * Gets the DynaGridStore configuration instance
+     *
+     * @return DynaGridStore
+     */
     public function getStore()
     {
         $settings = [
@@ -78,18 +93,31 @@ class DynaGridSettings extends Model
         }
         return new DynaGridStore($settings);
     }
-    
-    
+
+    /**
+     * Fetches grid configuration settings from store
+     *
+     * @return mixed
+     */
     public function fetchSettings()
     {
         return $this->store->fetch();
     }
-    
+
+    /**
+     * Saves grid configuration settings to store
+     */
     public function saveSettings()
     {
         $this->store->save($this->data);
     }
-    
+
+    /**
+     * Deletes grid configuration settings from store
+     *
+     * @return void
+     * @throws \yii\base\InvalidConfigException
+     */
     public function deleteSettings()
     {
         $master = new DynaGridStore([
@@ -102,17 +130,23 @@ class DynaGridSettings extends Model
         $master->deleteConfig($this->category, $config);
         $this->store->delete();
     }
-    
+
     public function getDtlList()
     {
         return $this->store->getDtlList($this->category);
     }
-    
+
+    /**
+     * Gets data configuration
+     *
+     * @return string
+     */
     public function getDataConfig()
     {
         $data = $this->store->fetch();
-        if (!is_array($data) || empty($data) && 
-           ($this->category !== DynaGridStore::STORE_SORT && $this->category !== DynaGridStore::STORE_SORT)) {
+        if (!is_array($data) || empty($data) &&
+            ($this->category !== DynaGridStore::STORE_SORT && $this->category !== DynaGridStore::STORE_SORT)
+        ) {
             return '';
         }
         $attrLabel = $this->getAttributeLabel('dataConfig');
@@ -122,11 +156,12 @@ class DynaGridSettings extends Model
                 $label = isset($attribute['label']) ? $attribute['label'] : Inflector::camel2words($attribute);
                 $out .= "<li>{$label} = {$value}</li>";
             }
-        } else {            
+        } else {
             foreach ($data as $attribute => $direction) {
                 $label = isset($attribute['label']) ? $attribute['label'] : Inflector::camel2words($attribute);
                 $icon = $direction === SORT_DESC ? "glyphicon glyphicon-sort-by-alphabet-alt" : "glyphicon glyphicon-sort-by-alphabet";
-                $dir = $direction === SORT_DESC ? Yii::t('kvdynagrid', 'descending') : Yii::t('kvdynagrid', 'ascending');
+                $dir = $direction === SORT_DESC ? Yii::t('kvdynagrid', 'descending') : Yii::t('kvdynagrid',
+                    'ascending');
                 $out .= "<li>{$label} <span class='{$icon}'></span> <span class='label label-default'>{$dir}</span></li>";
             }
         }

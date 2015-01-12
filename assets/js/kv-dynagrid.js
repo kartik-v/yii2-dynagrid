@@ -1,6 +1,8 @@
 /*!
+ * @package   yii2-dynagrid
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version 1.3.0
+ * @version   1.4.0
  *
  * JQuery Plugin for yii2-dynagrid.
  * 
@@ -12,23 +14,23 @@
 (function ($) {
     var isEmpty = function (value, trim) {
         return value === null || value === undefined || value == []
-            || value === '' || trim && $.trim(value) === '';
+        || value === '' || trim && $.trim(value) === '';
     };
-    
-    var getFormObjectId = function($element) {
+
+    var getFormObjectId = function ($element) {
         var id = $element.attr('name');
         return id.toLowerCase().replace(/-/g, '_') + '_activeform'
     };
-    
-    var cacheActiveForm = function($element) {
-        var $form = $element.closest('form'), objActiveForm = $form.data('yiiActiveForm'), 
+
+    var cacheActiveForm = function ($element) {
+        var $form = $element.closest('form'), objActiveForm = $form.data('yiiActiveForm'),
             id = getFormObjectId($element);
         if (isEmpty(id) || isEmpty(objActiveForm)) {
             return;
         }
         window[id] = objActiveForm;
     };
-    
+
     var Dynagrid = function (element, options) {
         this.$element = $(element);
         this.submitMessage = options.submitMessage;
@@ -44,7 +46,7 @@
     Dynagrid.prototype = {
         constructor: Dynagrid,
         init: function () {
-            var self = this, $modal = $('#' + self.modalId), 
+            var self = this, $modal = $('#' + self.modalId),
                 obj = getFormObjectId(self.$element), $form = self.$element.closest('form');
             self.$form = $form;
             if (isEmpty(window[obj])) {
@@ -65,7 +67,7 @@
             self.hiddenSortableOptions = window[self.$hiddenEl.data('pluginOptions')];
         },
         listen: function () {
-            var self = this, $form = self.$form, $formContainer = self.$formContainer, 
+            var self = this, $form = self.$form, $formContainer = self.$formContainer,
                 objActiveForm = self.$form.data('yiiActiveForm');
             self.$btnSubmit.on('click', function () {
                 self.setColumnKeys();
@@ -106,7 +108,7 @@
                     }
                 }
             });
-            
+
         },
         reset: function () {
             var self = this, $form = self.$element.closest('form'), id, objActiveForm;
@@ -122,7 +124,7 @@
                     $form.yiiActiveForm('destroy');
                     $form.yiiActiveForm(objActiveForm.attributes, objActiveForm.settings);
                 }
-                $form.find("select").each(function() {
+                $form.find("select").each(function () {
                     var $el = $(this), idSel = $el.attr('id'), $options = $el.data('pluginOptions');
                     if (!isEmpty($options)) {
                         jQuery.when($el.select2(window[$options])).done(initSelect2Loading(idSel));
@@ -149,7 +151,8 @@
                 options = typeof option === 'object' && option;
 
             if (!data) {
-                $this.data('dynagrid', (data = new Dynagrid(this, $.extend({}, $.fn.dynagrid.defaults, options, $(this).data()))));
+                $this.data('dynagrid',
+                    (data = new Dynagrid(this, $.extend({}, $.fn.dynagrid.defaults, options, $(this).data()))));
             }
 
             if (typeof option === 'string') {
