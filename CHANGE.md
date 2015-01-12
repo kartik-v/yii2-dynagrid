@@ -2,6 +2,8 @@ version 1.4.0
 =============
 **Date:** 12-Jan-2015
 
+- (bug #35): Typo fix for extra `{` in DynaGridDetail.
+- (enh #43): Spanish translations added.
 - Code formatting updates as per Yii2 standards.
 - Revamp to use new Krajee base Module and TranslationTrait.
 
@@ -65,6 +67,8 @@ Additional Fixes in v1.0.0:
 - (bug #4): Only variables should be passed by reference.
 - (bug #6): Bug in getDataFromDb.
 - (bug #7): Before and after do not work.
+- (bug #12): Mention that the personalization is stored with the widget ID.
+- (bug #12): Mention that the personalization is stored with the widget ID.
 - (bug #12): Mention that the personalization is stored with the widget ID.
 - (bug #13): You must setup a unique identifier for DynaGrid within "options['id']".
 - (enh #15): Added `showPersonalize` property to configure whether personalize will be shown.
