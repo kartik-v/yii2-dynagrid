@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version   1.4.0
+ * @version   1.4.1
  */
 
 namespace kartik\dynagrid;
@@ -92,6 +92,11 @@ class DynaGridDetail extends \kartik\base\Widget
     protected $_isSubmit = false;
 
     /**
+     * @var Module the current module
+     */
+    protected $_module;
+    
+    /**
      * @inheritdoc
      */
     public function init()
@@ -100,6 +105,7 @@ class DynaGridDetail extends \kartik\base\Widget
             throw new InvalidConfigException("You must enter a valid 'model' for DynaGridDetail.");
         }
         parent::init();
+        $this->_module = Module::fetchModule();
         $this->_requestSubmit = $this->options['id'] . '-dynagrid-detail';
         $this->_isSubmit = !empty($_POST[$this->_requestSubmit]) && $this->model->load(Yii::$app->request->post()) && $this->model->validate();
         $this->registerAssets();
@@ -112,13 +118,12 @@ class DynaGridDetail extends \kartik\base\Widget
     {
         $view = $this->getView();
         DynaGridDetailAsset::register($view);
-        $module = (Yii::$app->controller->module && Yii::$app->controller->module->getModule('dynagrid')) ? Yii::$app->controller->module->getModule('dynagrid') : Yii::$app->getModule('dynagrid');
         Html::addCssClass($this->messageOptions, 'dynagrid-submit-message');
         $options = Json::encode([
             'submitMessage' => Html::tag('div', $this->submitMessage, $this->messageOptions),
             'deleteMessage' => Html::tag('div', $this->deleteMessage, $this->messageOptions),
             'deleteConfirmation' => $this->deleteConfirmation,
-            'configUrl' => Url::to([$module->settingsConfigAction]),
+            'configUrl' => Url::to([$this->_module->settingsConfigAction]),
             'modalId' => $this->id
         ]);
         $id = "#{$this->model->key}";
@@ -145,7 +150,6 @@ JS;
     public function run()
     {
         $this->saveDetail();
-        $module = (Yii::$app->controller->module && Yii::$app->controller->module->getModule('dynagrid')) ? Yii::$app->controller->module->getModule('dynagrid') : Yii::$app->getModule('dynagrid');
         $title = Yii::t('kvdynagrid', "Save / Edit Grid {title}", ['title' => ucfirst($this->model->category)]);
         $icon = "<i class='glyphicon glyphicon-{$this->model->category}'></i> ";
         Modal::begin([
@@ -153,7 +157,7 @@ JS;
             'toggleButton' => $this->toggleButton,
             'options' => ['id' => $this->id]
         ]);
-        echo $this->render($module->settingsView, [
+        echo $this->render($this->_module->settingsView, [
             'model' => $this->model,
             'requestSubmit' => $this->_requestSubmit
         ]);

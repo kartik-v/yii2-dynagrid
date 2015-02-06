@@ -2,7 +2,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-dynagrid
- * @version 1.4.0
+ * @version 1.4.1
  */
 
 use yii\helpers\Html;
@@ -11,9 +11,8 @@ use yii\helpers\ArrayHelper;
 use kartik\sortable\Sortable;
 use kartik\form\ActiveForm;
 use kartik\select2\Select2;
+use kartik\dynagrid\Module;
 use yii\bootstrap\Modal;
-
-;
 
 /**
  * @var yii\web\View                          $this
@@ -31,7 +30,7 @@ $options2 = ArrayHelper::merge($model->widgetOptions, [
     'connected' => true,
     'options' => ['class' => 'sortable-hidden']
 ]);
-$module = (Yii::$app->controller->module && Yii::$app->controller->module->getModule('dynagrid')) ? Yii::$app->controller->module->getModule('dynagrid') : Yii::$app->getModule('dynagrid');
+$module = Module::fetchModule();
 $flag = $allowFilterSetting && $allowSortSetting;
 if (!$flag) {
     $col = ($allowFilterSetting || $allowSortSetting) ? 4 : 6;

@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version   1.4.0
+ * @version   1.4.1
  */
 
 namespace kartik\dynagrid;
@@ -306,7 +306,7 @@ class DynaGrid extends \yii\base\Widget
         if (empty($this->options['id'])) {
             throw new InvalidConfigException("You must setup a unique identifier for DynaGrid within \"options['id']\".");
         }
-        $this->_module = (Yii::$app->controller->module && Yii::$app->controller->module->getModule('dynagrid')) ? Yii::$app->controller->module->getModule('dynagrid') : Yii::$app->getModule('dynagrid');
+        $this->_module = Module::fetchModule();
         $this->_gridModalId = $this->options['id'] . '-grid-modal';
         $this->_filterModalId = $this->options['id'] . '-filter-modal';
         $this->_sortModalId = $this->options['id'] . '-sort-modal';
@@ -314,7 +314,7 @@ class DynaGrid extends \yii\base\Widget
         $this->_sortKey = $this->options['id'] . '-sort-key';
         $this->_pjaxId = $this->options['id'] . '-pjax';
         if ($this->_module == null || !$this->_module instanceof Module) {
-            throw new InvalidConfigException('The "dynagrid" module MUST be setup in your Yii configuration file and assigned to "\kartik\dynagrid\Module" class.');
+            throw new InvalidConfigException('The "' . Module::MODULE . '" module MUST be setup in your Yii configuration file and assigned to "\kartik\dynagrid\Module" class.');
         }
         foreach ($this->_module->dynaGridOptions as $key => $setting) {
             if (is_array($setting) && !empty($setting) && !empty($this->$key)) {

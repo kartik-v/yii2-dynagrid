@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version   1.4.0
+ * @version   1.4.1
  */
 
 namespace kartik\dynagrid\models;
@@ -12,6 +12,7 @@ namespace kartik\dynagrid\models;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Inflector;
+use kartik\dynagrid\Module;
 use kartik\dynagrid\DynaGrid;
 use kartik\dynagrid\DynaGridStore;
 
@@ -40,7 +41,7 @@ class DynaGridSettings extends Model
     public function init()
     {
         parent::init();
-        $this->_module = (Yii::$app->controller->module && Yii::$app->controller->module->getModule('dynagrid')) ? Yii::$app->controller->module->getModule('dynagrid') : Yii::$app->getModule('dynagrid');
+        $this->_module = Module::fetchModule();
     }
 
     /**

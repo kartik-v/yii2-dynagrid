@@ -4,13 +4,14 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version   1.4.0
+ * @version   1.4.1
  */
 
 namespace kartik\dynagrid\models;
 
 use Yii;
 use yii\base\Model;
+use kartik\dynagrid\Module;
 use kartik\dynagrid\DynaGridStore;
 
 /**
@@ -41,7 +42,7 @@ class DynaGridConfig extends Model
      */
     public function rules()
     {
-        $module = (Yii::$app->controller->module && Yii::$app->controller->module->getModule('dynagrid')) ? Yii::$app->controller->module->getModule('dynagrid') : Yii::$app->getModule('dynagrid');
+        $module = Module::fetchModule();
         return [
             [
                 [

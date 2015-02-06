@@ -1,3 +1,9 @@
+version 1.4.1
+=============
+**Date:** 06-Feb-2015
+
+- (enh #45): Allow dynagrid to be used as a sub-module.
+
 version 1.4.0
 =============
 **Date:** 12-Jan-2015

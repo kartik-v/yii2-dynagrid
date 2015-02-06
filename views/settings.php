@@ -2,7 +2,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-dynagrid
- * @version 1.4.0
+ * @version 1.4.1
  */
 
 use yii\helpers\Html;
@@ -12,8 +12,9 @@ use kartik\form\ActiveForm;
 use yii\bootstrap\Modal;
 use kartik\sortable\Sortable;
 use kartik\select2\Select2;
+use kartik\dynagrid\Module;
 
-$module = (Yii::$app->controller->module && Yii::$app->controller->module->getModule('dynagrid')) ? Yii::$app->controller->module->getModule('dynagrid') : Yii::$app->getModule('dynagrid');
+$module = Module::fetchModule();
 $listOptions = ['class' => 'form-control dynagrid-detail-list'];
 $data = $model->getDtlList();
 if (count($data) == 0) {

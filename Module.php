@@ -4,12 +4,13 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version   1.4.0
+ * @version   1.4.1
  */
 
 namespace kartik\dynagrid;
 
 use Yii;
+use kartik\base\Config;
 use kartik\grid\GridView;
 use yii\helpers\ArrayHelper;
 
@@ -21,6 +22,7 @@ use yii\helpers\ArrayHelper;
  */
 class Module extends \kartik\base\Module
 {
+    const MODULE = 'dynagrid';
     const LAYOUT_1 = "<hr>{dynagrid}<hr>\n{summary}\n{items}\n{pager}";
     const LAYOUT_2 = "&nbsp;";
     const COOKIE_EXPIRY = 8640000; // 100 days
@@ -152,6 +154,17 @@ class Module extends \kartik\base\Module
         $this->initSettings();
     }
 
+    /**
+     * Gets the module
+     *
+     * @param string $module the module name
+     *
+     * @return Module
+     */
+    public static function fetchModule($module = self::MODULE) {
+        return Config::fetchModule($module);
+    }
+    
     /**
      * Initialize module level settings
      *

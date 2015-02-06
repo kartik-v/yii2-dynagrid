@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version   1.4.0
+ * @version   1.4.1
  */
 
 namespace kartik\dynagrid;
@@ -92,7 +92,7 @@ class DynaGridStore extends \yii\base\Object
      */
     public function init()
     {
-        $this->_module = (Yii::$app->controller->module && Yii::$app->controller->module->getModule('dynagrid')) ? Yii::$app->controller->module->getModule('dynagrid') : Yii::$app->getModule('dynagrid');
+        $this->_module = Module::fetchModule();
         $this->_isMaster = ($this->category == self::STORE_GRID) ? true : false;
         if ($this->_module == null || !$this->_module instanceof Module) {
             throw new InvalidConfigException('The "dynagrid" module MUST be setup in your Yii configuration file and assigned to "\kartik\dynagrid\Module" class.');
