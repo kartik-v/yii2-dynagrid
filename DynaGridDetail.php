@@ -27,6 +27,8 @@ use yii\bootstrap\Modal;
  */
 class DynaGridDetail extends \kartik\base\Widget
 {
+    use ModuleTrait;
+
     /**
      * @var string the modal container identifier
      */
@@ -105,7 +107,7 @@ class DynaGridDetail extends \kartik\base\Widget
             throw new InvalidConfigException("You must enter a valid 'model' for DynaGridDetail.");
         }
         parent::init();
-        $this->_module = Module::fetchModule();
+        $this->initModule();
         $this->_requestSubmit = $this->options['id'] . '-dynagrid-detail';
         $this->_isSubmit = !empty($_POST[$this->_requestSubmit]) && $this->model->load(Yii::$app->request->post()) && $this->model->validate();
         $this->registerAssets();

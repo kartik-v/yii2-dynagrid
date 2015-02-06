@@ -37,6 +37,8 @@ use yii\web\Cookie;
  */
 class DynaGrid extends \yii\base\Widget
 {
+    use ModuleTrait;
+
     const TYPE_SESSION = 'session';
     const TYPE_COOKIE = 'cookie';
     const TYPE_DB = 'db';
@@ -306,16 +308,13 @@ class DynaGrid extends \yii\base\Widget
         if (empty($this->options['id'])) {
             throw new InvalidConfigException("You must setup a unique identifier for DynaGrid within \"options['id']\".");
         }
-        $this->_module = Module::fetchModule();
+        $this->initModule();
         $this->_gridModalId = $this->options['id'] . '-grid-modal';
         $this->_filterModalId = $this->options['id'] . '-filter-modal';
         $this->_sortModalId = $this->options['id'] . '-sort-modal';
         $this->_filterKey = $this->options['id'] . '-filter-key';
         $this->_sortKey = $this->options['id'] . '-sort-key';
         $this->_pjaxId = $this->options['id'] . '-pjax';
-        if ($this->_module == null || !$this->_module instanceof Module) {
-            throw new InvalidConfigException('The "' . Module::MODULE . '" module MUST be setup in your Yii configuration file and assigned to "\kartik\dynagrid\Module" class.');
-        }
         foreach ($this->_module->dynaGridOptions as $key => $setting) {
             if (is_array($setting) && !empty($setting) && !empty($this->$key)) {
                 $this->$key = ArrayHelper::merge($setting, $this->$key);

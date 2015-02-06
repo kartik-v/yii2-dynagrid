@@ -12,6 +12,7 @@ namespace kartik\dynagrid\models;
 use Yii;
 use yii\base\Model;
 use kartik\dynagrid\Module;
+use kartik\dynagrid\ModuleTrait;
 use kartik\dynagrid\DynaGridStore;
 
 /**
@@ -22,6 +23,8 @@ use kartik\dynagrid\DynaGridStore;
  */
 class DynaGridConfig extends Model
 {
+    use ModuleTrait;
+
     public $id;
     public $hiddenColumns = [];
     public $visibleColumns = [];
@@ -36,13 +39,14 @@ class DynaGridConfig extends Model
     public $visibleKeys;
     public $footer = null;
     public $theme;
+    protected $_module;
 
     /**
      * @inheritdoc
      */
     public function rules()
     {
-        $module = Module::fetchModule();
+        $this->initModule();
         return [
             [
                 [
@@ -59,9 +63,9 @@ class DynaGridConfig extends Model
                 'safe'
             ],
             [['pageSize', 'theme'], 'required'],
-            ['pageSize', 'integer', 'min' => $module->minPageSize, 'max' => $module->maxPageSize],
-            ['pageSize', 'default', 'value' => $module->defaultPageSize],
-            ['theme', 'default', 'value' => $module->defaultTheme],
+            ['pageSize', 'integer', 'min' => $this->_module->minPageSize, 'max' => $this->_module->maxPageSize],
+            ['pageSize', 'default', 'value' => $this->_module->defaultPageSize],
+            ['theme', 'default', 'value' => $this->_module->defaultTheme],
         ];
     }
 
