@@ -112,7 +112,7 @@ class DynaGridDetail extends \kartik\base\Widget
     {
         $view = $this->getView();
         DynaGridDetailAsset::register($view);
-        $module = Yii::$app->getModule('dynagrid');
+        $module = (Yii::$app->controller->module && Yii::$app->controller->module->getModule('dynagrid')) ? Yii::$app->controller->module->getModule('dynagrid') : Yii::$app->getModule('dynagrid');
         Html::addCssClass($this->messageOptions, 'dynagrid-submit-message');
         $options = Json::encode([
             'submitMessage' => Html::tag('div', $this->submitMessage, $this->messageOptions),
@@ -145,7 +145,7 @@ JS;
     public function run()
     {
         $this->saveDetail();
-        $module = Yii::$app->getModule('dynagrid');
+        $module = (Yii::$app->controller->module && Yii::$app->controller->module->getModule('dynagrid')) ? Yii::$app->controller->module->getModule('dynagrid') : Yii::$app->getModule('dynagrid');
         $title = Yii::t('kvdynagrid', "Save / Edit Grid {title}", ['title' => ucfirst($this->model->category)]);
         $icon = "<i class='glyphicon glyphicon-{$this->model->category}'></i> ";
         Modal::begin([
