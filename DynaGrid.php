@@ -306,7 +306,7 @@ class DynaGrid extends \yii\base\Widget
         if (empty($this->options['id'])) {
             throw new InvalidConfigException("You must setup a unique identifier for DynaGrid within \"options['id']\".");
         }
-        $this->_module = Yii::$app->getModule('dynagrid');
+        $this->_module = (Yii::$app->controller->module && Yii::$app->controller->module->getModule('dynagrid')) ? Yii::$app->controller->module->getModule('dynagrid') : Yii::$app->getModule('dynagrid');
         $this->_gridModalId = $this->options['id'] . '-grid-modal';
         $this->_filterModalId = $this->options['id'] . '-filter-modal';
         $this->_sortModalId = $this->options['id'] . '-sort-modal';

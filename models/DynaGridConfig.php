@@ -41,7 +41,7 @@ class DynaGridConfig extends Model
      */
     public function rules()
     {
-        $module = Yii::$app->getModule('dynagrid');
+        $module = (Yii::$app->controller->module && Yii::$app->controller->module->getModule('dynagrid')) ? Yii::$app->controller->module->getModule('dynagrid') : Yii::$app->getModule('dynagrid');
         return [
             [
                 [

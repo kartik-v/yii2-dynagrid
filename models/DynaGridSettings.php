@@ -40,7 +40,7 @@ class DynaGridSettings extends Model
     public function init()
     {
         parent::init();
-        $this->_module = Yii::$app->getModule('dynagrid');
+        $this->_module = (Yii::$app->controller->module && Yii::$app->controller->module->getModule('dynagrid')) ? Yii::$app->controller->module->getModule('dynagrid') : Yii::$app->getModule('dynagrid');
     }
 
     /**

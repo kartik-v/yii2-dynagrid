@@ -92,7 +92,7 @@ class DynaGridStore extends \yii\base\Object
      */
     public function init()
     {
-        $this->_module = Yii::$app->getModule('dynagrid');
+        $this->_module = (Yii::$app->controller->module && Yii::$app->controller->module->getModule('dynagrid')) ? Yii::$app->controller->module->getModule('dynagrid') : Yii::$app->getModule('dynagrid');
         $this->_isMaster = ($this->category == self::STORE_GRID) ? true : false;
         if ($this->_module == null || !$this->_module instanceof Module) {
             throw new InvalidConfigException('The "dynagrid" module MUST be setup in your Yii configuration file and assigned to "\kartik\dynagrid\Module" class.');

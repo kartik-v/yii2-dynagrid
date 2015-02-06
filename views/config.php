@@ -31,7 +31,7 @@ $options2 = ArrayHelper::merge($model->widgetOptions, [
     'connected' => true,
     'options' => ['class' => 'sortable-hidden']
 ]);
-$module = Yii::$app->getModule('dynagrid');
+$module = (Yii::$app->controller->module && Yii::$app->controller->module->getModule('dynagrid')) ? Yii::$app->controller->module->getModule('dynagrid') : Yii::$app->getModule('dynagrid');
 $flag = $allowFilterSetting && $allowSortSetting;
 if (!$flag) {
     $col = ($allowFilterSetting || $allowSortSetting) ? 4 : 6;

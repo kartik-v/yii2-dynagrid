@@ -13,7 +13,7 @@ use yii\bootstrap\Modal;
 use kartik\sortable\Sortable;
 use kartik\select2\Select2;
 
-$module = Yii::$app->getModule('dynagrid');
+$module = (Yii::$app->controller->module && Yii::$app->controller->module->getModule('dynagrid')) ? Yii::$app->controller->module->getModule('dynagrid') : Yii::$app->getModule('dynagrid');
 $listOptions = ['class' => 'form-control dynagrid-detail-list'];
 $data = $model->getDtlList();
 if (count($data) == 0) {
