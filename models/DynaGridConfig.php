@@ -11,8 +11,8 @@ namespace kartik\dynagrid\models;
 
 use Yii;
 use yii\base\Model;
+use kartik\base\Config;
 use kartik\dynagrid\Module;
-use kartik\dynagrid\ModuleTrait;
 use kartik\dynagrid\DynaGridStore;
 
 /**
@@ -23,8 +23,6 @@ use kartik\dynagrid\DynaGridStore;
  */
 class DynaGridConfig extends Model
 {
-    use ModuleTrait;
-
     public $id;
     public $hiddenColumns = [];
     public $visibleColumns = [];
@@ -46,7 +44,7 @@ class DynaGridConfig extends Model
      */
     public function rules()
     {
-        $this->initModule();
+        $this->_module = Config::initModule(Module::classname());
         return [
             [
                 [

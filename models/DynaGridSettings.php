@@ -12,8 +12,8 @@ namespace kartik\dynagrid\models;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Inflector;
+use kartik\base\Config;
 use kartik\dynagrid\Module;
-use kartik\dynagrid\ModuleTrait;
 use kartik\dynagrid\DynaGrid;
 use kartik\dynagrid\DynaGridStore;
 
@@ -25,8 +25,6 @@ use kartik\dynagrid\DynaGridStore;
  */
 class DynaGridSettings extends Model
 {
-    use ModuleTrait;
-    
     public $id;
     public $category;
     public $storage;
@@ -44,7 +42,7 @@ class DynaGridSettings extends Model
     public function init()
     {
         parent::init();
-        $this->initModule();
+        $this->_module = Config::initModule(Module::classname());
     }
 
     /**

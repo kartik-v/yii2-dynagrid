@@ -15,6 +15,7 @@ use yii\helpers\Json;
 use yii\helpers\Inflector;
 use yii\helpers\ArrayHelper;
 use yii\base\InvalidConfigException;
+use kartik\base\Config;
 
 /**
  * Dynagrid storage configuration helper
@@ -24,8 +25,6 @@ use yii\base\InvalidConfigException;
  */
 class DynaGridStore extends \yii\base\Object
 {
-    use ModuleTrait;
-
     const STORE_GRID = 'grid';
     const STORE_FILTER = 'filter';
     const STORE_SORT = 'sort';
@@ -94,7 +93,7 @@ class DynaGridStore extends \yii\base\Object
      */
     public function init()
     {
-        $this->initModule();
+        $this->_module = Config::initModule(Module::classname());
         $this->_isMaster = ($this->category == self::STORE_GRID) ? true : false;
         if ($this->_module == null || !$this->_module instanceof Module) {
             throw new InvalidConfigException('The "dynagrid" module MUST be setup in your Yii configuration file and assigned to "\kartik\dynagrid\Module" class.');

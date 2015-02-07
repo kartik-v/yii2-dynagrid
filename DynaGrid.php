@@ -10,6 +10,7 @@
 namespace kartik\dynagrid;
 
 use Yii;
+use kartik\base\Config;
 use kartik\dynagrid\models\DynaGridConfig;
 use kartik\dynagrid\models\DynaGridSettings;
 use kartik\grid\CheckboxColumn;
@@ -37,8 +38,6 @@ use yii\web\Cookie;
  */
 class DynaGrid extends \yii\base\Widget
 {
-    use ModuleTrait;
-
     const TYPE_SESSION = 'session';
     const TYPE_COOKIE = 'cookie';
     const TYPE_DB = 'db';
@@ -308,7 +307,7 @@ class DynaGrid extends \yii\base\Widget
         if (empty($this->options['id'])) {
             throw new InvalidConfigException("You must setup a unique identifier for DynaGrid within \"options['id']\".");
         }
-        $this->initModule();
+        $this->_module = Config::initModule(Module::classname());
         $this->_gridModalId = $this->options['id'] . '-grid-modal';
         $this->_filterModalId = $this->options['id'] . '-filter-modal';
         $this->_sortModalId = $this->options['id'] . '-sort-modal';

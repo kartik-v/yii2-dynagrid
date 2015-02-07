@@ -17,6 +17,7 @@ use yii\helpers\Url;
 use yii\base\Model;
 use yii\base\InvalidConfigException;
 use yii\bootstrap\Modal;
+use kartik\base\Config;
 
 /**
  * DynaGrid detail widget to save/store grid sort OR
@@ -27,8 +28,6 @@ use yii\bootstrap\Modal;
  */
 class DynaGridDetail extends \kartik\base\Widget
 {
-    use ModuleTrait;
-
     /**
      * @var string the modal container identifier
      */
@@ -107,7 +106,7 @@ class DynaGridDetail extends \kartik\base\Widget
             throw new InvalidConfigException("You must enter a valid 'model' for DynaGridDetail.");
         }
         parent::init();
-        $this->initModule();
+        $this->_module = Config::initModule(Module::classname());
         $this->_requestSubmit = $this->options['id'] . '-dynagrid-detail';
         $this->_isSubmit = !empty($_POST[$this->_requestSubmit]) && $this->model->load(Yii::$app->request->post()) && $this->model->validate();
         $this->registerAssets();

@@ -162,7 +162,7 @@ class Module extends \kartik\base\Module
      * @return Module
      */
     public static function fetchModule($module = self::MODULE) {
-        return Config::fetchModule($module);
+        return Config::getModule($module);
     }
     
     /**
