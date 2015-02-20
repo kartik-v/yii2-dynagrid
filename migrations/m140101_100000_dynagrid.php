@@ -34,8 +34,8 @@ class m140101_100000_dynagrid extends Migration
 
         $this->createTable('{{%dynagrid}}', [
             'id' => Schema::TYPE_STRING . '(100)' . self::NN,
-            'filter_id' => Schema::TYPE_STRING . '(100)' . self::NN,
-            'sort_id' => Schema::TYPE_STRING . '(100)' . self::NN,
+            'filter_id' => Schema::TYPE_STRING . '(100)',
+            'sort_id' => Schema::TYPE_STRING . '(100)',
             'data' => Schema::TYPE_TEXT . '(5000) DEFAULT NULL'
         ], $tableOptions);
 
