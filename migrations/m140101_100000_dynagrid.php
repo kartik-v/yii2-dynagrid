@@ -1,58 +1,70 @@
 <?php
-
 /**
- * @author Philipp Frenzel <philipp@frenzel.net>
- * @version 1.0
- * Migrate script to allow automatic installation on module usage
+ * @package   yii2-dynagrid
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
+ * @version   1.4.2
  */
 
-namespace kartik\dynagrid\migrations; 
+namespace kartik\dynagrid\migrations;
 
+use Yii;
 use yii\db\Schema;
 use yii\db\Migration;
 
+/**
+ * @author Philipp Frenzel <philipp@frenzel.net>
+ * @author Kartik Visweswaran <kartikv2@gmail.com>
+ * @version 1.0
+ * Migrate script to allow automatic installation on module usage
+ */
 class m140101_100000_dynagrid extends Migration
 {
+    // not null specification
+    const NN = ' NOT NULL';
+
+    /**
+     * @inheritdoc
+     * @return bool|void
+     */
     public function up()
     {
+        $tableOptions = '';
 
-      switch (Yii::$app->db->driverName) {
-        case 'mysql':
-          $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB';
-          break;
-        case 'pgsql':
-          $tableOptions = null;
-          break;
-        default:
-          throw new RuntimeException('Your database is not supported!');
-      }
+        if (Yii::$app->db->driverName === 'mysql') {
+            $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB';
+        }
 
-      $this->createTable('{{%dynagrid}}',array(
-          'id'                => Schema::TYPE_TEXT. '(100) NOT NULL',
-          'filter_id'         => Schema::TYPE_TEXT. '(100) NOT NULL',
-          'sort_id'           => Schema::TYPE_TEXT. '(100) NOT NULL',
-          'data'              => Schema::TYPE_TEXT. '(5000) DEFAULT NULL'
-      ),$tableOptions);
+        $this->createTable('{{%dynagrid}}', [
+            'id' => Schema::TYPE_STRING . '(100)' . self::NN,
+            'filter_id' => Schema::TYPE_STRING . '(100)' . self::NN,
+            'sort_id' => Schema::TYPE_STRING . '(100)' . self::NN,
+            'data' => Schema::TYPE_TEXT . '(5000) DEFAULT NULL'
+        ], $tableOptions);
 
-      $this->addPrimaryKey('PK_dynagrid','{{%dynagrid}}','id');
+        $this->addPrimaryKey('{{%dynagrid}}_PK', '{{%dynagrid}}', 'id');
 
-      $this->createTable('{{%dynagrid_dtl}}',array(
-          'id'                => Schema::TYPE_TEXT. '(100) NOT NULL',
-          'category'          => Schema::TYPE_TEXT. '(10) NOT NULL',
-          'name'              => Schema::TYPE_TEXT. '(150) NOT NULL',
-          'data'              => Schema::TYPE_TEXT. '(5000) DEFAULT NULL'
-          'dynagrid_id'       => Schema::TYPE_TEXT. '(100) NOT NULL',
-      ),$tableOptions);
+        $this->createTable('{{%dynagrid_dtl}}', [
+            'id' => Schema::TYPE_STRING . '(100)' . self::NN,
+            'category' => Schema::TYPE_STRING . '(10)' . self::NN,
+            'name' => Schema::TYPE_STRING . '(150)' . self::NN,
+            'data' => Schema::TYPE_STRING . '(5000) DEFAULT NULL',
+            'dynagrid_id' => Schema::TYPE_STRING . '(100)' . self::NN
+        ], $tableOptions);
 
-      $this->addPrimaryKey('PK_dynagrid_dtl','{{%dynagrid_dtl}}','id');
-      $this->addForeignKey('tbl_dynagrid_FK1','{{%dynagrid}}','filter_id','{{%dynagrid_dtl}}','id');
-      $this->addForeignKey('tbl_dynagrid_FK2','{{%dynagrid}}','sort_id','{{%dynagrid_dtl}}','id');
+        $this->addPrimaryKey('{{%dynagrid_dtl}}_PK', '{{%dynagrid_dtl}}', 'id');
+        $this->addForeignKey('{{%dynagrid}}_FK1', '{{%dynagrid}}', 'filter_id', '{{%dynagrid_dtl}}', 'id');
+        $this->addForeignKey('{{%dynagrid}}_FK2', '{{%dynagrid}}', 'sort_id', '{{%dynagrid_dtl}}', 'id');
     }
 
+    /**
+     * @inheritdoc
+     * @return bool|void
+     */
     public function down()
     {
-        $this->dropForeignKey('tbl_dynagrid_FK1','{{%dynagrid}}');
-        $this->dropForeignKey('tbl_dynagrid_FK2','{{%dynagrid}}');
+        $this->dropForeignKey('{{%dynagrid}}_FK1', '{{%dynagrid}}');
+        $this->dropForeignKey('{{%dynagrid}}_FK2', '{{%dynagrid}}');
         $this->dropTable('{{%dynagrid}}');
         $this->dropTable('{{%dynagrid_dtl}}');
     }

@@ -2,7 +2,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
  * @package yii2-dynagrid
- * @version 1.4.1
+ * @version 1.4.2
  */
 
 use yii\helpers\Html;

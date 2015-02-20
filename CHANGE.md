@@ -1,3 +1,9 @@
+version 1.4.2
+=============
+**Date:** 20-Feb-2015
+
+- (enh #49): Add migrations to allow module based "auto install".
+
 version 1.4.1
 =============
 **Date:** 13-Feb-2015
