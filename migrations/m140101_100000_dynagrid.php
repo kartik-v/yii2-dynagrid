@@ -6,9 +6,6 @@
  * @version   1.4.2
  */
 
-namespace kartik\dynagrid\migrations;
-
-use Yii;
 use yii\db\Schema;
 use yii\db\Migration;
 
@@ -42,7 +39,7 @@ class m140101_100000_dynagrid extends Migration
             'data' => Schema::TYPE_TEXT . '(5000) DEFAULT NULL'
         ], $tableOptions);
 
-        $this->addPrimaryKey('{{%dynagrid}}_PK', '{{%dynagrid}}', 'id');
+        $this->addPrimaryKey('dynagrid_PK', '{{%dynagrid}}', 'id');
 
         $this->createTable('{{%dynagrid_dtl}}', [
             'id' => Schema::TYPE_STRING . '(100)' . self::NN,
@@ -52,9 +49,9 @@ class m140101_100000_dynagrid extends Migration
             'dynagrid_id' => Schema::TYPE_STRING . '(100)' . self::NN
         ], $tableOptions);
 
-        $this->addPrimaryKey('{{%dynagrid_dtl}}_PK', '{{%dynagrid_dtl}}', 'id');
-        $this->addForeignKey('{{%dynagrid}}_FK1', '{{%dynagrid}}', 'filter_id', '{{%dynagrid_dtl}}', 'id');
-        $this->addForeignKey('{{%dynagrid}}_FK2', '{{%dynagrid}}', 'sort_id', '{{%dynagrid_dtl}}', 'id');
+        $this->addPrimaryKey('dynagrid_dtl_PK', '{{%dynagrid_dtl}}', 'id');
+        $this->addForeignKey('dynagrid_FK1', '{{%dynagrid}}', 'filter_id', '{{%dynagrid_dtl}}', 'id');
+        $this->addForeignKey('dynagrid_FK2', '{{%dynagrid}}', 'sort_id', '{{%dynagrid_dtl}}', 'id');
     }
 
     /**
@@ -63,8 +60,8 @@ class m140101_100000_dynagrid extends Migration
      */
     public function down()
     {
-        $this->dropForeignKey('{{%dynagrid}}_FK1', '{{%dynagrid}}');
-        $this->dropForeignKey('{{%dynagrid}}_FK2', '{{%dynagrid}}');
+        $this->dropForeignKey('dynagrid_FK1', '{{%dynagrid}}');
+        $this->dropForeignKey('dynagrid_FK2', '{{%dynagrid}}');
         $this->dropTable('{{%dynagrid}}');
         $this->dropTable('{{%dynagrid_dtl}}');
     }
