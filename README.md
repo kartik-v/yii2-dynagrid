@@ -1,6 +1,12 @@
 yii2-dynagrid
 =============
 
+[![Latest Stable Version](https://poser.pugx.org/kartik-v/yii2-dynagrid/v/stable.svg)](https://packagist.org/packages/kartik-v/yii2-dynagrid)
+[![License](https://poser.pugx.org/kartik-v/yii2-dynagrid/license.svg)](https://packagist.org/packages/kartik-v/yii2-dynagrid)
+[![Total Downloads](https://poser.pugx.org/kartik-v/yii2-dynagrid/downloads.svg)](https://packagist.org/packages/kartik-v/yii2-dynagrid)
+[![Monthly Downloads](https://poser.pugx.org/kartik-v/yii2-dynagrid/d/monthly.png)](https://packagist.org/packages/kartik-v/yii2-dynagrid)
+[![Daily Downloads](https://poser.pugx.org/kartik-v/yii2-dynagrid/d/daily.png)](https://packagist.org/packages/kartik-v/yii2-dynagrid)
+
 The **yii2-dynagrid**  module is a great complementary addition to the [kartik-v/yii2-grid](https://github.com/kartik-v/yii2-grid) module, enhancing
 it with personalization features. It turbo charges your grid view by making it dynamic and personalized for each user. It allows users the ability to 
 set and save their own grid configuration. The major features provided by this module are:
