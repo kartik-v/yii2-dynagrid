@@ -1,8 +1,9 @@
 version 1.4.2
 =============
-**Date:** 20-Feb-2015
+**Date:** 25-Mar-2015
 
 - (enh #49): Add migrations to allow module based "auto install".
+- (enh #52): Add Dutch translations.
 
 version 1.4.1
 =============
