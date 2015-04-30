@@ -70,7 +70,7 @@ class DynaGrid extends \yii\base\Widget
      * @var boolean whether to show the personalize button group. Defaults to `true`.
      */
     public $showPersonalize = true;
-
+    
     /**
      * @var boolean whether to show the filter save widget button. Defaults to `true`.
      */
@@ -85,6 +85,11 @@ class DynaGrid extends \yii\base\Widget
      * @var boolean whether to enable multiple sort. Defaults to `true`.
      */
     public $enableMultiSort = true;
+
+    /**
+     * @var boolean whether to allow display/setup of the theme. Defaults to `true`.
+     */
+    public $allowThemeSetting = true;
 
     /**
      * @var boolean whether to allow display/setup of the filter in the personalize grid form
@@ -966,6 +971,7 @@ class DynaGrid extends \yii\base\Widget
                 'model' => $this->_model,
                 'toggleButtonGrid' => $this->toggleButtonGrid,
                 'id' => $this->_gridModalId,
+                'allowThemeSetting' => $this->allowThemeSetting,
                 'allowFilterSetting' => $this->allowFilterSetting,
                 'allowSortSetting' => $this->allowSortSetting
             ]);
