@@ -74,6 +74,8 @@ Modal::begin([
                     'pluginOptions' => ['allowClear' => true]
                 ])->hint(Yii::t('kvdynagrid', 'Select theme to style grid')); ?>
             </div>
+            <?php else:?>
+                <?= Html::activeHiddenInput($model, 'theme') ?>
             <?php endif; ?>
             <?php if ($allowFilterSetting): ?>
                 <div class="col-sm-<?= $col ?>">

@@ -70,7 +70,7 @@ class DynaGrid extends \yii\base\Widget
      * @var boolean whether to show the personalize button group. Defaults to `true`.
      */
     public $showPersonalize = true;
-    
+
     /**
      * @var boolean whether to show the filter save widget button. Defaults to `true`.
      */
@@ -1073,13 +1073,13 @@ class DynaGrid extends \yii\base\Widget
         $js = "jQuery('#{$dynagrid}').after(jQuery('#{$this->_gridModalId}'));\n";
 
         // the core dynagrid form validation
-        $js .= "{$id}.dynagrid({$options});\n";
+        $js = "{$id}.dynagrid({$options});\n";
 
         // pjax related reset
         if ($this->_isPjax) {
-            $js .= "jQuery('#{$this->_pjaxId}').on('pjax:complete', function() {\n
-                {$id}.dynagrid({$options});\n
-                {$id}.dynagrid('reset', [true]);\n
+            $js .= " $('#{$this->_pjaxId}').on('pjax:complete', function () {
+                {$id}.dynagrid({$options});
+                {$id}.dynagrid('reset');
             });";
         }
         $view->registerJs($js);

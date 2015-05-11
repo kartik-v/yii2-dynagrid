@@ -63,13 +63,13 @@
             self.setColumnKeys();
             self.visibleContent = self.$visibleEl.html();
             self.hiddenContent = self.$hiddenEl.html();
-            self.visibleSortableOptions = window[self.$visibleEl.data('pluginOptions')];
-            self.hiddenSortableOptions = window[self.$hiddenEl.data('pluginOptions')];
+            self.visibleSortableOptions = window[self.$visibleEl.attr('data-krajee-sortable')];
+            self.hiddenSortableOptions = window[self.$hiddenEl.attr('data-krajee-sortable')];
         },
         listen: function () {
             var self = this, $form = self.$form, $formContainer = self.$formContainer,
                 objActiveForm = self.$form.data('yiiActiveForm');
-            self.$btnSubmit.on('click', function () {
+            self.$btnSubmit.off('click').on('click', function () {
                 self.setColumnKeys();
                 self.$visibleKeys.val(self.visibleKeys);
                 $form.hide();
@@ -78,7 +78,7 @@
                     $form.submit();
                 }, 1000);
             });
-            self.$btnDelete.on('click', function () {
+            self.$btnDelete.off('click').on('click', function () {
                 if (!confirm(self.deleteConfirmation)) {
                     return;
                 }
@@ -90,16 +90,19 @@
                     $form.submit();
                 }, 1000);
             });
-            self.$btnReset.on('click', function () {
-                self.$visibleEl.html(self.visibleContent);
-                self.$hiddenEl.html(self.hiddenContent);
+            self.$btnReset.off('click').on('click', function () {
+                self.$visibleEl.sortable('destroy').html(self.visibleContent);
+                self.$hiddenEl.sortable('destroy').html(self.hiddenContent);
                 self.setColumnKeys();
                 $formContainer.find('.dynagrid-submit-message').remove();
                 self.$visibleEl.sortable(self.visibleSortableOptions);
                 self.$hiddenEl.sortable(self.hiddenSortableOptions);
                 $form.trigger('reset.yiiActiveForm');
+                setTimeout(function () {
+                    $form.find("select").trigger("change");
+                }, 100);
             });
-            $form.on('afterValidate', function (e, msg) {
+            $form.off('afterValidate').on('afterValidate', function (e, msg) {
                 for (var key in msg) {
                     if (msg[key].length > 0) {
                         $form.show();
@@ -111,26 +114,27 @@
 
         },
         reset: function () {
-            var self = this, $form = self.$element.closest('form'), id, objActiveForm;
-            self.$visibleEl.html(self.visibleContent);
-            self.$hiddenEl.html(self.hiddenContent);
-            self.setColumnKeys();
-            self.$formContainer.find('.dynagrid-submit-message').remove();
-            self.$visibleEl.sortable(self.visibleSortableOptions);
-            self.$hiddenEl.sortable(self.hiddenSortableOptions);
-            if (arguments.length && arguments[0]) { // reset active form and select2
+            var self = this, $form = self.$element.closest('form'),
                 id = getFormObjectId(self.$element), objActiveForm = window[id];
-                if (!isEmpty(objActiveForm)) {
-                    $form.yiiActiveForm('destroy');
-                    $form.yiiActiveForm(objActiveForm.attributes, objActiveForm.settings);
-                }
-                $form.find("select").each(function () {
-                    var $el = $(this), idSel = $el.attr('id'), $options = $el.data('pluginOptions');
-                    if (!isEmpty($options)) {
-                        jQuery.when($el.select2(window[$options])).done(initSelect2Loading(idSel));
+            if (!isEmpty(objActiveForm)) {
+                $form.yiiActiveForm('destroy');
+                $form.yiiActiveForm(objActiveForm.attributes, objActiveForm.settings);
+            }
+            $form.find('select[data-krajee-select2]').each(function () {
+                var $el = $(this);
+                $.when($el.select2(window[$el.attr('data-krajee-select2')])).done(function () {
+                    if ($el.select2 !== undefined) {
+                        initSelect2Loading($el.attr('id'), '.select2-container--krajee');
                     }
                 });
-            }
+            });
+            $form.find('[data-krajee-sortable]').each(function () {
+                var $el = $(this);
+                if ($el.sortable !== undefined) {
+                    $el.sortable('destroy');
+                }
+                $el.sortable(window[$el.attr('data-krajee-sortable')]);
+            });
         },
         setColumnKeys: function () {
             var self = this;
