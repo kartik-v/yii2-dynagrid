@@ -1,12 +1,13 @@
 version 1.4.2
 =============
-**Date:** 12-May-2015
+**Date:** 22-May-2015
 
 - (enh #40): Add `allowThemeSetting` to allow display/setup of theme.
 - (enh #49): Add migrations to allow module based "auto install".
 - (enh #52): Add Dutch translations.
 - (bug #54): Fix dynagrid config save when `allowThemeSetting` is `false`.
 - (enh #56): Reload Dynagrid jquery plugins after pjax grid refresh.
+- (enh #57): Add Russian translations.
 
 version 1.4.1
 =============
