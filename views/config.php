@@ -61,7 +61,7 @@ Modal::begin([
                 <?= $form->field($model, 'pageSize',
                     ['addon' => ['append' => ['content' => Yii::t('kvdynagrid', 'rows per page')]]])
                     ->textInput(['class' => 'form-control'])
-                    ->hint(Yii::t('kvdynagrid', 'Integer between {min} to {max}', [
+                    ->hint(Yii::t('kvdynagrid', "Integer between {min} to {max}", [
                         'min' => $module->minPageSize,
                         'max' => $module->maxPageSize
                     ])) ?>

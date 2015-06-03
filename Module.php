@@ -120,14 +120,15 @@ class Module extends \kartik\base\Module
     public $defaultPageSize = 10;
 
     /**
-     * @var int the minimum pagesize for the gridview. Defaults to 5.
+     * @var int the minimum pagesize for the gridview. Defaults to 0.
+     * Setting pagesize to 0 will display all rows.
      */
-    public $minPageSize = 5;
+    public $minPageSize = 0;
 
     /**
-     * @var int the maximum pagesize for the gridview. Defaults to 100.
+     * @var int the maximum pagesize for the gridview. Defaults to 50.
      */
-    public $maxPageSize = 100;
+    public $maxPageSize = 50;
 
     /**
      * @var mixed the action (url) used for creating a filter or sort setting

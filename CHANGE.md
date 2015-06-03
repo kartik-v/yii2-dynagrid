@@ -1,3 +1,9 @@
+version 1.4.3
+=============
+**Date:** 03-Jun-2015
+
+- (enh #59): Allow setting unlimited page size.
+
 version 1.4.2
 =============
 **Date:** 22-May-2015

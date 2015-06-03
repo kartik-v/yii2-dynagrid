@@ -345,7 +345,7 @@ class DynaGrid extends \yii\base\Widget
         if (empty($this->theme)) {
             $this->theme = $this->_module->defaultTheme;
         }
-        if (empty($this->_pageSize)) {
+        if (!isset($this->_pageSize)) {
             $this->_pageSize = $this->_module->defaultPageSize;
         }
         $this->_requestSubmit = $this->options['id'] . '-dynagrid';
@@ -874,11 +874,15 @@ class DynaGrid extends \yii\base\Widget
      */
     protected function applyPageSize()
     {
-        if (!empty($this->_pageSize)) {
+        if (isset($this->_pageSize)) {
             $dataProvider = $this->gridOptions['dataProvider'];
             $pagination = $dataProvider->getPagination();
-            $pagination->pageSize = $this->_pageSize;
-            $dataProvider->setPagination($pagination);
+            if ($this->_pageSize > 0) {
+                $pagination->pageSize = $this->_pageSize;
+                $dataProvider->setPagination($pagination);
+            } else {
+                $dataProvider->pagination = false;
+            }
             $this->gridOptions['dataProvider'] = $dataProvider;
         }
     }
