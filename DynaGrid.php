@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @version   1.4.3
+ * @version   1.4.2
  */
 
 namespace kartik\dynagrid;
@@ -85,6 +85,11 @@ class DynaGrid extends \yii\base\Widget
      * @var boolean whether to enable multiple sort. Defaults to `true`.
      */
     public $enableMultiSort = true;
+
+    /**
+     * @var boolean whether to allow setup of the pagination. Defaults to `true`.
+     */
+    public $allowPageSetting = true;
 
     /**
      * @var boolean whether to allow display/setup of the theme. Defaults to `true`.
@@ -338,6 +343,14 @@ class DynaGrid extends \yii\base\Widget
         if (empty($this->gridOptions['dataProvider'])) {
             $this->initDataProvider($this->gridOptions['filterModel']);
         }
+        $dataProvider = $this->gridOptions['dataProvider'];
+        if ($dataProvider->getSort() === false) {
+            $this->showSort = false;
+            $this->allowSortSetting = false;
+        }
+        if ($dataProvider->getPagination() === false) {
+            $this->allowPageSetting = false;
+        }
         if (empty($this->gridOptions['filterModel'])) {
             $this->showFilter = false;
             $this->allowFilterSetting = false;
@@ -345,7 +358,7 @@ class DynaGrid extends \yii\base\Widget
         if (empty($this->theme)) {
             $this->theme = $this->_module->defaultTheme;
         }
-        if (!isset($this->_pageSize)) {
+        if (!isset($this->_pageSize) && $this->allowPageSetting) {
             $this->_pageSize = $this->_module->defaultPageSize;
         }
         $this->_requestSubmit = $this->options['id'] . '-dynagrid';
@@ -860,7 +873,6 @@ class DynaGrid extends \yii\base\Widget
         if (!empty($this->_detailConfig[DynaGridStore::STORE_SORT])) {
             $order = $this->_detailConfig[DynaGridStore::STORE_SORT];
             $dataProvider = $this->gridOptions['dataProvider'];
-            $sort = $dataProvider->getSort();
             $sort->defaultOrder = $order;
             $dataProvider->setSort($sort);
             $this->gridOptions['dataProvider'] = $dataProvider;
@@ -874,7 +886,7 @@ class DynaGrid extends \yii\base\Widget
      */
     protected function applyPageSize()
     {
-        if (isset($this->_pageSize)) {
+        if (isset($this->_pageSize) && $this->allowPageSetting) {
             $dataProvider = $this->gridOptions['dataProvider'];
             $pagination = $dataProvider->getPagination();
             if ($this->_pageSize > 0) {
@@ -975,6 +987,7 @@ class DynaGrid extends \yii\base\Widget
                 'model' => $this->_model,
                 'toggleButtonGrid' => $this->toggleButtonGrid,
                 'id' => $this->_gridModalId,
+                'allowPageSetting' => $this->allowPageSetting,
                 'allowThemeSetting' => $this->allowThemeSetting,
                 'allowFilterSetting' => $this->allowFilterSetting,
                 'allowSortSetting' => $this->allowSortSetting
@@ -1004,7 +1017,7 @@ class DynaGrid extends \yii\base\Widget
             $this->setToggleButton('sort');
             $model->category = DynaGridStore::STORE_SORT;
             $model->key = $this->_sortKey;
-            $model->data = $this->gridOptions['dataProvider']->getSort()->getOrders();
+            $model->data = $sort->getOrders();
             $dynagridSort = DynaGridDetail::widget([
                 'id' => $this->_sortModalId,
                 'model' => $model,

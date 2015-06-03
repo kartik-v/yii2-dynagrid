@@ -31,18 +31,8 @@ $options2 = ArrayHelper::merge($model->widgetOptions, [
     'options' => ['class' => 'sortable-hidden']
 ]);
 $module = Module::fetchModule();
-$flag = $allowFilterSetting && $allowSortSetting;
-if (!$flag) {
-    $col = ($allowFilterSetting || $allowSortSetting) ? 4 : 6;
-    if (!$allowThemeSetting) {
-        $col = ($allowFilterSetting || $allowSortSetting) ? 6 : 12;
-    }
-} else {
-    $col = 3;
-    if (!$allowThemeSetting) {
-        $col = 4;
-    }
-}
+$cols = (int) $allowPageSetting + (int) $allowThemeSetting + (int) $allowFilterSetting + (int) $allowSortSetting;
+$col = $cols == 0 ? 0 : 12 / $cols;
 ?>
 <?php
 Modal::begin([
@@ -56,7 +46,9 @@ Modal::begin([
 ?>
 <?php $form = ActiveForm::begin(['options' => ['data-pjax' => false]]); ?>
     <div class="dynagrid-config-form">
+        <?php if ($col != 0):?>
         <div class="row">
+            <?php if ($allowPageSetting): ?>
             <div class="col-sm-<?= $col ?>">
                 <?= $form->field($model, 'pageSize',
                     ['addon' => ['append' => ['content' => Yii::t('kvdynagrid', 'rows per page')]]])
@@ -66,6 +58,7 @@ Modal::begin([
                         'max' => $module->maxPageSize
                     ])) ?>
             </div>
+            <?php endif; ?>
             <?php if ($allowThemeSetting): ?>
             <div class="col-sm-<?= $col ?>">
                 <?= $form->field($model, 'theme')->widget(Select2::classname(), [
@@ -97,6 +90,7 @@ Modal::begin([
             <?php endif; ?>
             <?= Html::hiddenInput('deleteFlag', 0) ?>
         </div>
+        <?php endif;?>
         <div class="dynagrid-column-label"><?= Yii::t('kvdynagrid',
                 'Configure Order and Display of Grid Columns') ?></div>
         <div class="row">
