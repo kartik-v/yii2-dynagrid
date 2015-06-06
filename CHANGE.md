@@ -1,10 +1,11 @@
 version 1.4.3
 =============
-**Date:** 03-Jun-2015
+**Date:** 06-Jun-2015
 
 - (enh #59): Allow setting unlimited page size.
 - (enh #60): New property `allowPageSetting`.
 - (enh #61): Ability to disable pagination` and `sort` for the grid.
+- (enh #63): Add Czech translations.
 
 version 1.4.2
 =============
