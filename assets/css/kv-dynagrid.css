@@ -50,3 +50,13 @@
 .dynagrid-settings-text li {
     line-height: 2em;
 }
+
+.sortable-hidden .icon-visible-column,
+.sortable-visible .icon-hidden-column {
+    display: none;
+}
+
+.sortable-hidden .icon-hidden-column,
+.sortable-visible .icon-visible-column {
+    display: inline-block;
+}

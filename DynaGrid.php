@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @version   1.4.2
+ * @version   1.4.3
  */
 
 namespace kartik\dynagrid;
@@ -204,6 +204,18 @@ class DynaGrid extends \yii\base\Widget
      * - `title`: string the title for the action button. Defaults to `Remove saved grid settings`.
      */
     public $deleteButtonOptions = [];
+
+    /**
+     * @var string the icon that will be displayed for each VISIBLE column heading in the column reordering pane.
+     * This is not HTML encoded.
+     */
+    public $iconVisibleColumn = '<i class="glyphicon glyphicon-eye-open"></i>';
+
+    /**
+     * @var string the icon that will be displayed for each HIDDEN column heading in the column reordering pane.
+     * This is not HTML encoded.
+     */
+    public $iconHiddenColumn = '<i class="glyphicon glyphicon-eye-close"></i>';
 
     /**
      * @var array the cached columns configuration
@@ -646,12 +658,13 @@ class DynaGrid extends \yii\base\Widget
         // Ensure visible keys is not empty. If it is so, then grid will display all columns.
         $this->_visibleKeys = array_filter($this->_visibleKeys);
         $showAll = !is_array($this->_visibleKeys) || empty($this->_visibleKeys);
-
+        $indicator = Html::tag('span', $this->iconVisibleColumn, ['class'=>'icon-visible-column']) .
+            Html::tag('span', $this->iconHiddenColumn, ['class'=>'icon-hidden-column']);
         foreach ($this->_columns as $key => $column) {
             $order = ArrayHelper::getValue($column, 'order', self::ORDER_MIDDLE);
             $disabled = ($order == self::ORDER_MIDDLE) ? false : true;
             $widgetColumns = [
-                'content' => $this->getColumnLabel($key, $column),
+                'content' => (empty($indicator) ? '' : $indicator . ' ') . $this->getColumnLabel($key, $column),
                 'options' => ['id' => $key]
             ];
 

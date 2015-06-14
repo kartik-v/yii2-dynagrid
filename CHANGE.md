@@ -6,6 +6,7 @@ version 1.4.3
 - (enh #60): New property `allowPageSetting`.
 - (enh #61): Ability to disable pagination` and `sort` for the grid.
 - (enh #63): Add Czech translations.
+- (enh #66): Add column icon indicators for visible and hidden columns.
 
 version 1.4.2
 =============
