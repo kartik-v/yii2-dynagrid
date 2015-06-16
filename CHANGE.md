@@ -1,12 +1,14 @@
 version 1.4.3
 =============
-**Date:** 06-Jun-2015
+**Date:** 16-Jun-2015
 
 - (enh #59): Allow setting unlimited page size.
 - (enh #60): New property `allowPageSetting`.
 - (enh #61): Ability to disable pagination` and `sort` for the grid.
+- (enh #62): Update German translations .
 - (enh #63): Add Czech translations.
 - (enh #66): Add column icon indicators for visible and hidden columns.
+- (enh #67): Set composer version dependencies.
 
 version 1.4.2
 =============

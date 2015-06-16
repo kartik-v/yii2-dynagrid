@@ -27,10 +27,10 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "kartik-v/yii2-grid": "*",
-        "kartik-v/yii2-widget-activeform": "*",
-        "kartik-v/yii2-widget-select2": "*",
-        "kartik-v/yii2-sortable": "*"
+        "kartik-v/yii2-grid": "~3.0",
+        "kartik-v/yii2-widget-activeform": "~1.4",
+        "kartik-v/yii2-widget-select2": "~2.0",
+        "kartik-v/yii2-sortable": "~1.2"
     },
     "autoload": {
         "psr-4": {
