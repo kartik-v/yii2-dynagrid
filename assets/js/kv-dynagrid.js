@@ -124,7 +124,7 @@
                 var $el = $(this);
                 $.when($el.select2(window[$el.attr('data-krajee-select2')])).done(function () {
                     if ($el.select2 !== undefined) {
-                        initSelect2Loading($el.attr('id'), '.select2-container--krajee');
+                        initS2Loading($el.attr('id'), '.select2-container--krajee');
                     }
                 });
             });
