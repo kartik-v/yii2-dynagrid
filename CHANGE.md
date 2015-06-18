@@ -4,6 +4,7 @@ version 1.4.4
 
 - (bug #64): Apply sort correctly on init.
 - (bug #69): Fix bug for `initS2Loading`.
+- (bug #73): Validate theme if it does not exist and set it to default module theme.
 
 version 1.4.3
 =============

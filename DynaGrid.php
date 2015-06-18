@@ -922,7 +922,7 @@ class DynaGrid extends \yii\base\Widget
      */
     protected function applyTheme()
     {
-        $theme = $this->_module->themeConfig[$this->theme];
+        $theme = ArrayHelper::getValue($this->_module->themeConfig, $this->theme, $this->_module->defaultTheme);
         if (!is_array($theme) || empty($theme)) {
             return;
         }
