@@ -889,8 +889,7 @@ class DynaGrid extends \yii\base\Widget
             if (!$sort) {
                 return;
             }
-            $order = $this->_detailConfig[DynaGridStore::STORE_SORT];
-            $sort->defaultOrder = $order;
+            $sort->defaultOrder = $this->_detailConfig[DynaGridStore::STORE_SORT];
             $dataProvider->setSort($sort);
             $this->gridOptions['dataProvider'] = $dataProvider;
 
