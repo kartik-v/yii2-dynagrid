@@ -3,7 +3,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @version   1.4.3
+ * @version   1.4.4
  */
 
 use yii\db\Schema;
