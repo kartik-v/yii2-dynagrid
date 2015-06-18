@@ -884,11 +884,16 @@ class DynaGrid extends \yii\base\Widget
     protected function applySort()
     {
         if (!empty($this->_detailConfig[DynaGridStore::STORE_SORT])) {
-            $order = $this->_detailConfig[DynaGridStore::STORE_SORT];
             $dataProvider = $this->gridOptions['dataProvider'];
+            $sort = $dataProvider->getSort();
+            if (!$sort) {
+                return;
+            }
+            $order = $this->_detailConfig[DynaGridStore::STORE_SORT];
             $sort->defaultOrder = $order;
             $dataProvider->setSort($sort);
             $this->gridOptions['dataProvider'] = $dataProvider;
+
         }
     }
 

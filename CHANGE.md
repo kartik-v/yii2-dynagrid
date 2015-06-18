@@ -2,7 +2,8 @@ version 1.4.4
 =============
 **Date:** 17-Jun-2015
 
-- (enh #69): Fix bug for `initS2Loading`.
+- (bug #64): Apply sort correctly on init.
+- (bug #69): Fix bug for `initS2Loading`.
 
 version 1.4.3
 =============
