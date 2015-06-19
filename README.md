@@ -45,18 +45,20 @@ You can see detailed [documentation](http://demos.krajee.com/dynagrid) or view a
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
-> Note: You must set the `minimum-stability` to `dev` in the **composer.json** file in your application root folder before installation of this extension.
+> Note: Check the [composer.json](https://github.com/kartik-v/yii2-dynagrid/blob/master/composer.json) for this extension's requirements and dependencies. 
+Read this [web tip /wiki](http://webtips.krajee.com/setting-composer-minimum-stability-application/) on setting the `minimum-stability` settings for your application's composer.json.
+
 
 Either run
 
 ```
-$ php composer.phar require kartik-v/yii2-dynagrid "dev-master"
+$ php composer.phar require kartik-v/yii2-dynagrid "@dev"
 ```
 
 or add
 
 ```
-"kartik-v/yii2-dynagrid": "dev-master"
+"kartik-v/yii2-dynagrid": "@dev"
 ```
 
 to the ```require``` section of your `composer.json` file.

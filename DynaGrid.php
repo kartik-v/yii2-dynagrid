@@ -25,6 +25,7 @@ use yii\helpers\Json;
 use yii\helpers\Html;
 use yii\base\InvalidConfigException;
 use yii\web\Cookie;
+use yii\data\Sort;
 
 /**
  * Enhance GridView by allowing you to dynamically edit grid configuration. The dynagrid
@@ -886,7 +887,7 @@ class DynaGrid extends \yii\base\Widget
         if (!empty($this->_detailConfig[DynaGridStore::STORE_SORT])) {
             $dataProvider = $this->gridOptions['dataProvider'];
             $sort = $dataProvider->getSort();
-            if (!$sort) {
+            if (!$sort instanceof Sort) {
                 return;
             }
             $sort->defaultOrder = $this->_detailConfig[DynaGridStore::STORE_SORT];
@@ -978,6 +979,9 @@ class DynaGrid extends \yii\base\Widget
         $dynagridFilter = '';
         $dynagridSort = '';
         $model = new DynaGridSettings;
+        $dataProvider = $this->gridOptions['dataProvider'];
+        $sort = $dataProvider->getSort();
+        $isValidSort = ($sort instanceof Sort);
         if ($this->showPersonalize) {
             $this->setToggleButton('grid');
             if ($this->allowFilterSetting || $this->allowSortSetting) {
@@ -991,9 +995,7 @@ class DynaGrid extends \yii\base\Widget
                     $this->_model->filterId = $this->_filterId;
                     $this->_model->filterList = $store->getDtlList(DynaGridStore::STORE_FILTER);
                 }
-                if ($this->allowSortSetting) {
-                    $dataProvider = $this->gridOptions['dataProvider'];
-                    $sort = $dataProvider->getSort();
+                if ($this->allowSortSetting && $isValidSort) {
                     $sort->enableMultiSort = $this->enableMultiSort;
                     $dataProvider->setSort($sort);
                     $this->_model->sortId = $this->_sortId;
@@ -1034,7 +1036,7 @@ class DynaGrid extends \yii\base\Widget
             $this->setToggleButton('sort');
             $model->category = DynaGridStore::STORE_SORT;
             $model->key = $this->_sortKey;
-            $model->data = $sort->getOrders();
+            $model->data = $isValidSort ? $sort->getOrders() : [];
             $dynagridSort = DynaGridDetail::widget([
                 'id' => $this->_sortModalId,
                 'model' => $model,
