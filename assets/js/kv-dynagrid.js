@@ -130,7 +130,7 @@
             });
             $form.find('[data-krajee-sortable]').each(function () {
                 var $el = $(this);
-                if ($el.sortable !== undefined) {
+                if ($el.sortable('instance') !== undefined) {
                     $el.sortable('destroy');
                 }
                 $el.sortable(window[$el.attr('data-krajee-sortable')]);
