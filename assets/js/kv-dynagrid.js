@@ -121,16 +121,17 @@
                 $form.yiiActiveForm(objActiveForm.attributes, objActiveForm.settings);
             }
             $form.find('select[data-krajee-select2]').each(function () {
-                var $el = $(this);
-                $.when($el.select2(window[$el.attr('data-krajee-select2')])).done(function () {
-                    if ($el.select2 !== undefined) {
-                        initS2Loading($el.attr('id'), '.select2-container--krajee');
-                    }
+                var $el = $(this), settings = window[$el.attr('data-krajee-select2')] || {};
+                if ($el.data('select2')) {
+                    $el.select2('destroy');
+                }
+                $.when($el.select2(settings)).done(function () {
+                    initS2Loading($el.attr('id'), '.select2-container--krajee');
                 });
             });
             $form.find('[data-krajee-sortable]').each(function () {
                 var $el = $(this);
-                if ($el.sortable !== undefined) {
+                if ($el.data('sortable')) {
                     $el.sortable('destroy');
                 }
                 $el.sortable(window[$el.attr('data-krajee-sortable')]);

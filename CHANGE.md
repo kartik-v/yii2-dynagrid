@@ -1,10 +1,11 @@
 version 1.4.4
 =============
-**Date:** 17-Jun-2015
+**Date:** 04-Aug-2015
 
 - (bug #64): Apply sort correctly on init.
 - (bug #69): Fix bug for `initS2Loading`.
 - (bug #73): Validate theme if it does not exist and set it to default module theme.
+- (enh #84): Better validation for checking jquery plugin existence before reinit.
 
 version 1.4.3
 =============
