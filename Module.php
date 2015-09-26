@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @version   1.4.4
+ * @version   1.4.5
  */
 
 namespace kartik\dynagrid;
@@ -162,10 +162,11 @@ class Module extends \kartik\base\Module
      *
      * @return Module
      */
-    public static function fetchModule($module = self::MODULE) {
+    public static function fetchModule($module = self::MODULE)
+    {
         return Config::getModule($module);
     }
-    
+
     /**
      * Initialize module level settings
      *

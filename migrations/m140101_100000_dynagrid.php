@@ -3,7 +3,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @version   1.4.4
+ * @version   1.4.5
  */
 
 use yii\db\Schema;
@@ -17,12 +17,8 @@ use yii\db\Migration;
  */
 class m140101_100000_dynagrid extends Migration
 {
-    // not null specification
-    const NN = ' NOT NULL';
-
     /**
      * @inheritdoc
-     * @return bool|void
      */
     public function up()
     {
@@ -33,20 +29,20 @@ class m140101_100000_dynagrid extends Migration
         }
 
         $this->createTable('{{%dynagrid}}', [
-            'id' => Schema::TYPE_STRING . '(100)' . self::NN,
-            'filter_id' => Schema::TYPE_STRING . '(100)',
-            'sort_id' => Schema::TYPE_STRING . '(100)',
-            'data' => Schema::TYPE_TEXT . '(5000) DEFAULT NULL'
+            'id' => $this->string(100)->notNull(),
+            'filter_id' => $this->string(100),
+            'sort_id' => $this->string(100),
+            'data' => $this->text()
         ], $tableOptions);
 
         $this->addPrimaryKey('dynagrid_PK', '{{%dynagrid}}', 'id');
 
         $this->createTable('{{%dynagrid_dtl}}', [
-            'id' => Schema::TYPE_STRING . '(100)' . self::NN,
-            'category' => Schema::TYPE_STRING . '(10)' . self::NN,
-            'name' => Schema::TYPE_STRING . '(150)' . self::NN,
-            'data' => Schema::TYPE_STRING . '(5000) DEFAULT NULL',
-            'dynagrid_id' => Schema::TYPE_STRING . '(100)' . self::NN
+            'id' => $this->string(100)->notNull(),
+            'category' => $this->string(10)->notNull(),
+            'name' => $this->string(150)->notNull(),
+            'data' => $this->text(),
+            'dynagrid_id' => $this->string(100)->notNull()
         ], $tableOptions);
 
         $this->addPrimaryKey('dynagrid_dtl_PK', '{{%dynagrid_dtl}}', 'id');
@@ -56,7 +52,6 @@ class m140101_100000_dynagrid extends Migration
 
     /**
      * @inheritdoc
-     * @return bool|void
      */
     public function down()
     {

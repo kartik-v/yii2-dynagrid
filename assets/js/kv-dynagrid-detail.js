@@ -2,7 +2,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @version   1.4.4
+ * @version   1.4.5
  *
  * JQuery Plugin for yii2-dynagridDetail. Allows saving/deleting the dynagridDetail 
  * filter or sort details.
@@ -13,30 +13,28 @@
  * For more Yii related demos visit http://demos.krajee.com
  */
 (function ($) {
+    "use strict";
     var isEmpty = function (value, trim) {
-        return value === null || value === undefined || value == []
-        || value === '' || trim && $.trim(value) === '';
-    };
-
-    var DynagridDetail = function (element, options) {
-        this.$element = $(element);
-        this.submitMessage = options.submitMessage;
-        this.deleteMessage = options.deleteMessage;
-        this.deleteConfirmation = options.deleteConfirmation;
-        this.configUrl = options.configUrl;
-        this.modalId = options.modalId;
-        this.init();
-        this.listen();
-    };
+            return value === null || value === undefined || value === [] || value === '' || trim && $.trim(value) === '';
+        },
+        DynagridDetail = function (element, options) {
+            var self = this;
+            self.$element = $(element);
+            $.each(options, function (key, value) {
+                self[key] = value;
+            });
+            self.init();
+            self.listen();
+        };
 
     DynagridDetail.prototype = {
         constructor: DynagridDetail,
         init: function () {
-            var self = this, $modal = $('#' + self.modalId);
-            //$modal.appendTo('body');
-            self.$form = self.$element.closest('form');
-            self.$formContainer = self.$form.parent();
-            var $form = self.$form;
+            var self = this, $modal = $('#' + self.modalId), $dynaGridId = $('#' + self.dynaGridId),
+                $form = self.$element.closest('form');
+            $modal.insertAfter($dynaGridId);
+            self.$form = $form;
+            self.$formContainer = $form.parent();
             self.$btnSave = $form.find('.dynagrid-detail-save');
             self.$btnDelete = $form.find('.dynagrid-detail-delete');
             self.$list = $form.find('.dynagrid-detail-list');
@@ -54,7 +52,7 @@
                     self.$formContainer.prepend(self.submitMessage);
                 },
                 success: function (data) {
-                    if (data.status == 'success') {
+                    if (data.status === 'success') {
                         self.$formContainer.html(data.content);
                     }
                 }
@@ -74,7 +72,7 @@
                     $form.trigger('reset.yiiActiveForm');
                     return;
                 }
-                if (!confirm(self.deleteConfirmation)) {
+                if (!window.confirm(self.deleteConfirmation)) {
                     return;
                 }
                 var $el = $form.find('input[name="deleteDetailFlag"]');
@@ -96,8 +94,7 @@
                         dataType: 'json',
                         data: self.$form.serialize(),
                         success: function (data) {
-                            var $out = $form.find('.dynagrid-settings-text');
-                            if (data.status == 'success') {
+                            if (data.status === 'success') {
                                 $form.find('.dynagrid-settings-text').html(data.content);
                             }
                         }
@@ -105,16 +102,16 @@
 
                 }
             });
-            $form.on('afterValidate', function (e, msg) {
-                for (var key in msg) {
-                    if (msg[key].length > 0) {
+            $form.off('afterValidate').on('afterValidate', function (e, msg) {
+                $.each(msg, function (key, value) {
+                    if (value.length > 0) {
                         $form.show();
                         $formContainer.find('.dynagrid-submit-message').remove();
-                        return;
+                        return true;
                     }
-                }
+                });
             });
-        },
+        }
     };
 
     // dynagridDetail plugin definition
@@ -122,13 +119,11 @@
         var args = Array.apply(null, arguments);
         args.shift();
         return this.each(function () {
-            var $this = $(this),
-                data = $this.data('dynagridDetail'),
-                options = typeof option === 'object' && option;
+            var $this = $(this), data = $this.data('dynagridDetail'), options = typeof option === 'object' && option;
 
             if (!data) {
-                $this.data('dynagridDetail', (data = new DynagridDetail(this,
-                    $.extend({}, $.fn.dynagridDetail.defaults, options, $(this).data()))));
+                data = new DynagridDetail(this, $.extend({}, $.fn.dynagridDetail.defaults, options, $(this).data()));
+                $this.data('dynagridDetail', data);
             }
 
             if (typeof option === 'string') {
@@ -142,6 +137,7 @@
         deleteMessage: '',
         deleteConfirmation: 'Are you sure you want to delete all your grid personalization settings?',
         configUrl: '',
-        modalId: ''
+        modalId: '',
+        dynaGridId: ''
     };
-}(jQuery));
+}(window.jQuery));

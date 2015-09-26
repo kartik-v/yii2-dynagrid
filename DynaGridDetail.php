@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @version   1.4.4
+ * @version   1.4.5
  */
 
 namespace kartik\dynagrid;
@@ -14,10 +14,11 @@ use yii\helpers\Json;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
-use yii\base\Model;
 use yii\base\InvalidConfigException;
 use yii\bootstrap\Modal;
 use kartik\base\Config;
+use kartik\base\Widget;
+use kartik\dynagrid\models\DynaGridSettings;
 
 /**
  * DynaGrid detail widget to save/store grid sort OR
@@ -26,7 +27,7 @@ use kartik\base\Config;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.2.0
  */
-class DynaGridDetail extends \kartik\base\Widget
+class DynaGridDetail extends Widget
 {
     /**
      * @var string the modal container identifier
@@ -39,7 +40,7 @@ class DynaGridDetail extends \kartik\base\Widget
     public $key;
 
     /**
-     * @var Model the settings model
+     * @var DynaGridSettings the settings model
      */
     public $model;
 
@@ -81,7 +82,6 @@ class DynaGridDetail extends \kartik\base\Widget
      */
     public $pjaxId;
 
-
     /**
      * @var string request param name which will show the grid configuration submitted
      */
@@ -96,53 +96,24 @@ class DynaGridDetail extends \kartik\base\Widget
      * @var Module the current module
      */
     protected $_module;
-    
+
     /**
      * @inheritdoc
      */
     public function init()
     {
-        if (empty($this->model) || !$this->model instanceof Model) {
-            throw new InvalidConfigException("You must enter a valid 'model' for DynaGridDetail.");
+        if (empty($this->model) || !$this->model instanceof DynaGridSettings) {
+            throw new InvalidConfigException(
+                "You must enter a valid 'model' for DynaGridDetail extending from '" . DynaGridSettings::classname() . "'"
+            );
         }
         parent::init();
         $this->_module = Config::initModule(Module::classname());
         $this->_requestSubmit = $this->options['id'] . '-dynagrid-detail';
-        $this->_isSubmit = !empty($_POST[$this->_requestSubmit]) && $this->model->load(Yii::$app->request->post()) && $this->model->validate();
+        $this->_isSubmit = !empty($_POST[$this->_requestSubmit]) &&
+            $this->model->load(Yii::$app->request->post()) &&
+            $this->model->validate();
         $this->registerAssets();
-    }
-
-    /**
-     * Register client assets
-     */
-    protected function registerAssets()
-    {
-        $view = $this->getView();
-        DynaGridDetailAsset::register($view);
-        Html::addCssClass($this->messageOptions, 'dynagrid-submit-message');
-        $options = Json::encode([
-            'submitMessage' => Html::tag('div', $this->submitMessage, $this->messageOptions),
-            'deleteMessage' => Html::tag('div', $this->deleteMessage, $this->messageOptions),
-            'deleteConfirmation' => $this->deleteConfirmation,
-            'configUrl' => Url::to([$this->_module->settingsConfigAction]),
-            'modalId' => $this->id
-        ]);
-        $id = "#{$this->model->key}";
-        $dynagrid = $this->model->dynaGridId;
-        $js = <<< JS
-jQuery('{$id}').dynagridDetail({$options});
-jQuery('{$dynagrid}').after(jQuery('{$id}'));
-JS;
-
-        // pjax related reset
-        if ($this->isPjax) {
-            $js .= "jQuery('#{$this->pjaxId}').on('pjax:complete', function() {\n
-                jQuery('{$id}').dynagridDetail({$options});\n
-            });";
-        }
-
-        $view->registerJs($js);
-
     }
 
     /**
@@ -167,8 +138,7 @@ JS;
     }
 
     /**
-     * Check and validate any detail record
-     * to save or delete
+     * Check and validate any detail record to save or delete
      *
      * @return void
      */
@@ -187,5 +157,35 @@ JS;
         if ($delete) {
             $this->model->deleteSettings();
         }
+    }
+
+    /**
+     * Register client assets
+     */
+    protected function registerAssets()
+    {
+        $view = $this->getView();
+        DynaGridDetailAsset::register($view);
+        Html::addCssClass($this->messageOptions, 'dynagrid-submit-message');
+        $options = Json::encode([
+            'submitMessage' => Html::tag('div', $this->submitMessage, $this->messageOptions),
+            'deleteMessage' => Html::tag('div', $this->deleteMessage, $this->messageOptions),
+            'deleteConfirmation' => $this->deleteConfirmation,
+            'configUrl' => Url::to([$this->_module->settingsConfigAction]),
+            'modalId' => $this->id,
+            'dynaGridId' => $this->model->dynaGridId
+        ]);
+        $id = "#{$this->model->key}";
+        $dynagrid = $this->model->dynaGridId;
+        $js = "jQuery('{$id}').dynagridDetail({$options});\njQuery('{$dynagrid}').after(jQuery('{$id}'));";
+        // pjax related reset
+        if ($this->isPjax) {
+            $js .= "jQuery('#{$this->pjaxId}').on('pjax:complete', function() {\n
+                jQuery('{$id}').dynagridDetail({$options});\n
+            });";
+        }
+
+        $view->registerJs($js);
+
     }
 }

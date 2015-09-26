@@ -1,14 +1,24 @@
-version 1.4.4
-=============
+Change Log: `yii2-dynagrid`
+===========================
+
+## Version 1.4.5
+
+**Date:** 25-Sep-2015
+
+- (bug #92): Automatically move dynagrid related modal dialog content after dynagrid container.
+
+## Version 1.4.4
+
 **Date:** 04-Aug-2015
 
+- (enh #63): Add Czech translations.
 - (bug #64): Apply sort correctly on init.
 - (bug #69): Fix bug for `initS2Loading`.
 - (bug #73): Validate theme if it does not exist and set it to default module theme.
 - (enh #84): Better validation for checking jquery plugin existence before reinit.
 
-version 1.4.3
-=============
+## Version 1.4.3
+
 **Date:** 16-Jun-2015
 
 - (enh #59): Allow setting unlimited page size.
@@ -17,10 +27,10 @@ version 1.4.3
 - (enh #62): Update German translations .
 - (enh #63): Add Czech translations.
 - (enh #66): Add column icon indicators for visible and hidden columns.
-- (enh #67): Set composer version dependencies.
+- (enh #67): Set composer ## Version dependencies.
 
-version 1.4.2
-=============
+## Version 1.4.2
+
 **Date:** 22-May-2015
 
 - (enh #40): Add `allowThemeSetting` to allow display/setup of theme.
@@ -30,15 +40,15 @@ version 1.4.2
 - (enh #56): Reload Dynagrid jquery plugins after pjax grid refresh.
 - (enh #57): Add Russian translations.
 
-version 1.4.1
-=============
+## Version 1.4.1
+
 **Date:** 13-Feb-2015
 
 - (enh #45): Allow dynagrid to be used as a sub-module.
 - Set copyright year to current.
 
-version 1.4.0
-=============
+## Version 1.4.0
+
 **Date:** 12-Jan-2015
 
 - (bug #35): Typo fix for extra `{` in DynaGridDetail.
@@ -46,8 +56,8 @@ version 1.4.0
 - Code formatting updates as per Yii2 standards.
 - Revamp to use new Krajee base Module and TranslationTrait.
 
-version 1.3.0
-=============
+## Version 1.3.0
+
 **Date:** 25-Nov-2014
 
 - PSR4 alias change
@@ -56,8 +66,8 @@ version 1.3.0
 - Fix #33: Ensure correct form submission for pjax 
 - Fix #34: Correct deletion of filter and sort settings
 
-version 1.2.0
-=============
+## Version 1.2.0
+
 **Date:** 25-Oct-2014 
 
 - (enh #25): Implement dynagrid storage as an object.
@@ -68,8 +78,8 @@ version 1.2.0
 - (bug #30): Fix dynagrid validation when no filterModel is supplied.
 
 
-version 1.1.0
-=============
+## Version 1.1.0
+
 **Date:** 19-Sep-2014 
 
 - (bug #21): Ensure correct merging of gridOptions with theme options.
@@ -79,8 +89,8 @@ version 1.1.0
 - PSR 4 alias change
 
 
-version 1.0.0
-=============
+## Version 1.0.0
+
 **Date:** 01-May-2014
 
 Initial release (01-May-2014). The major features provided by the **yii2-dynagrid** module are:

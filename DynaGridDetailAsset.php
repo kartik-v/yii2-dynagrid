@@ -4,10 +4,12 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @version   1.4.4
+ * @version   1.4.5
  */
 
 namespace kartik\dynagrid;
+
+use kartik\base\AssetBundle;
 
 /**
  * Asset bundle for DynaGridDetail Widget
@@ -15,7 +17,7 @@ namespace kartik\dynagrid;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.2.0
  */
-class DynaGridDetailAsset extends \kartik\base\AssetBundle
+class DynaGridDetailAsset extends AssetBundle
 {
     /**
      * @inheritdoc

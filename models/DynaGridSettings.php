@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @version   1.4.4
+ * @version   1.4.5
  */
 
 namespace kartik\dynagrid\models;
@@ -74,6 +74,7 @@ class DynaGridSettings extends Model
                 'dataConfig' => Yii::t('kvdynagrid', 'Sort Configuration'),
             ];
         }
+        return [];
     }
 
     /**
@@ -162,8 +163,7 @@ class DynaGridSettings extends Model
             foreach ($data as $attribute => $direction) {
                 $label = isset($attribute['label']) ? $attribute['label'] : Inflector::camel2words($attribute);
                 $icon = $direction === SORT_DESC ? "glyphicon glyphicon-sort-by-alphabet-alt" : "glyphicon glyphicon-sort-by-alphabet";
-                $dir = $direction === SORT_DESC ? Yii::t('kvdynagrid', 'descending') : Yii::t('kvdynagrid',
-                    'ascending');
+                $dir = $direction === SORT_DESC ? Yii::t('kvdynagrid', 'descending') : Yii::t('kvdynagrid', 'ascending');
                 $out .= "<li>{$label} <span class='{$icon}'></span> <span class='label label-default'>{$dir}</span></li>";
             }
         }

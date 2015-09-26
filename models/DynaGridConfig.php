@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @version   1.4.4
+ * @version   1.4.5
  */
 
 namespace kartik\dynagrid\models;
@@ -13,7 +13,6 @@ use Yii;
 use yii\base\Model;
 use kartik\base\Config;
 use kartik\dynagrid\Module;
-use kartik\dynagrid\DynaGridStore;
 
 /**
  * Model for the dynagrid configuration
