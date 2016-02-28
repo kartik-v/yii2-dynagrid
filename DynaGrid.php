@@ -1089,7 +1089,7 @@ class DynaGrid extends Widget
         } else {
             $this->$setting = ArrayHelper::merge([
                 'label' => "<i class='glyphicon glyphicon-{$cat}'></i>",
-                'title' => Yii::t('kvdynagrid', "Save / edit grid {category}", ['category' => $cat]),
+                'title' => Yii::t('kvdynagrid', "Save / edit grid {category}", ['category' => Yii::t('kvdynagrid', $cat)]),
                 'data-pjax' => false
             ], $this->$setting);
         }

@@ -40,7 +40,7 @@ echo $form->field($model, 'name', [
     'kvdynagrid',
     "Set a name to save the state of your current grid {category}. You can alternatively select a saved " .
     "{category} from the list below to edit or delete.",
-    ['category' => $model->category]
+    ['category' => Yii::t('kvdynagrid', $model->category)]
 ));
 echo $form->field($model, 'editId')->listBox($data, $listOptions);
 ?>
