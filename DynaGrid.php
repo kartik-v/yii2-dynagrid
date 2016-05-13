@@ -390,7 +390,15 @@ class DynaGrid extends Widget
         }
         $this->initGrid();
     }
-
+    /**
+     * Gets the columns need for exportmenu
+     *
+     *
+     * @return array
+     */
+    public function getColumns() {
+        return $this->gridOptions['columns'];
+    }
     /**
      * @inheritdoc
      */
