@@ -1045,7 +1045,7 @@ class DynaGrid extends Widget
             $this->setToggleButton('sort');
             $model->category = DynaGridStore::STORE_SORT;
             $model->key = $this->_sortKey;
-            $model->data = $isValidSort ? $sort->getOrders() : [];
+            $model->data = $isValidSort ? $sort->getAttributeOrders() : [];
             $dynagridSort = DynaGridDetail::widget([
                 'id' => $this->_sortModalId,
                 'model' => $model,
