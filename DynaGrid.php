@@ -9,23 +9,23 @@
 
 namespace kartik\dynagrid;
 
-use Yii;
 use kartik\base\Config;
 use kartik\dynagrid\models\DynaGridConfig;
 use kartik\dynagrid\models\DynaGridSettings;
 use kartik\grid\GridView;
+use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\Widget;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Inflector;
-use yii\helpers\Json;
-use yii\helpers\Html;
-use yii\base\InvalidConfigException;
+use yii\data\ActiveDataProvider;
+use yii\data\DataProviderInterface;
+use yii\data\Sort;
 use yii\db\ActiveQuery;
 use yii\db\ActiveQueryInterface;
-use yii\data\Sort;
-use yii\data\DataProviderInterface;
-use yii\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+use yii\helpers\Inflector;
+use yii\helpers\Json;
 
 /**
  * Enhance GridView by allowing you to dynamically edit grid configuration. The dynagrid allows you to set your own grid
@@ -38,6 +38,8 @@ use yii\data\ActiveDataProvider;
  */
 class DynaGrid extends Widget
 {
+    use DynaGridTrait;
+
     const TYPE_SESSION = 'session';
     const TYPE_COOKIE = 'cookie';
     const TYPE_DB = 'db';
@@ -390,15 +392,17 @@ class DynaGrid extends Widget
         }
         $this->initGrid();
     }
+
     /**
-     * Gets the columns need for exportmenu
-     *
+     * Gets the columns for the dynagrid
      *
      * @return array
      */
-    public function getColumns() {
+    public function getColumns()
+    {
         return $this->gridOptions['columns'];
     }
+
     /**
      * @inheritdoc
      */
@@ -778,7 +782,7 @@ class DynaGrid extends Widget
     /**
      * Load configuration attributes into DynaGridConfig model
      *
-     * @param Model $model
+     * @param DynaGridConfig $model
      *
      * @return void
      */
@@ -1000,7 +1004,7 @@ class DynaGrid extends Widget
         $sort = $dataProvider->getSort();
         $isValidSort = ($sort instanceof Sort);
         if ($this->showPersonalize) {
-            $this->setToggleButton('grid');
+            $this->setToggleButton(DynaGridStore::STORE_GRID);
             if ($this->allowFilterSetting || $this->allowSortSetting) {
                 $store = new DynaGridStore([
                     'id' => $this->options['id'],
@@ -1033,7 +1037,7 @@ class DynaGrid extends Widget
         $model->storage = $this->storage;
         $model->userSpecific = $this->userSpecific;
         if ($this->showFilter) {
-            $this->setToggleButton('filter');
+            $this->setToggleButton(DynaGridStore::STORE_FILTER);
             $model->category = DynaGridStore::STORE_FILTER;
             $model->key = $this->_filterKey;
             $model->data = array_filter($this->gridOptions['filterModel']->attributes);
@@ -1050,7 +1054,7 @@ class DynaGrid extends Widget
             ]);
         }
         if ($this->showSort) {
-            $this->setToggleButton('sort');
+            $this->setToggleButton(DynaGridStore::STORE_SORT);
             $model->category = DynaGridStore::STORE_SORT;
             $model->key = $this->_sortKey;
             $model->data = $isValidSort ? $sort->getAttributeOrders() : [];
@@ -1088,7 +1092,7 @@ class DynaGrid extends Widget
             'btn btn-' . ArrayHelper::getValue($this->gridOptions['panel'], 'type', 'default') :
             'btn btn-default';
         Html::addCssClass($this->$setting, $btnClass);
-        if ($cat == 'grid') {
+        if ($cat == DynaGridStore::STORE_GRID) {
             $this->toggleButtonGrid = ArrayHelper::merge([
                 'label' => '<i class="glyphicon glyphicon-wrench"></i>',
                 'title' => Yii::t('kvdynagrid', 'Personalize grid settings'),
@@ -1097,7 +1101,7 @@ class DynaGrid extends Widget
         } else {
             $this->$setting = ArrayHelper::merge([
                 'label' => "<i class='glyphicon glyphicon-{$cat}'></i>",
-                'title' => Yii::t('kvdynagrid', "Save / edit grid {category}", ['category' => Yii::t('kvdynagrid', $cat)]),
+                'title' => Yii::t('kvdynagrid', "Save / edit grid {category}", ['category' => static::getCat($cat)]),
                 'data-pjax' => false
             ], $this->$setting);
         }

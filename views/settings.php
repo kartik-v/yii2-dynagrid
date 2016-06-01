@@ -7,6 +7,7 @@
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
+use kartik\dynagrid\Dynagrid;
 use kartik\dynagrid\Module;
 use kartik\dynagrid\models\DynaGridSettings;
 
@@ -38,9 +39,8 @@ echo $form->field($model, 'name', [
     ]
 ])->textInput(['class' => 'form-control dynagrid-detail-name'])->hint(Yii::t(
     'kvdynagrid',
-    "Set a name to save the state of your current grid {category}. You can alternatively select a saved " .
-    "{category} from the list below to edit or delete.",
-    ['category' => Yii::t('kvdynagrid', $model->category)]
+    "Set a name to save the state of your current grid {category}. You can alternatively select a saved {category} from the list below to edit or delete.",
+    ['category' => Dynagrid::getCat($model->category)]
 ));
 echo $form->field($model, 'editId')->listBox($data, $listOptions);
 ?>

@@ -9,26 +9,27 @@
 
 namespace kartik\dynagrid;
 
-use Yii;
-use yii\helpers\Json;
-use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
-use yii\base\InvalidConfigException;
-use yii\bootstrap\Modal;
 use kartik\base\Config;
 use kartik\base\Widget;
 use kartik\dynagrid\models\DynaGridSettings;
+use Yii;
+use yii\base\InvalidConfigException;
+use yii\bootstrap\Modal;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+use yii\helpers\Json;
+use yii\helpers\Url;
 
 /**
- * DynaGrid detail widget to save/store grid sort OR
- * grid filter (search criteria) configuration.
+ * DynaGrid detail widget to save/store grid sort OR grid filter (search criteria) configuration.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.2.0
  */
 class DynaGridDetail extends Widget
 {
+    use DynaGridTrait;
+
     /**
      * @var string the modal container identifier
      */
@@ -122,7 +123,8 @@ class DynaGridDetail extends Widget
     public function run()
     {
         $this->saveDetail();
-        $title = Yii::t('kvdynagrid', "Save / Edit Grid {title}", ['title' => ucfirst(Yii::t('kvdynagrid', $this->model->category))]);
+        $params = ['title' => static::getCat($this->model->category, true)];
+        $title = Yii::t('kvdynagrid', "Save / Edit Grid {title}", $params);
         $icon = "<i class='glyphicon glyphicon-{$this->model->category}'></i> ";
         Modal::begin([
             'header' => '<h3 class="modal-title">' . $icon . $title . '</h3>',
@@ -184,8 +186,6 @@ class DynaGridDetail extends Widget
                 jQuery('{$id}').dynagridDetail({$options});\n
             });";
         }
-
         $view->registerJs($js);
-
     }
 }

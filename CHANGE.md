@@ -3,9 +3,20 @@ Change Log: `yii2-dynagrid`
 
 ## Version 1.4.5
 
-**Date:** 25-Sep-2015
+**Date:** 01-Jun-2016
 
 - (bug #92): Automatically move dynagrid related modal dialog content after dynagrid container.
+- (enh #93): Update Portugese Brazil Translations.
+- (enh #95): Update Spanish Translations.
+- (enh #96): Add Polish Translations.
+- (enh #105): Add Italian Translations and enhance translation for dynagrid category.
+- (enh #109): Add Simplified Chinese Translations.
+- (enh #114): Add `getColumns` method.
+- (enh #116): Add Estonian Translations.
+- (enh #119): More correct ordering info via `getAttributeOrders` for sort.
+- (enh #123): Update Hungarian Translations.
+- Add branch alias for dev-master latest release.
+- Implement trait and enhance #105 for better translations.
 
 ## Version 1.4.4
 
