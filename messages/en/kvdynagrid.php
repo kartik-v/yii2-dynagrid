@@ -58,4 +58,6 @@ return [
     'descending' => '',
     'rows per page' => '',
     'Personalize' => '@@@@',
+    'filter' => '',
+    'sort' => '',
 ];

@@ -122,7 +122,7 @@ class DynaGridDetail extends Widget
     public function run()
     {
         $this->saveDetail();
-        $title = Yii::t('kvdynagrid', "Save / Edit Grid {title}", ['title' => ucfirst($this->model->category)]);
+        $title = Yii::t('kvdynagrid', "Save / Edit Grid {title}", ['title' => ucfirst(Yii::t('kvdynagrid', $this->model->category))]);
         $icon = "<i class='glyphicon glyphicon-{$this->model->category}'></i> ";
         Modal::begin([
             'header' => '<h3 class="modal-title">' . $icon . $title . '</h3>',
