@@ -157,6 +157,7 @@ class DynaGridSettings extends Model
         if ($this->category === DynaGridStore::STORE_FILTER) {
             foreach ($data as $attribute => $value) {
                 $label = isset($attribute['label']) ? $attribute['label'] : Inflector::camel2words($attribute);
+                $value = is_array($value) ? print_r($value, true) : $value;
                 $out .= "<li>{$label} = {$value}</li>";
             }
         } else {
