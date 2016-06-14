@@ -4,9 +4,9 @@
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
  * @version   1.4.5
  *
- * JQuery Plugin for yii2-dynagridDetail. Allows saving/deleting the dynagridDetail 
+ * JQuery Plugin for yii2-dynagridDetail. Allows saving/deleting the dynagridDetail
  * filter or sort details.
- * 
+ *
  * Author: Kartik Visweswaran
  * Copyright: 2015, Kartik Visweswaran, Krajee.com
  * For more JQuery plugins visit http://plugins.krajee.com
@@ -36,6 +36,7 @@
             self.$form = $form;
             self.$formContainer = $form.parent();
             self.$btnSave = $form.find('.dynagrid-detail-save');
+            self.$btnOpen = $form.find('.dynagrid-detail-open');
             self.$btnDelete = $form.find('.dynagrid-detail-delete');
             self.$list = $form.find('.dynagrid-detail-list');
             self.$name = $form.find('.dynagrid-detail-name');
@@ -96,11 +97,18 @@
                         success: function (data) {
                             if (data.status === 'success') {
                                 $form.find('.dynagrid-settings-text').html(data.content);
+                                if (data.link !== data.content) {
+                                    self.$btnOpen.removeClass('disabled');
+                                    $('input[name="dynagridSettingLink"]').val(data.link);
+                                }
                             }
                         }
                     });
 
                 }
+            });
+            self.$btnOpen.on('click', function () {
+                window.location.replace($('input[name="dynagridSettingLink"]').val());
             });
             $form.off('afterValidate').on('afterValidate', function (e, msg) {
                 $.each(msg, function (key, value) {
