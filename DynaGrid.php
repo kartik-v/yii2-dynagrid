@@ -502,7 +502,7 @@ class DynaGrid extends Widget
     protected function matchColumnString($column)
     {
         $matches = [];
-        if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $column, $matches)) {
+        if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/u', $column, $matches)) {
             throw new InvalidConfigException(
                 "Invalid column configuration for '{$column}'. The column must be specified " .
                 "in the format of 'attribute', 'attribute:format' or 'attribute:format: label'."
