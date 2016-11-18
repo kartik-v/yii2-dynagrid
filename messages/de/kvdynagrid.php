@@ -49,7 +49,7 @@ return [
     'Select a theme...' => 'Wählen Sie ein Design...',
     'Select theme to style grid' => 'Design auswählen',
     'Select...' => 'Auswählen...',
-    'Set a name to save the state of your current grid {category}. You can alternatively select a saved {category} from the list below to edit or delete.' => 'Zadejte jméno pro uložené nastavení {category}. Můžete také vybrat uložené nastavení ze spodního seznamu pro přepsání/smazání exisstujícího uložného nastavení.','Legen Sie einen Namen fest, unter dem die aktuelle Konfiguration gespeichert werden soll. Alternativ wählen Sie einen gespeicherten Filter aus um diesen zu bearbeiten/löschen',
+    'Set a name to save the state of your current grid {category}. You can alternatively select a saved {category} from the list below to edit or delete.' => 'Wählen Sie einen Namen um die Aktuelle Auswahl für {category} zu speichern. Alternativ können Sie eine bestehende {category} aus der Liste auswählen und diese bearbeiten oder entfernen.','Legen Sie einen Namen fest, unter dem die aktuelle Konfiguration gespeichert werden soll. Alternativ wählen Sie einen gespeicherten Filter aus um diesen zu bearbeiten/löschen',
     'Set default grid filter criteria' => 'Standardfilter festlegen',
     'Set default grid sort criteria' => 'Standardsortierung festlegen',
     'Sort Configuration' => 'Sortierung konfigurieren',
