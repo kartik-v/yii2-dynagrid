@@ -926,10 +926,9 @@ class DynaGrid extends Widget
         if (isset($this->_pageSize) && $this->allowPageSetting) {
             /** @var ActiveDataProvider $dataProvider */
             $dataProvider = $this->gridOptions['dataProvider'];
-            $pagination = $dataProvider->getPagination();
+            $dataProvider->refresh();
             if ($this->_pageSize > 0) {
-                $pagination->pageSize = $this->_pageSize;
-                $dataProvider->setPagination($pagination);
+                $dataProvider->setPagination(['pageSize' => $this->_pageSize]);
             } else {
                 $dataProvider->pagination = false;
             }
