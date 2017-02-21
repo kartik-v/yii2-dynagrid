@@ -17,9 +17,9 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'filter' => '',
-    'grid' => '',
-    'sort' => '',
+    'filter' => 'filtro',
+    'grid' => 'grid',
+    'sort' => 'ordenar',
     'Abort any changes and reset settings' => 'Cancelar as alterações e redefinir as configurações',
     'Apply' => 'Aplicar',
     'Are you sure you want to delete the setting?' => 'Tem certeza de que deseja excluir a configuração?',
