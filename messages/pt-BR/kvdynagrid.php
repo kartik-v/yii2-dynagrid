@@ -48,7 +48,7 @@ return [
     'Select a sort...' => 'Selecione uma ordem...',
     'Select a theme...' => 'Selecione um tema...',
     'Select...' => 'Selecione...',
-    'Select theme to style grid' => '',
+    'Select theme to style grid' => 'Selecione o tema da grid',
     'Set a name to save the state of your current grid {category}. You can alternatively select a saved {category} from the list below to edit or delete.' => 'Defina um nome para salvar o estado de sua {category} na grid atual. Você pode, alternativamente, selecionar uma {category} salva a partir da lista abaixo para editar ou excluir.',
     'Set default grid filter criteria' => 'Definir filtros padrões para a grid',
     'Set default grid sort criteria' => 'Definir ordenações padrões para a grid',
