@@ -179,7 +179,7 @@ class DynaGridDetail extends Widget
         ]);
         $id = "#{$this->model->key}";
         $dynagrid = $this->model->dynaGridId;
-        $js = "jQuery('{$id}').dynagridDetail({$options});\njQuery('{$dynagrid}').after(jQuery('{$id}'));";
+        $js = "jQuery('{$id}').dynagridDetail({$options});\njQuery('#{$dynagrid}').after(jQuery('{$id}'));";
         // pjax related reset
         if ($this->isPjax) {
             $js .= "jQuery('#{$this->pjaxId}').on('pjax:complete', function() {\n
