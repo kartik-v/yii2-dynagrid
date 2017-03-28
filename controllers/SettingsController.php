@@ -27,8 +27,11 @@ class SettingsController extends Controller
         $model = new DynaGridSettings();
         $out = ['status' => '', 'content' => ''];
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $out = ['status' => 'success', 'content' => print_r($model->getDataConfig(), true)];
+            $out = ['status' => 'success',
+                'link' => $model->getDataConfig(false),
+                'content' => print_r($model->getDataConfig(), true)];
         }
+
         return $out;
     }
 }

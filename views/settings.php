@@ -28,6 +28,10 @@ echo $form->field($model, 'name', [
         'append' => [
             'asButton' => true,
             'content' => Html::button(
+                '<span class="glyphicon glyphicon-open "></span>',
+                ['title' => Yii::t('kvdynagrid', 'Load'), 'class' => "dynagrid-detail-open btn btn-primary disabled"]
+            ) .
+            Html::button(
                 '<span class="glyphicon glyphicon-ok"></span>',
                 ['title' => Yii::t('kvdynagrid', 'Save'), 'class' => "dynagrid-detail-save btn btn-primary"]
             ) .
@@ -43,6 +47,7 @@ echo $form->field($model, 'name', [
     ['category' => Dynagrid::getCat($model->category)]
 ));
 echo $form->field($model, 'editId')->listBox($data, $listOptions);
+
 ?>
     <div class="dynagrid-settings-text">
         <?= $model->getDataConfig() ?>
@@ -55,4 +60,5 @@ echo Html::activeHiddenInput($model, 'userSpecific');
 echo Html::activeHiddenInput($model, 'dynaGridId');
 echo Html::hiddenInput('deleteDetailFlag', 0);
 echo Html::hiddenInput($requestSubmit, 1);
+echo Html::hiddenInput('dynagridSettingLink', '');
 ActiveForm::end();
