@@ -3,7 +3,7 @@
 /**
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
  * @version   1.4.5
  */
 
@@ -23,7 +23,7 @@ trait DynaGridTrait
      * Gets the category translated description
      *
      * @param string $cat the category 'grid', 'filter', or 'sort'
-     * @param bool   $initCap whether to capitalize first letter.
+     * @param boolean $initCap whether to capitalize first letter.
      *
      * @return string
      */

@@ -3,7 +3,7 @@
 /**
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
  * @version   1.4.5
  */
 
@@ -18,6 +18,8 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\Widget;
 use yii\data\ActiveDataProvider;
+use yii\data\ArrayDataProvider;
+use yii\data\SqlDataProvider;
 use yii\data\DataProviderInterface;
 use yii\data\Sort;
 use yii\db\ActiveQuery;
@@ -40,12 +42,29 @@ class DynaGrid extends Widget
 {
     use DynaGridTrait;
 
+    /**
+     * Session storage
+     */
     const TYPE_SESSION = 'session';
+    /**
+     * Cookie storage
+     */
     const TYPE_COOKIE = 'cookie';
+    /**
+     * Database storage
+     */
     const TYPE_DB = 'db';
-
+    /**
+     * Fix column to the left
+     */
     const ORDER_FIX_LEFT = 'fixleft';
+    /**
+     * Fix column to the right
+     */
     const ORDER_FIX_RIGHT = 'fixright';
+    /**
+     * Fix column to the middle
+     */
     const ORDER_MIDDLE = 'middle';
 
     /**
@@ -114,8 +133,7 @@ class DynaGrid extends Widget
     public $gridOptions;
 
     /**
-     * @var bool whether the DynaGrid configuration button class should match
-     * the grid panel style.
+     * @var boolean whether the DynaGrid configuration button class should match the grid panel style.
      */
     public $matchPanelStyle;
 
@@ -182,27 +200,27 @@ class DynaGrid extends Widget
     /**
      * @var array the HTML attributes for the save/apply action button. If this is set to `false`, it will not be
      * displayed. The following special variables are supported:
-     * - `icon`: string the glyphicon class suffix for the button. Defaults to `save`.
-     * - `label`: string the label for the action button. Defaults to empty string.
-     * - `title`: string the title for the action button. Defaults to `Save grid settings`.
+     * - `icon`: _string_, the glyphicon class suffix for the button. Defaults to `save`.
+     * - `label`: _string_, the label for the action button. Defaults to empty string.
+     * - `title`: _string_, the title for the action button. Defaults to `Save grid settings`.
      */
     public $submitButtonOptions = [];
 
     /**
      * @var array|boolean the HTML attributes for the reset action button. If this is set to `false`, it will not be
      * displayed. The following special variables are supported:
-     * - `icon`: string the glyphicon class suffix for the button. Defaults to `repeat`.
-     * - `label`: string the label for the action button. Defaults to empty string.
-     * - `title`: string the title for the action button. Defaults to `Abort any changes and reset settings`.
+     * - `icon`: _string_, the glyphicon class suffix for the button. Defaults to `repeat`.
+     * - `label`: _string_, the label for the action button. Defaults to empty string.
+     * - `title`: _string_, the title for the action button. Defaults to `Abort any changes and reset settings`.
      */
     public $resetButtonOptions = [];
 
     /**
      * @var array|boolean the HTML attributes for the delete/trash action button. If this is set to `false`, it will
      * not be displayed. The following special variables are supported:
-     * - `icon`: string the glyphicon class suffix for the button. Defaults to `trash`.
-     * - `label`: string the label for the action button. Defaults to empty string.
-     * - `title`: string the title for the action button. Defaults to `Remove saved grid settings`.
+     * - `icon`: _string_, the glyphicon class suffix for the button. Defaults to `trash`.
+     * - `label`: _string_, the label for the action button. Defaults to empty string.
+     * - `title`: _string_, the title for the action button. Defaults to `Remove saved grid settings`.
      */
     public $deleteButtonOptions = [];
 
@@ -269,17 +287,17 @@ class DynaGrid extends Widget
     protected $_requestSubmit;
 
     /**
-     * @var \kartik\dynagrid\models\DynaGridConfig model
+     * @var DynaGridConfig model
      */
     protected $_model;
 
     /**
-     * @var bool flag to check if the grid configuration form has been submitted
+     * @var boolean flag to check if the grid configuration form has been submitted
      */
     protected $_isSubmit = false;
 
     /**
-     * @var bool flag to check if the pjax is enabled for the grid
+     * @var boolean flag to check if the pjax is enabled for the grid
      */
     protected $_isPjax;
 
@@ -322,7 +340,6 @@ class DynaGrid extends Widget
      * Initializes the widget
      *
      * @throws InvalidConfigException
-     * @return void
      */
     public function init()
     {
@@ -415,9 +432,7 @@ class DynaGrid extends Widget
     /**
      * Initialize the data provider
      *
-     * @param \yii\base\Model $searchModel
-     *
-     * @return void
+     * @param Model $searchModel
      */
     protected function initDataProvider($searchModel)
     {
@@ -427,8 +442,6 @@ class DynaGrid extends Widget
 
     /**
      * Prepares the columns for the dynagrid
-     *
-     * @return void
      */
     protected function prepareColumns()
     {
@@ -445,8 +458,6 @@ class DynaGrid extends Widget
 
     /**
      * Reconfigure columns with unique keys
-     *
-     * @return void
      */
     protected function configureColumns()
     {
@@ -497,7 +508,7 @@ class DynaGrid extends Widget
      * @param string $column
      *
      * @return mixed
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     protected function matchColumnString($column)
     {
@@ -513,8 +524,6 @@ class DynaGrid extends Widget
 
     /**
      * Applies the current grid configuration
-     *
-     * @return void
      */
     protected function applyGridConfig()
     {
@@ -538,7 +547,7 @@ class DynaGrid extends Widget
     /**
      * Gets the current grid configuration
      *
-     * @param bool $current whether it is the currently set grid configuraton
+     * @param boolean $current whether it is the currently set grid configuraton
      *
      * @return array
      */
@@ -567,8 +576,6 @@ class DynaGrid extends Widget
      *
      * @param array   $config the dynagrid configuration
      * @param boolean $delete the deletion flag
-     *
-     * @return void
      */
     protected function saveGridConfig($config, $delete)
     {
@@ -584,8 +591,7 @@ class DynaGrid extends Widget
      *
      * @param array $config the configuration to load
      *
-     * @throws \yii\base\InvalidConfigException
-     * @return void
+     * @throws InvalidConfigException
      */
     protected function loadGridConfig($config = [])
     {
@@ -636,8 +642,6 @@ class DynaGrid extends Widget
      * Parses the grid detail configuration (for filter or sort).
      *
      * @param string $category one of 'filter' or 'sort'
-     *
-     * @return void
      */
     protected function parseDetailData($category)
     {
@@ -658,9 +662,7 @@ class DynaGrid extends Widget
     }
 
     /**
-     * Sets widget columns for display in [[\kartik\sortable\Sortable]]
-     *
-     * @return void
+     * Sets widget columns for display in [[\kartik\sortable\Sortable]] widget
      */
     protected function setWidgetColumns()
     {
@@ -722,8 +724,8 @@ class DynaGrid extends Widget
     /**
      * Fetches the column label
      *
-     * @param mixed $key
-     * @param mixed $column
+     * @param mixed $key the column key
+     * @param mixed $column the column object / configuration
      *
      * @return string
      */
@@ -783,8 +785,6 @@ class DynaGrid extends Widget
      * Load configuration attributes into DynaGridConfig model
      *
      * @param DynaGridConfig $model
-     *
-     * @return void
      */
     protected function loadAttributes($model)
     {
@@ -876,8 +876,6 @@ class DynaGrid extends Widget
 
     /**
      * Applies the grid filter
-     *
-     * @return void
      */
     protected function applyFilter()
     {
@@ -897,8 +895,6 @@ class DynaGrid extends Widget
 
     /**
      * Applies the grid sort
-     *
-     * @return void
      */
     protected function applySort()
     {
@@ -912,25 +908,27 @@ class DynaGrid extends Widget
             $sort->defaultOrder = $this->_detailConfig[DynaGridStore::STORE_SORT];
             $dataProvider->setSort($sort);
             $this->gridOptions['dataProvider'] = $dataProvider;
-
         }
     }
 
     /**
      * Applies the page size
-     *
-     * @return void
      */
     protected function applyPageSize()
     {
         if (isset($this->_pageSize) && $this->allowPageSetting) {
-            /** @var ActiveDataProvider $dataProvider */
+            /** @var \yii\data\BaseDataProvider $dataProvider */
             $dataProvider = $this->gridOptions['dataProvider'];
-            $dataProvider->refresh();
+            if ($dataProvider instanceof ArrayDataProvider) {
+                $dataProvider->refresh();
+            }
             if ($this->_pageSize > 0) {
                 $dataProvider->setPagination(['pageSize' => $this->_pageSize]);
             } else {
-                $dataProvider->pagination = false;
+                $dataProvider->setPagination(false);
+            }
+            if ($dataProvider instanceof SqlDataProvider) {
+                $dataProvider->prepare(true);
             }
             $this->gridOptions['dataProvider'] = $dataProvider;
         }
@@ -1108,8 +1106,6 @@ class DynaGrid extends Widget
 
     /**
      * Registers client assets
-     *
-     * @return void
      */
     protected function registerAssets()
     {
@@ -1154,7 +1150,7 @@ class DynaGrid extends Widget
      *
      * @param mixed $column
      *
-     * @return mixed
+     * @return boolean
      */
     protected function canReorder($column)
     {

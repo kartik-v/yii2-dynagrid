@@ -3,7 +3,7 @@
 /**
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
  * @version   1.4.5
  */
 
@@ -46,20 +46,18 @@ class DynaGridDetail extends Widget
     public $model;
 
     /**
-     * @var array the HTML attributes for the toggle button
-     * that will open the editable form for the filter or sort.
+     * @var array the HTML attributes for the toggle button that will open the editable form for the filter or sort.
      */
     public $toggleButton = [];
 
     /**
-     * @var string the message to display after applying and submitting the configuration and
-     * until refreshed grid is reloaded
+     * @var string the message to display after applying and submitting the configuration and until refreshed grid is
+     * reloaded
      */
     public $submitMessage;
 
     /**
-     * @var string the message to display after deleting the configuration and
-     * until refreshed grid is reloaded
+     * @var string the message to display after deleting the configuration and until refreshed grid is reloaded
      */
     public $deleteMessage;
 
@@ -74,7 +72,7 @@ class DynaGridDetail extends Widget
     public $deleteConfirmation;
 
     /**
-     * @var bool flag to check if the pjax is enabled for the grid
+     * @var boolean flag to check if the pjax is enabled for the grid
      */
     public $isPjax;
 
@@ -89,7 +87,7 @@ class DynaGridDetail extends Widget
     protected $_requestSubmit;
 
     /**
-     * @var bool flag to check if the grid configuration form has been submitted
+     * @var boolean flag to check if the grid configuration form has been submitted
      */
     protected $_isSubmit = false;
 
@@ -141,8 +139,6 @@ class DynaGridDetail extends Widget
 
     /**
      * Check and validate any detail record to save or delete
-     *
-     * @return void
      */
     protected function saveDetail()
     {

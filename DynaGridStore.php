@@ -3,7 +3,7 @@
 /**
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
  * @version   1.4.5
  */
 
@@ -19,15 +19,24 @@ use yii\base\InvalidConfigException;
 use kartik\base\Config;
 
 /**
- * Dynagrid storage configuration helper
+ * Dynagrid storage configuration object
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.2.0
  */
 class DynaGridStore extends Object
 {
+    /**
+     * Grid configuration storage
+     */
     const STORE_GRID = 'grid';
+    /**
+     * Grid filter configuration storage
+     */
     const STORE_FILTER = 'filter';
+    /**
+     * Grid sort configuration storage
+     */
     const STORE_SORT = 'sort';
 
     /**
@@ -83,7 +92,7 @@ class DynaGridStore extends Object
     protected $_dtlKey;
 
     /**
-     * @var bool is this a master record
+     * @var boolean is this a master record
      */
     private $_isMaster;
 

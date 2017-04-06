@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
  * @package yii2-dynagrid
  * @version 1.4.5
  */
@@ -16,11 +16,11 @@ use yii\bootstrap\Modal;
 /**
  * @var yii\web\View                          $this
  * @var kartik\dynagrid\models\DynaGridConfig $model
- * @var yii\widgets\ActiveForm                $form
- * @var bool                                  $allowPageSetting
- * @var bool                                  $allowThemeSetting
- * @var bool                                  $allowFilterSetting
- * @var bool                                  $allowSortSetting
+ * @var ActiveForm                            $form
+ * @var boolean                               $allowPageSetting
+ * @var boolean                               $allowThemeSetting
+ * @var boolean                               $allowFilterSetting
+ * @var boolean                               $allowSortSetting
  * @var array                                 $toggleButtonGrid
  */
 

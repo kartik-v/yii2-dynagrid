@@ -3,10 +3,10 @@ Change Log: `yii2-dynagrid`
 
 ## Version 1.4.5
 
-**Date:** 01-Jun-2016
+**Date:** 07-Apr-2017
 
 - (bug #92): Automatically move dynagrid related modal dialog content after dynagrid container.
-- (enh #93): Update Portugese Brazil Translations.
+- (enh #93): Update Portuguese BR Translations.
 - (enh #95): Update Spanish Translations.
 - (enh #96): Add Polish Translations.
 - (enh #105): Add Italian Translations and enhance translation for dynagrid category.
@@ -17,6 +17,21 @@ Change Log: `yii2-dynagrid`
 - (enh #123): Update Hungarian Translations.
 - Add branch alias for dev-master latest release.
 - Implement trait and enhance #105 for better translations.
+- (enh #126): Multiple selection bug workaround.
+- (enh #128): Update Czech Translations.
+- (enh #131): Add Unicode support for column name.
+- (enh #134): Update Simplified Chinese Translations.
+- (enh #136): Update Dutch Translations.
+- (enh #138): Update German Translations.
+- (enh #143): Update Greek Translations.
+- (enh #141, #145): Refresh data provider when using ArrayDataProvider .
+- (enh #148): Update Portuguese BR Translations.
+- (bug #149): Added missing hash tag for dynagrid id.
+- (enh #151): Enhance pagination application for SqlDataProvider.
+- Code cleanup and enhance PHP Doc for all classes.
+- Add github contribution and issue/PR logging templates.
+- Update copyright year to current.
+- Generate message files for all common languages.
 
 ## Version 1.4.4
 
