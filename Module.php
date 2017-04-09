@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
- * @version   1.4.5
+ * @version   1.4.6
  */
 
 namespace kartik\dynagrid;
@@ -38,6 +38,10 @@ class Module extends \kartik\base\Module
      * Cookie expiry (used for dynagrid configuration storage)
      */
     const COOKIE_EXPIRY = 8640000; // 100 days
+    /**
+     * Session key variable name for storing the dynagrid configuration encryption salt.
+     */
+    const SALT_SESS_KEY = "krajeeDGConfigSalt";
 
     /**
      * @var array the settings for the cookie to be used in saving the dynagrid setup
@@ -142,19 +146,11 @@ class Module extends \kartik\base\Module
     public $maxPageSize = 50;
 
     /**
-     * @var mixed the action (url) used for creating a filter or sort setting
+     * @var string a random salt that will be used to generate a hash signature for tree configuration. If not set, this
+     * will be generated using [[\yii\base\Security::generateRandomKey()]] to generate a random key. The randomly
+     * generated salt in the second case will be stored in a session variable identified by [[SALT_SESS_KEY]].
      */
-    public $createAction = '/dynagrid/settings/create';
-
-    /**
-     * @var mixed the action (url) used for creating a filter or sort setting
-     */
-    public $updateAction = '/dynagrid/settings/update';
-
-    /**
-     * @var mixed the action (url) used for deleting a filter or sort setting
-     */
-    public $deleteAction = '/dynagrid/settings/delete';
+    public $configEncryptSalt;
 
     /**
      * @inheritdoc
@@ -163,6 +159,16 @@ class Module extends \kartik\base\Module
     {
         $this->_msgCat = 'kvdynagrid';
         parent::init();
+        $app = Yii::$app;
+        if ($app->has('session') && !isset($this->configEncryptSalt)) {
+            $session = $app->session;
+            if (!$session->get(self::SALT_SESS_KEY)) {
+                $session->set(self::SALT_SESS_KEY, $app->security->generateRandomKey());
+            }
+            $this->configEncryptSalt = $session->get(self::SALT_SESS_KEY);
+        } elseif (!isset($this->configEncryptSalt)) {
+            $this->configEncryptSalt = '<$0ME_R@ND0M_$@LT>';
+        }
         $this->initSettings();
     }
 

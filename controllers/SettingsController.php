@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
- * @version   1.4.5
+ * @version   1.4.6
  */
 
 namespace kartik\dynagrid\controllers;
@@ -31,8 +31,14 @@ class SettingsController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         $model = new DynaGridSettings();
         $out = ['status' => '', 'content' => ''];
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $out = ['status' => 'success', 'content' => print_r($model->getDataConfig(), true)];
+        $request = Yii::$app->request;
+        if ($model->load($request->post()) && $model->validate()) {
+            $validate = $model->validateSignature($request->post('configHashData', ''));
+            if ($validate === true) {
+                $out = ['status' => 'success', 'content' => print_r($model->getDataConfig(), true)];
+            } else {
+                $out = ['status' => 'error', 'content' => '<div class="alert alert-danger">' . $validate . '</div>'];
+            }
         }
         return $out;
     }

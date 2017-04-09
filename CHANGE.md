@@ -1,6 +1,13 @@
 Change Log: `yii2-dynagrid`
 ===========================
 
+## Version 1.4.6 (_under development_)
+
+**Date:** 10-Apr-2017
+
+- (enh #153): Enhance filter/sort settings update for database storage.
+- (enh #154): Hash signature validation for security.
+
 ## Version 1.4.5
 
 **Date:** 07-Apr-2017

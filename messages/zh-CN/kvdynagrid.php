@@ -17,6 +17,9 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    'NOTE: When editing an existing record, both the {category} name and its settings will be modified..' => '',
+    'NOTE: When editing an existing record, only the {category} name will be modified (and not the settings)..' => '',
+    'Operation disallowed! Invalid request signature detected for dynagrid settings. {params}' => '',
     'sort' => '',
     'Personalize' => '@@个性化@@',
     'Abort any changes and reset settings' => '放弃更改并重置设置',

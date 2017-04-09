@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
- * @version   1.4.5
+ * @version   1.4.6
  */
 
 namespace kartik\dynagrid;
@@ -13,6 +13,7 @@ use kartik\base\Config;
 use kartik\base\Widget;
 use kartik\dynagrid\models\DynaGridSettings;
 use Yii;
+use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\bootstrap\Modal;
 use yii\helpers\ArrayHelper;
@@ -109,8 +110,9 @@ class DynaGridDetail extends Widget
         parent::init();
         $this->_module = Config::initModule(Module::classname());
         $this->_requestSubmit = $this->options['id'] . '-dynagrid-detail';
+        $request = Yii::$app->request;
         $this->_isSubmit = !empty($_POST[$this->_requestSubmit]) &&
-            $this->model->load(Yii::$app->request->post()) &&
+            $this->model->load($request->post()) &&
             $this->model->validate();
         $this->registerAssets();
     }
@@ -139,11 +141,16 @@ class DynaGridDetail extends Widget
 
     /**
      * Check and validate any detail record to save or delete
+     * @throws InvalidCallException
      */
     protected function saveDetail()
     {
         if (!$this->_isSubmit) {
             return;
+        }
+        $out = $this->model->validateSignature(Yii::$app->request->post('configHashData', ''));
+        if ($out !== true) {
+            throw new InvalidCallException($out);
         }
         $delete = ArrayHelper::getValue($_POST, 'deleteDetailFlag', 0) == 1;
         if ($delete) {

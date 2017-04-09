@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
- * @version   1.4.5
+ * @version   1.4.6
  */
 
 namespace kartik\dynagrid;
@@ -70,6 +70,13 @@ class DynaGridStore extends Object
      * @var boolean whether settings are stored specific to each user
      */
     public $userSpecific = true;
+
+    /**
+     * @var boolean whether to update only the name, when editing and saving a filter or sort. This is applicable
+     * only for [[$storage]] set to [[Dynagrid::TYPE_DB]]. If set to `false`, it will also overwrite the current 
+     * `filter` or `sort` settings.
+     */
+    public $dbUpdateNameOnly = false;
 
     /**
      * @var string the detail key identifier if available
@@ -153,7 +160,7 @@ class DynaGridStore extends Object
      * @param string $col the column attribute
      *
      * @return array the column configuration
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function fetch($col = 'dataAttr')
     {
@@ -231,7 +238,7 @@ class DynaGridStore extends Object
      * @param string $col the column type
      * @param string $id the primary key value
      *
-     * @return bool|null|string
+     * @return boolean|null|string
      */
     protected function getDataFromDb($col, $id)
     {
@@ -244,11 +251,9 @@ class DynaGridStore extends Object
     }
 
     /**
-     * Delete configuration from store
+     * Delete configuration from store. Both master and detail records will be deleted.
      *
-     * both master and detail records will be deleted.
-     *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function delete()
     {
@@ -306,7 +311,7 @@ class DynaGridStore extends Object
      * @param string $key to delete
      * @param mixed  $config configuration data
      *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function deleteConfig($key, $config)
     {
@@ -335,7 +340,7 @@ class DynaGridStore extends Object
      *
      * @param mixed $config configuration data to save
      *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function save($config)
     {
@@ -383,12 +388,17 @@ class DynaGridStore extends Object
                     $data = [$filterAttr => $filterData, $sortAttr => $sortData, $dataAttr => $configData];
                 } else {
                     extract($this->_module->dbSettingsDtl);
-                    $data = ($out != null) ? [$nameAttr => $this->name] : [
-                        $nameAttr => $this->name,
-                        $dataAttr => $configData,
-                        $categoryAttr => $this->category,
-                        $dynaGridIdAttr => $this->_mstKey
-                    ];
+                    if ($out != null) {
+                        $data = $this->dbUpdateNameOnly ? [$nameAttr => $this->name] :
+                            [$nameAttr => $this->name, $dataAttr => $configData];
+                    } else {
+                        $data = [
+                            $nameAttr => $this->name,
+                            $dataAttr => $configData,
+                            $categoryAttr => $this->category,
+                            $dynaGridIdAttr => $this->_mstKey
+                        ];
+                    }
                 }
                 if ($out != null) {
                     $db->createCommand()->update($tableName, $data, [$idAttr => $key])->execute();

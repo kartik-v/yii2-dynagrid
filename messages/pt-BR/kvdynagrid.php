@@ -17,9 +17,9 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'filter' => 'filtro',
-    'grid' => 'grid',
-    'sort' => 'ordenar',
+    'NOTE: When editing an existing record, both the {category} name and its settings will be modified..' => '',
+    'NOTE: When editing an existing record, only the {category} name will be modified (and not the settings)..' => '',
+    'Operation disallowed! Invalid request signature detected for dynagrid settings. {params}' => '',
     'Abort any changes and reset settings' => 'Cancelar as alterações e redefinir as configurações',
     'Apply' => 'Aplicar',
     'Are you sure you want to delete the setting?' => 'Tem certeza de que deseja excluir a configuração?',
@@ -47,8 +47,8 @@ return [
     'Select a filter...' => 'Selecione um filtro...',
     'Select a sort...' => 'Selecione uma ordem...',
     'Select a theme...' => 'Selecione um tema...',
-    'Select...' => 'Selecione...',
     'Select theme to style grid' => 'Selecione o tema da grid',
+    'Select...' => 'Selecione...',
     'Set a name to save the state of your current grid {category}. You can alternatively select a saved {category} from the list below to edit or delete.' => 'Defina um nome para salvar o estado de sua {category} na grid atual. Você pode, alternativamente, selecionar uma {category} salva a partir da lista abaixo para editar ou excluir.',
     'Set default grid filter criteria' => 'Definir filtros padrões para a grid',
     'Set default grid sort criteria' => 'Definir ordenações padrões para a grid',
@@ -59,5 +59,8 @@ return [
     'Visible Columns' => 'Colunas Visíveis',
     'ascending' => 'crescente',
     'descending' => 'decrescente',
+    'filter' => 'filtro',
+    'grid' => 'grid',
     'rows per page' => 'Linhas por página',
+    'sort' => 'ordenar',
 ];
