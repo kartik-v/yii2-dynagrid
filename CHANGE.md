@@ -3,8 +3,10 @@ Change Log: `yii2-dynagrid`
 
 ## Version 1.4.6 (_under development_)
 
-**Date:** 04-May-2017
+**Date:** 31-Jul-2017
 
+- Code optimizations for Dynagrid jQuery plugin.
+- (enh #161): Enhance dynagrid form submission to prevent enter key submitting the form wrongly.
 - Chronological ordering of issues for change log.
 - (bug #156): Correct dynagrid detail minified JS file.
 - (enh #154): Hash signature validation for security.
