@@ -190,7 +190,6 @@ class Module extends \kartik\base\Module
     public function initSettings()
     {
         $this->dbSettings += [
-            'connection' => 'db',
             'tableName' => 'tbl_dynagrid',
             'idAttr' => 'id',
             'filterAttr' => 'filter_id',
@@ -198,7 +197,6 @@ class Module extends \kartik\base\Module
             'dataAttr' => 'data'
         ];
         $this->dbSettingsDtl += [
-            'connection' => 'db',
             'tableName' => 'tbl_dynagrid_dtl',
             'idAttr' => 'id',
             'categoryAttr' => 'category',
