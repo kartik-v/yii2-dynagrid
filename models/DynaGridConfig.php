@@ -1,16 +1,18 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @package yii2-dynagrid
- * @version 1.3.0
+ * @package   yii2-dynagrid
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
+ * @version   1.4.6
  */
 
 namespace kartik\dynagrid\models;
 
 use Yii;
 use yii\base\Model;
-use kartik\dynagrid\DynaGridStore;
+use kartik\base\Config;
+use kartik\dynagrid\Module;
 
 /**
  * Model for the dynagrid configuration
@@ -20,26 +22,66 @@ use kartik\dynagrid\DynaGridStore;
  */
 class DynaGridConfig extends Model
 {
+    /**
+     * @var string the dynagrid widget identifier
+     */
     public $id;
+    /**
+     * @var array the hidden grid columns
+     */
     public $hiddenColumns = [];
+    /**
+     * @var array the visible grid columns
+     */
     public $visibleColumns = [];
+    /**
+     * @var array the widget options for the [[\kartik\sortable\Sortable]] widget
+     */
     public $widgetOptions = [];
+    /**
+     * @var array the list of saved grid themes
+     */
     public $themeList = [];
+    /**
+     * @var array the list of saved grid filters
+     */
     public $filterList = [];
+    /**
+     * @var array the list of saved grid sort
+     */
     public $sortList = [];
+    /**
+     * @var integer the grid page size
+     */
     public $pageSize;
+    /**
+     * @var string the filter identifier
+     */
     public $filterId = null;
+    /**
+     * @var string the sort identifier
+     */
     public $sortId = null;
-    public $hiddenKeys;
-    public $visibleKeys;
+    /**
+     * @var string|null the footer content for the dynagrid configuration form
+     */
     public $footer = null;
+    /**
+     * @var string the currently selected grid theme
+     */
     public $theme;
 
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
-        $module = Yii::$app->getModule('dynagrid');
+        /**
+         * @var Module $module
+         */
+        $module = Config::initModule(Module::classname());
         return [
-            [['id', 'hiddenColumns', 'visibleColumns', 'pageSize', 'filterId', 'sortId', 'theme', 'hiddenKeys', 'visibleKeys'], 'safe'],
+            [['id', 'hiddenColumns', 'visibleColumns', 'pageSize', 'filterId', 'sortId', 'theme'], 'safe'],
             [['pageSize', 'theme'], 'required'],
             ['pageSize', 'integer', 'min' => $module->minPageSize, 'max' => $module->maxPageSize],
             ['pageSize', 'default', 'value' => $module->defaultPageSize],
@@ -47,6 +89,9 @@ class DynaGridConfig extends Model
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function attributeLabels()
     {
         return [

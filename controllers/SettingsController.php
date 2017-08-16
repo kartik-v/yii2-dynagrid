@@ -1,32 +1,45 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @package yii2-grid
- * @version 1.3.0
+ * @package   yii2-dynagrid
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
+ * @version   1.4.6
  */
 
 namespace kartik\dynagrid\controllers;
 
 use Yii;
-use yii\helpers\Json;
-use kartik\grid\GridView;
-use yii\web\BadRequestHttpException;
+use yii\web\Controller;
+use yii\web\Response;
 use kartik\dynagrid\models\DynaGridSettings;
-use kartik\dynagrid\DynaGridStore;
 
-class SettingsController extends \yii\web\Controller
+/**
+ * SettingsController will manage the actions for dynagrid settings
+ *
+ * @package kartik\dynagrid\controllers
+ */
+class SettingsController extends Controller
 {
     /**
-     * Fetch setting
+     * Fetch dynagrid setting configuration
+     *
+     * @return string
      */
     public function actionGetConfig()
     {
+        Yii::$app->response->format = Response::FORMAT_JSON;
         $model = new DynaGridSettings();
-        $out = ['status'=>'', 'content'=>''];
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $out = ['status'=>'success', 'content'=>print_r($model->getDataConfig(),true)];
+        $out = ['status' => '', 'content' => ''];
+        $request = Yii::$app->request;
+        if ($model->load($request->post()) && $model->validate()) {
+            $validate = $model->validateSignature($request->post('configHashData', ''));
+            if ($validate === true) {
+                $out = ['status' => 'success', 'content' => print_r($model->getDataConfig(), true)];
+            } else {
+                $out = ['status' => 'error', 'content' => '<div class="alert alert-danger">' . $validate . '</div>'];
+            }
         }
-        echo Json::encode($out);
+        return $out;
     }
 }

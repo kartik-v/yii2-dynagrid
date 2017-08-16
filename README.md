@@ -1,6 +1,12 @@
 yii2-dynagrid
 =============
 
+[![Latest Stable Version](https://poser.pugx.org/kartik-v/yii2-dynagrid/v/stable)](https://packagist.org/packages/kartik-v/yii2-dynagrid)
+[![License](https://poser.pugx.org/kartik-v/yii2-dynagrid/license)](https://packagist.org/packages/kartik-v/yii2-dynagrid)
+[![Total Downloads](https://poser.pugx.org/kartik-v/yii2-dynagrid/downloads)](https://packagist.org/packages/kartik-v/yii2-dynagrid)
+[![Monthly Downloads](https://poser.pugx.org/kartik-v/yii2-dynagrid/d/monthly)](https://packagist.org/packages/kartik-v/yii2-dynagrid)
+[![Daily Downloads](https://poser.pugx.org/kartik-v/yii2-dynagrid/d/daily)](https://packagist.org/packages/kartik-v/yii2-dynagrid)
+
 The **yii2-dynagrid**  module is a great complementary addition to the [kartik-v/yii2-grid](https://github.com/kartik-v/yii2-grid) module, enhancing
 it with personalization features. It turbo charges your grid view by making it dynamic and personalized for each user. It allows users the ability to 
 set and save their own grid configuration. The major features provided by this module are:
@@ -28,7 +34,7 @@ set and save their own grid configuration. The major features provided by this m
 [composer.json](https://github.com/kartik-v/yii2-dynagrid/blob/master/composer.json) for this extension's requirements and dependencies. 
 
 ## Latest Release
-The latest version of the module is v1.3.0 released on 25-Nov-2014. Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-dynagrid/blob/master/CHANGE.md) for details.
+The latest version of the module is v1.4.6 (_under development_). Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-dynagrid/blob/master/CHANGE.md) for details.
 - With v1.2.0, the Dynagrid is revamped to include a `DynaGridStore` object and ability to save, update, or delete grid personalizations including grid filter and sort.
 - With v1.1.0, the DynaGrid includes Pjax support. To enable Pjax processing, set `gridOptions['pjax']` property to `true` and control pjax behavior using `gridOptions['pjaxSettings']`.
 
@@ -39,18 +45,20 @@ You can see detailed [documentation](http://demos.krajee.com/dynagrid) or view a
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
-> Note: You must set the `minimum-stability` to `dev` in the **composer.json** file in your application root folder before installation of this extension.
+> Note: Check the [composer.json](https://github.com/kartik-v/yii2-dynagrid/blob/master/composer.json) for this extension's requirements and dependencies. 
+Read this [web tip /wiki](http://webtips.krajee.com/setting-composer-minimum-stability-application/) on setting the `minimum-stability` settings for your application's composer.json.
+
 
 Either run
 
 ```
-$ php composer.phar require kartik-v/yii2-dynagrid "dev-master"
+$ php composer.phar require kartik-v/yii2-dynagrid "@dev"
 ```
 
 or add
 
 ```
-"kartik-v/yii2-dynagrid": "dev-master"
+"kartik-v/yii2-dynagrid": "@dev"
 ```
 
 to the ```require``` section of your `composer.json` file.

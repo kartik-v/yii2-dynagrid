@@ -1,30 +1,42 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @package yii2-dynagrid
- * @version 1.3.0
+ * @package   yii2-dynagrid
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
+ * @version   1.4.6
  */
 
 namespace kartik\dynagrid;
 
 use Yii;
 use yii\web\Cookie;
+use yii\base\Object;
+use yii\db\Query;
 use yii\helpers\Json;
-use yii\helpers\Inflector;
 use yii\helpers\ArrayHelper;
 use yii\base\InvalidConfigException;
+use kartik\base\Config;
 
 /**
- * Dynagrid storage configuration helper
+ * Dynagrid storage configuration object
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
- * @since 1.0
+ * @since 1.2.0
  */
-class DynaGridStore extends \yii\base\Object
+class DynaGridStore extends Object
 {
+    /**
+     * Grid configuration storage
+     */
     const STORE_GRID = 'grid';
+    /**
+     * Grid filter configuration storage
+     */
     const STORE_FILTER = 'filter';
+    /**
+     * Grid sort configuration storage
+     */
     const STORE_SORT = 'sort';
 
     /**
@@ -60,7 +72,14 @@ class DynaGridStore extends \yii\base\Object
     public $userSpecific = true;
 
     /**
-     * @var the detail key identifier if available
+     * @var boolean whether to update only the name, when editing and saving a filter or sort. This is applicable
+     * only for [[$storage]] set to [[Dynagrid::TYPE_DB]]. If set to `false`, it will also overwrite the current 
+     * `filter` or `sort` settings.
+     */
+    public $dbUpdateNameOnly = false;
+
+    /**
+     * @var string the detail key identifier if available
      */
     public $dtlKey;
 
@@ -70,17 +89,17 @@ class DynaGridStore extends \yii\base\Object
     protected $_module;
 
     /**
-     * @var generated storage key for dynagrid master record
+     * @var string generated storage key for dynagrid master record
      */
     protected $_mstKey;
 
     /**
-     * @var generated storage key for dynagrid detail record (filter & sort)
+     * @var string generated storage key for dynagrid detail record (filter & sort)
      */
     protected $_dtlKey;
 
     /**
-     * @var bool is this a master record
+     * @var boolean is this a master record
      */
     private $_isMaster;
 
@@ -91,7 +110,7 @@ class DynaGridStore extends \yii\base\Object
      */
     public function init()
     {
-        $this->_module = Yii::$app->getModule('dynagrid');
+        $this->_module = Config::initModule(Module::classname());
         $this->_isMaster = ($this->category == self::STORE_GRID) ? true : false;
         if ($this->_module == null || !$this->_module instanceof Module) {
             throw new InvalidConfigException('The "dynagrid" module MUST be setup in your Yii configuration file and assigned to "\kartik\dynagrid\Module" class.');
@@ -100,24 +119,6 @@ class DynaGridStore extends \yii\base\Object
             throw new InvalidConfigException('The dynagrid "id" property must be entered.');
         }
         $this->setKey();
-    }
-
-    /**
-     * Generates the storage key
-     *
-     * @param boolean $master whether to generate key for the master record
-     * @return string
-     */
-    protected function generateKey($master = true)
-    {
-        $key = $this->id;
-        if (!$master) {
-            $key .= '_' . $this->category . '_' . hash('crc32', strtolower($this->name));
-        }
-        if ($this->userSpecific) {
-            $key .= '_' . Yii::$app->user->id;
-        }
-        return $key;
     }
 
     /**
@@ -135,9 +136,31 @@ class DynaGridStore extends \yii\base\Object
     }
 
     /**
+     * Generates the storage key
+     *
+     * @param boolean $master whether to generate key for the master record
+     *
+     * @return string
+     */
+    protected function generateKey($master = true)
+    {
+        $key = $this->id;
+        if (!$master) {
+            $key .= '_' . $this->category . '_' . hash('crc32', strtolower($this->name));
+        }
+        if ($this->userSpecific) {
+            $key .= '_' . Yii::$app->user->id;
+        }
+        return $key;
+    }
+
+    /**
      * Fetch configuration from store
      *
-     * @throws \yii\base\InvalidConfigException
+     * @param string $col the column attribute
+     *
+     * @return array the column configuration
+     * @throws InvalidConfigException
      */
     public function fetch($col = 'dataAttr')
     {
@@ -147,10 +170,10 @@ class DynaGridStore extends \yii\base\Object
                 $newConfig = static::parseConfig(Yii::$app->session->get($this->_mstKey, false));
                 if (!empty($newConfig)) {
                     $config = $this->fetchConfig($newConfig);
-                } 
+                }
                 break;
             case Dynagrid::TYPE_COOKIE:
-                $newConfig = static::parseConfig(Yii::$app->request->cookies->getValue($this->_mstKey, false)); 
+                $newConfig = static::parseConfig(Yii::$app->request->cookies->getValue($this->_mstKey, false));
                 if (!empty($newConfig) && $newConfig !== false) {
                     $config = $this->fetchConfig($newConfig);
                 }
@@ -160,7 +183,7 @@ class DynaGridStore extends \yii\base\Object
                 $key = $this->_isMaster ? $this->_mstKey : $this->_dtlKey;
                 $config = $this->getDataFromDb($col, $key);
                 if ($this->_isMaster && $col !== 'dataAttr') {
-                //die('<pre>' . var_dump($config, true) . '</pre>');
+                    //die('<pre>' . var_dump($config, true) . '</pre>');
                 }
                 break;
             default:
@@ -169,75 +192,68 @@ class DynaGridStore extends \yii\base\Object
         if ($col != 'dataAttr') {
             return $config;
         }
-        return ($config === false ) ? false : Json::decode($config);
+        return ($config === false) ? false : Json::decode($config);
     }
 
     /**
-     * Save configuration to store
+     * Parses configuration for session or cookie storage
      *
-     * @param mixed $config configuration data to save
-     * @throws \yii\base\InvalidConfigException
+     * @return array the store configuration
+     *
+     * @param array json decoded config array
      */
-    public function save($config)
+    protected static function parseConfig($config)
     {
-        $configData = Json::encode($config);
-        switch ($this->storage) {
-            case Dynagrid::TYPE_SESSION:
-                $oldConfig = Yii::$app->session->get($this->_mstKey, false);
-                $newConfig = $this->generateConfig($oldConfig, $configData);
-                Yii::$app->session->set($this->_mstKey, $newConfig);
-                break;
-            case Dynagrid::TYPE_COOKIE:
-                $settings = $this->_module->cookieSettings;
-                $oldConfig = Yii::$app->request->cookies->getValue($this->_mstKey, false);
-                $newConfig = $this->generateConfig($oldConfig, $configData);
-                $cookie = new Cookie(['name' => $this->_mstKey, 'value' => $newConfig] + $settings);
-                Yii::$app->response->cookies->add($cookie);
-                break;
-            case Dynagrid::TYPE_DB:
-                $db = Yii::$app->db;
-                $key = $this->_isMaster ? $this->_mstKey : $this->_dtlKey;
-                $out = $this->getDataFromDb('idAttr', $key);
-                $filterData = null;
-                $sortData = null;
-                if (!empty($config[self::STORE_FILTER])) {
-                    $filterData = $config[self::STORE_FILTER];
-                    unset($config[self::STORE_FILTER]);
-                }
-                if (!empty($config[self::STORE_SORT])) {
-                    $sortData = $config[self::STORE_SORT];
-                    unset($config[self::STORE_SORT]);
-                }
-                $configData = Json::encode($config);
-                if ($this->_isMaster) {
-                    extract($this->_module->dbSettings);
-                    $data = [$filterAttr=>$filterData, $sortAttr=>$sortData, $dataAttr => $configData];
-                } else {
-                    extract($this->_module->dbSettingsDtl);
-                    $data = ($out != null) ? [$nameAttr => $this->name] : [
-                        $nameAttr => $this->name,
-                        $dataAttr => $configData, 
-                        $categoryAttr => $this->category, 
-                        $dynaGridIdAttr => $this->_mstKey
-                    ];
-                }
-                if ($out != null) {
-                    $db->createCommand()->update($tableName, $data, [$idAttr => $key])->execute();
-                } else {
-                    $data[$idAttr] = $key;
-                    $db->createCommand()->insert($tableName, $data)->execute();
-                }
-                break;
-            default:
-                throw new InvalidConfigException('Unknown storage: ' . $this->storage);
+        if ($config === false) {
+            return [];
         }
+        $config = is_string($config) ? Json::decode($config) : $config;
+        return !is_array($config) || empty($config) ? [] : $config;
     }
 
     /**
-     * Delete configuration from store
+     * Fetches configuration for session or cookie storage
      *
-     * both master and detail records will be deleted.
-     * @throws \yii\base\InvalidConfigException
+     * @param array Json::decoded config array
+     *
+     * @return array configuration for master or detail
+     */
+    protected function fetchConfig($config)
+    {
+        if ($this->_isMaster) {
+            return ArrayHelper::getValue($config, self::STORE_GRID, false);
+        }
+        $cat = ArrayHelper::getValue($config, $this->category, false);
+        if ($cat === false || empty($cat)) {
+            return false;
+        }
+        $newConfig = ArrayHelper::getValue($cat, $this->_dtlKey, []);
+        $data = empty($newConfig) ? false : ArrayHelper::getValue($newConfig, 'data', false);
+        return $data;
+    }
+
+    /**
+     * Fetch and return the relevant column data from database
+     *
+     * @param string $col the column type
+     * @param string $id the primary key value
+     *
+     * @return boolean|null|string
+     */
+    protected function getDataFromDb($col, $id)
+    {
+        $settings = $this->_isMaster ? $this->_module->dbSettings : $this->_module->dbSettingsDtl;
+        $query = (new Query())
+            ->select($settings[$col])
+            ->from($settings['tableName'])
+            ->where([$settings['idAttr'] => $id]);
+        return $query->scalar();
+    }
+
+    /**
+     * Delete configuration from store. Both master and detail records will be deleted.
+     *
+     * @throws InvalidConfigException
      */
     public function delete()
     {
@@ -278,52 +294,130 @@ class DynaGridStore extends \yii\base\Object
                 } else {
                     extract($this->_module->dbSettingsDtl);
                 }
+                /**
+                 * @var string $tableName
+                 * @var string $idAttr
+                 */
                 $db->createCommand()->delete($tableName, [$idAttr => $key])->execute();
                 break;
             default:
                 throw new InvalidConfigException('Unknown storage: ' . $this->storage);
         }
     }
-    
+
     /**
-     * Fetches configuration for session or cookie storage
+     * Delete a key from data configuration for STORE_GRID
      *
-     * @param array Json::decoded config array
-     * @return configuration for master or detail
+     * @param string $key to delete
+     * @param mixed  $config configuration data
+     *
+     * @throws InvalidConfigException
      */
-    protected function fetchConfig($config)
+    public function deleteConfig($key, $config)
     {
-        if ($this->_isMaster) {
-            return ArrayHelper::getValue($config, self::STORE_GRID, false);
+        if ($this->storage == DynaGrid::TYPE_DB) {
+            /**
+             * @var string $filterAttr
+             * @var string $sortAttr
+             * @var string $tableName
+             * @var string $idAttr
+             */
+            extract($this->_module->dbSettings);
+            $attr = $key === self::STORE_FILTER ? $filterAttr : $sortAttr;
+            $db = Yii::$app->db;
+            $db->createCommand()->update($tableName, [$attr => null], [$idAttr => $this->_mstKey])->execute();
+            return;
         }
-        $cat = ArrayHelper::getValue($config, $this->category, false);
-        if ($cat === false || empty($cat)) {
-            return false;
+        if ($config === false || !is_array($config)) {
+            return;
         }
-        $newConfig = ArrayHelper::getValue($cat, $this->_dtlKey, []);
-        $data = empty($newConfig) ? false : ArrayHelper::getValue($newConfig, 'data', false);
-        return $data;
+        unset($config[$key]);
+        $this->save($config);
     }
-    
+
     /**
-     * Parses configuration for session or cookie storage
+     * Save configuration to store
      *
-     * @param array json decoded config array
+     * @param mixed $config configuration data to save
+     *
+     * @throws InvalidConfigException
      */
-    protected static function parseConfig($config)
+    public function save($config)
     {
-        if ($config === false) {
-            return [];
+        $configData = Json::encode($config);
+        /**
+         * @var string $tableName
+         * @var string $idAttr
+         * @var string $nameAttr
+         * @var string $dataAttr
+         * @var string $categoryAttr
+         * @var string $dynaGridIdAttr
+         * @var string $filterAttr
+         * @var string $sortAttr
+         */
+        switch ($this->storage) {
+            case Dynagrid::TYPE_SESSION:
+                $oldConfig = Yii::$app->session->get($this->_mstKey, false);
+                $newConfig = $this->generateConfig($oldConfig, $configData);
+                Yii::$app->session->set($this->_mstKey, $newConfig);
+                break;
+            case Dynagrid::TYPE_COOKIE:
+                $settings = $this->_module->cookieSettings;
+                $oldConfig = Yii::$app->request->cookies->getValue($this->_mstKey, false);
+                $newConfig = $this->generateConfig($oldConfig, $configData);
+                $cookie = new Cookie(['name' => $this->_mstKey, 'value' => $newConfig] + $settings);
+                Yii::$app->response->cookies->add($cookie);
+                break;
+            case Dynagrid::TYPE_DB:
+                $db = Yii::$app->db;
+                $key = $this->_isMaster ? $this->_mstKey : $this->_dtlKey;
+                $out = $this->getDataFromDb('idAttr', $key);
+                $filterData = null;
+                $sortData = null;
+                if (!empty($config[self::STORE_FILTER])) {
+                    $filterData = $config[self::STORE_FILTER];
+                    unset($config[self::STORE_FILTER]);
+                }
+                if (!empty($config[self::STORE_SORT])) {
+                    $sortData = $config[self::STORE_SORT];
+                    unset($config[self::STORE_SORT]);
+                }
+                $configData = Json::encode($config);
+                if ($this->_isMaster) {
+                    extract($this->_module->dbSettings);
+                    $data = [$filterAttr => $filterData, $sortAttr => $sortData, $dataAttr => $configData];
+                } else {
+                    extract($this->_module->dbSettingsDtl);
+                    if ($out != null) {
+                        $data = $this->dbUpdateNameOnly ? [$nameAttr => $this->name] :
+                            [$nameAttr => $this->name, $dataAttr => $configData];
+                    } else {
+                        $data = [
+                            $nameAttr => $this->name,
+                            $dataAttr => $configData,
+                            $categoryAttr => $this->category,
+                            $dynaGridIdAttr => $this->_mstKey
+                        ];
+                    }
+                }
+                if ($out != null) {
+                    $db->createCommand()->update($tableName, $data, [$idAttr => $key])->execute();
+                } else {
+                    $data[$idAttr] = $key;
+                    $db->createCommand()->insert($tableName, $data)->execute();
+                }
+                break;
+            default:
+                throw new InvalidConfigException('Unknown storage: ' . $this->storage);
         }
-        $config = is_string($config) ? Json::decode($config) : $config;
-        return !is_array($config) || empty($config) ? [] : $config;
     }
-    
+
     /**
      * Gets configuration for session or cookie storage
      *
      * @param string $config the configuration to merge
      * @param string $data the Json::encoded data
+     *
      * @return string the Json::encoded configuration
      */
     protected function generateConfig($config, $data)
@@ -336,52 +430,14 @@ class DynaGridStore extends \yii\base\Object
         }
         return Json::encode($config);
     }
-    
-    /**
-     * Delete a key from data configuration for STORE_GRID
-     *
-     * @param string $key to delete
-     * @param mixed $config configuration data
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function deleteConfig($key, $config)
-    {
-        if ($this->storage == DynaGrid::TYPE_DB) {
-            extract($this->_module->dbSettings);
-            $attr = $key === self::STORE_FILTER ? $filterAttr : $sortAttr;
-            $db = Yii::$app->db;
-            $db->createCommand()->update($tableName, [$attr => null], [$idAttr => $this->_mstKey])->execute();
-            return;
-        }
-        if ($config === false || !is_array($config)) {
-            return;
-        } 
-        unset($config[$key]);
-        $this->save($config);
-    }
 
     /**
-     * Fetch and return the relevant column data from database
-     *
-     * @param string $col the column type
-     * @param string $id the primary key value
-     * @return bool|null|string
-     */
-    protected function getDataFromDb($col, $id)
-    {
-        $settings = $this->_isMaster ? $this->_module->dbSettings : $this->_module->dbSettingsDtl;
-        $query = (new \yii\db\Query())
-            ->select($settings[$col])
-            ->from($settings['tableName'])
-            ->where([$settings['idAttr'] => $id]);
-        return $query->scalar();
-    }
-    
-    /**
-     * Fetch and return the list of detail values for a
-     * specific master (category = STORE_GRID) instance
+     * Fetch and return the list of detail values for a specific master (category = STORE_GRID) instance
      *
      * @param string $cat the detail category
+     *
+     * @throws InvalidConfigException
+     *
      * @return array
      */
     public function getDtlList($cat)
@@ -395,7 +451,7 @@ class DynaGridStore extends \yii\base\Object
                 return static::getDtlListOther($config, $cat);
             case Dynagrid::TYPE_DB:
                 $s = $this->_module->dbSettingsDtl;
-                $data = (new \yii\db\Query())
+                $data = (new Query())
                     ->select([$s['idAttr'], $s['nameAttr']])
                     ->from($s['tableName'])
                     ->where([$s['dynaGridIdAttr'] => $this->_mstKey, $s['categoryAttr'] => $cat])
@@ -409,8 +465,10 @@ class DynaGridStore extends \yii\base\Object
     /**
      * Fetches and return the list of detail values for
      * session or cookie storage
-     * @param array $config the storage configuration
+     *
+     * @param array  $config the storage configuration
      * @param string $cat the detail category
+     *
      * @return array
      */
     protected static function getDtlListOther($config, $cat)

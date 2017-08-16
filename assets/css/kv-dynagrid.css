@@ -1,11 +1,13 @@
 /*!
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
- * @version 1.3.0
+ * @package   yii2-dynagrid
+ * @author    Kartik Visweswaran <kartikv2@gmail.com>
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
+ * @version   1.4.6
  *
  * Styling for yii2-dynagrid.
  * 
  * Author: Kartik Visweswaran
- * Copyright: 2014, Kartik Visweswaran, Krajee.com
+ * Copyright: 2015, Kartik Visweswaran, Krajee.com
  * For more JQuery plugins visit http://plugins.krajee.com
  * For more Yii related demos visit http://demos.krajee.com
  */
@@ -17,6 +19,7 @@
     vertical-align: bottom;
     padding: 50px;
 }
+
 .dynagrid-column-label {
     text-align: center;
     font-weight: bold;
@@ -25,14 +28,17 @@
     border-top: 1px solid #eee;
     border-bottom: 1px solid #eee;
 }
+
 .dynagrid-sortable-separator {
-    font-size:3em;
+    font-size: 3em;
     color: #999;
 }
+
 .dynagrid-sortable-header {
     font-weight: bold;
-    opacity: 1!important;
+    opacity: 1 !important;
 }
+
 .dynagrid-settings-text ul {
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -40,6 +46,17 @@
     padding-left: 24px;
     list-style-type: square;
 }
+
 .dynagrid-settings-text li {
     line-height: 2em;
+}
+
+.sortable-hidden .icon-visible-column,
+.sortable-visible .icon-hidden-column {
+    display: none;
+}
+
+.sortable-hidden .icon-hidden-column,
+.sortable-visible .icon-visible-column {
+    display: inline-block;
 }
