@@ -243,11 +243,12 @@ class DynaGridStore extends Object
     protected function getDataFromDb($col, $id)
     {
         $settings = $this->_isMaster ? $this->_module->dbSettings : $this->_module->dbSettingsDtl;
+        $connection = ArrayHelper::getValue($settings, 'connection', 'db');
         $query = (new Query())
             ->select($settings[$col])
             ->from($settings['tableName'])
             ->where([$settings['idAttr'] => $id]);
-        return $query->scalar();
+        return $query->scalar(Yii::$app->$connection);
     }
 
     /**
@@ -288,7 +289,7 @@ class DynaGridStore extends Object
                 Yii::$app->response->cookies->add($cookie);
                 break;
             case Dynagrid::TYPE_DB:
-                $db = Yii::$app->db;
+                $connection = 'db';
                 if ($this->_isMaster) {
                     extract($this->_module->dbSettings);
                 } else {
@@ -298,6 +299,7 @@ class DynaGridStore extends Object
                  * @var string $tableName
                  * @var string $idAttr
                  */
+                $db = Yii::$app->$connection;
                 $db->createCommand()->delete($tableName, [$idAttr => $key])->execute();
                 break;
             default:
@@ -322,9 +324,10 @@ class DynaGridStore extends Object
              * @var string $tableName
              * @var string $idAttr
              */
+            $connection = 'db';
             extract($this->_module->dbSettings);
             $attr = $key === self::STORE_FILTER ? $filterAttr : $sortAttr;
-            $db = Yii::$app->db;
+            $db = Yii::$app->$connection;
             $db->createCommand()->update($tableName, [$attr => null], [$idAttr => $this->_mstKey])->execute();
             return;
         }
@@ -369,11 +372,11 @@ class DynaGridStore extends Object
                 Yii::$app->response->cookies->add($cookie);
                 break;
             case Dynagrid::TYPE_DB:
-                $db = Yii::$app->db;
                 $key = $this->_isMaster ? $this->_mstKey : $this->_dtlKey;
                 $out = $this->getDataFromDb('idAttr', $key);
                 $filterData = null;
                 $sortData = null;
+                $connection = 'db';
                 if (!empty($config[self::STORE_FILTER])) {
                     $filterData = $config[self::STORE_FILTER];
                     unset($config[self::STORE_FILTER]);
@@ -400,6 +403,7 @@ class DynaGridStore extends Object
                         ];
                     }
                 }
+                $db = Yii::$app->$connection;
                 if ($out != null) {
                     $db->createCommand()->update($tableName, $data, [$idAttr => $key])->execute();
                 } else {
@@ -451,11 +455,12 @@ class DynaGridStore extends Object
                 return static::getDtlListOther($config, $cat);
             case Dynagrid::TYPE_DB:
                 $s = $this->_module->dbSettingsDtl;
+                $connection = ArrayHelper::getValue($s, 'connection', 'db');
                 $data = (new Query())
                     ->select([$s['idAttr'], $s['nameAttr']])
                     ->from($s['tableName'])
                     ->where([$s['dynaGridIdAttr'] => $this->_mstKey, $s['categoryAttr'] => $cat])
-                    ->all();
+                    ->all(Yii::$app->$connection);
                 return empty($data) ? [] : ArrayHelper::map($data, $s['idAttr'], $s['nameAttr']);
             default:
                 throw new InvalidConfigException('Unknown storage: ' . $this->storage);

@@ -3,8 +3,9 @@ Change Log: `yii2-dynagrid`
 
 ## Version 1.4.6 (_under development_)
 
-**Date:** 31-Jul-2017
+**Date:** 17-Aug-2017
 
+- (enh #163): Add ability to configure db connection component.
 - Code optimizations for Dynagrid jQuery plugin.
 - (enh #161): Enhance dynagrid form submission to prevent enter key submitting the form wrongly.
 - Chronological ordering of issues for change log.
