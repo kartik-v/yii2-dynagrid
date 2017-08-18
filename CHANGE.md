@@ -3,8 +3,9 @@ Change Log: `yii2-dynagrid`
 
 ## Version 1.4.6 (_under development_)
 
-**Date:** 17-Aug-2017
+**Date:** 18-Aug-2017
 
+- (enh #165): Eliminate dependency on Yii session component for module init.
 - (enh #163): Add ability to configure db connection component.
 - Code optimizations for Dynagrid jQuery plugin.
 - (enh #161): Enhance dynagrid form submission to prevent enter key submitting the form wrongly.
