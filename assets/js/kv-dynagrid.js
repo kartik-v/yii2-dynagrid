@@ -6,8 +6,6 @@
  *
  * JQuery Plugin for yii2-dynagrid.
  * 
- * Author: Kartik Visweswaran
- * Copyright: 2015, Kartik Visweswaran, Krajee.com
  * For more JQuery plugins visit http://plugins.krajee.com
  * For more Yii related demos visit http://demos.krajee.com
  */
@@ -15,7 +13,6 @@
     "use strict";
     var $h, Dynagrid;
     $h = {
-        NAMESPACE: '.dynagrid',
         isEmpty: function (value, trim) {
             return value === null || value === undefined || value === [] || value === '' || trim && $.trim(value) === '';
         },
@@ -31,7 +28,7 @@
             window[id] = objActiveForm;
         },
         handler: function ($el, event, callback) {
-            var self = this, ns = $h.NAMESPACE, ev = event.split(' ').join(ns + ' ') + ns;
+            var self = this, ns = '.dynagrid', ev = event.split(' ').join(ns + ' ') + ns;
             if (!$el || !$el.length) {
                 return;
             }
@@ -115,15 +112,16 @@
             self._submitForm(self.submitMessage);
         },
         _delete: function() {
-            var self = this, $el;
-            if (!window.confirm(self.deleteConfirmation)) {
-                return;
-            }
-            $el = $form.find('input[name="deleteFlag"]');
-            if ($el && $el.length) {
-                $el.val(1);
-            }
-            self._submitForm(self.deleteMessage);
+            var self = this, $el, dialogLib = window[self.dialogLib];
+            dialogLib.confirm(self.deleteConfirmation, function (result) {
+                if (result) {
+                    $el = self.$form.find('input[name="deleteFlag"]');
+                    if ($el && $el.length) {
+                        $el.val(1);
+                    }
+                    self._submitForm(self.deleteMessage);
+                }
+            });
         },
         _reset: function () {
             var self = this;
@@ -137,6 +135,30 @@
             setTimeout(function () {
                 self.$form.find("select").trigger("change");
             }, 100);
+        },
+        reset: function () {
+            var self = this, $form = self.$element.closest('form'),
+                id = $h.getFormObjectId(self.$element), objActiveForm = window[id];
+            if (!$h.isEmpty(objActiveForm)) {
+                $form.yiiActiveForm('destroy');
+                $form.yiiActiveForm(objActiveForm.attributes, objActiveForm.settings);
+            }
+            $form.find('select[data-krajee-select2]').each(function () {
+                var $el = $(this), settings = window[$el.attr('data-krajee-select2')] || {};
+                if ($el.data('select2')) {
+                    $el.select2('destroy');
+                }
+                $.when($el.select2(settings)).done(function () {
+                    initS2Loading($el.attr('id'), '.select2-container--krajee'); // jshint ignore:line
+                });
+            });
+            $form.find('[data-krajee-sortable]').each(function () {
+                var $el = $(this);
+                if ($el.data('sortable')) {
+                    $el.sortable('destroy');
+                }
+                $el.sortable(window[$el.attr('data-krajee-sortable')]);
+            });
         }
     };
 
@@ -161,8 +183,9 @@
     $.fn.dynagrid.defaults = {
         submitMessage: '',
         deleteMessage: '',
-        deleteConfirmation: 'Are you sure you want to delete all your grid personalization settings?',
+        deleteConfirmation: '',
         modalId: '',
-        dynaGridId: ''
+        dynaGridId: '',
+        dialogLib: 'krajeeDialog'
     };
 }(window.jQuery));

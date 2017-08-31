@@ -6,26 +6,36 @@
  *
  * JQuery Plugin for yii2-dynagridDetail. Allows saving/deleting the dynagridDetail 
  * filter or sort details.
- * 
- * Author: Kartik Visweswaran
- * Copyright: 2015, Kartik Visweswaran, Krajee.com
+ *
  * For more JQuery plugins visit http://plugins.krajee.com
  * For more Yii related demos visit http://demos.krajee.com
  */
 (function ($) {
     "use strict";
-    var isEmpty = function (value, trim) {
+    var $h, DynagridDetail;
+    
+    $h = {
+        isEmpty: function (value, trim) {
             return value === null || value === undefined || value === [] || value === '' || trim && $.trim(value) === '';
         },
-        DynagridDetail = function (element, options) {
-            var self = this;
-            self.$element = $(element);
-            $.each(options, function (key, value) {
-                self[key] = value;
-            });
-            self.init();
-            self.listen();
-        };
+        handler: function ($el, event, callback) {
+            var self = this, ns = '.dynagridDetail', ev = event.split(' ').join(ns + ' ') + ns;
+            if (!$el || !$el.length) {
+                return;
+            }
+            $el.off(ev).on(ev, callback);
+        }            
+    };
+
+    DynagridDetail = function (element, options) {
+        var self = this;
+        self.$element = $(element);
+        $.each(options, function (key, value) {
+            self[key] = value;
+        });
+        self.init();
+        self.listen();
+    };
 
     DynagridDetail.prototype = {
         constructor: DynagridDetail,
@@ -59,39 +69,18 @@
             });
         },
         listen: function () {
-            var self = this, $form = self.$form, $formContainer = self.$formContainer, $list = self.$list;
-            self.$btnSave.on('click', function () {
-                $form.hide();
-                $formContainer.prepend(self.submitMessage);
-                setTimeout(function () {
-                    $form.submit();
-                }, 1000);
-            });
-            self.$btnDelete.on('click', function () {
-                if (isEmpty(self.$list.val())) {
-                    $form.trigger('reset.yiiActiveForm');
-                    return;
-                }
-                if (!window.confirm(self.deleteConfirmation)) {
-                    return;
-                }
-                var $el = $form.find('input[name="deleteDetailFlag"]');
-                $el.val(1);
-                $form.hide();
-                $formContainer.prepend(self.deleteMessage);
-                setTimeout(function () {
-                    $form.submit();
-                }, 1000);
-            });
-            $list.on('change', function () {
-                var val = $list.val(), name = $list.find('option:selected').text();
-                if (!isEmpty(val)) {
+            var self = this;
+            $h.handler(self.$btnSave, 'click', $.proxy(self._submit, self));
+            $h.handler(self.$btnDelete, 'click', $.proxy(self._delete, self));
+            $h.handler(self.$list, 'change', function () {
+                var $form = self.$form, val = $(this).val(), name = $(this).find('option:selected').text();
+                if (!$h.isEmpty(val)) {
                     self.$name.val(name);
                     $.ajax({
                         type: 'post',
                         url: self.configUrl,
                         dataType: 'json',
-                        data: self.$form.serialize(),
+                        data: $form.serialize(),
                         success: function (data) {
                             if (data.status) {
                                 $form.find('.dynagrid-settings-text').html(data.content);
@@ -101,16 +90,43 @@
 
                 }
             });
-            $form.off('afterValidate').on('afterValidate', function (e, msg) {
+            $h.handler(self.$form, 'afterValidate', function (e, msg) {
                 $.each(msg, function (key, value) {
                     if (value.length > 0) {
-                        $form.show();
-                        $formContainer.find('.dynagrid-submit-message').remove();
+                        self.$form.show();
+                        self.$formContainer.find('.dynagrid-submit-message').remove();
                         return true;
                     }
                 });
             });
-        }
+        },
+        _submitForm: function(msg) {
+            var self = this, $form = self.$form, $formContainer = self.$formContainer;
+            $form.hide();
+            $formContainer.prepend(msg);
+            setTimeout(function () {
+                $form.submit();
+            }, 1000);
+        },
+        _submit: function() {
+            this._submitForm(self.submitMessage);
+        },
+        _delete: function() {
+            var self = this, $el, dialogLib = window[self.dialogLib];
+            if ($h.isEmpty(self.$list.val())) {
+                self.$form.trigger('reset.yiiActiveForm');
+                return;
+            }
+            dialogLib.confirm(self.deleteConfirmation, function (result) {
+                if (result) {
+                    $el = self.$form.find('input[name="deleteDetailFlag"]');
+                    if ($el && $el.length) {
+                        $el.val(1);
+                    }
+                    self._submitForm(self.deleteMessage);
+                }
+            });
+        },
     };
 
     // dynagridDetail plugin definition
@@ -134,9 +150,10 @@
     $.fn.dynagridDetail.defaults = {
         submitMessage: '',
         deleteMessage: '',
-        deleteConfirmation: 'Are you sure you want to delete all your grid personalization settings?',
+        deleteConfirmation: '',
         configUrl: '',
         modalId: '',
-        dynaGridId: ''
+        dynaGridId: '',
+        dialogLib: krajeeDialog
     };
 }(window.jQuery));

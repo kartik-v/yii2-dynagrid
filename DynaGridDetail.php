@@ -73,6 +73,13 @@ class DynaGridDetail extends Widget
     public $deleteConfirmation;
 
     /**
+     * @var array configuration settings for the Krajee dialog widget that will be used to render alerts and
+     * confirmation dialog prompts
+     * @see http://demos.krajee.com/dialog
+     */
+    public $krajeeDialogSettings = [];
+
+    /**
      * @var boolean flag to check if the pjax is enabled for the grid
      */
     public $isPjax;
@@ -178,7 +185,8 @@ class DynaGridDetail extends Widget
             'deleteConfirmation' => $this->deleteConfirmation,
             'configUrl' => Url::to([$this->_module->settingsConfigAction]),
             'modalId' => $this->id,
-            'dynaGridId' => $this->model->dynaGridId
+            'dynaGridId' => $this->model->dynaGridId,
+            'dialogLib' => ArrayHelper::getValue($this->krajeeDialogSettings, 'libName', 'krajeeDialog')
         ]);
         $id = "#{$this->model->key}";
         $dynagrid = $this->model->dynaGridId;

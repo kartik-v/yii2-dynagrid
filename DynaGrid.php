@@ -13,6 +13,7 @@ use kartik\base\Config;
 use kartik\dynagrid\models\DynaGridConfig;
 use kartik\dynagrid\models\DynaGridSettings;
 use kartik\grid\GridView;
+use kartik\dialog\Dialog;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
@@ -203,6 +204,13 @@ class DynaGrid extends Widget
      * @var string the confirmation warning message before deleting a personalization configuration or setting.
      */
     public $deleteConfirmation;
+
+    /**
+     * @var array configuration settings for the Krajee dialog widget that will be used to render alerts and
+     * confirmation dialog prompts
+     * @see http://demos.krajee.com/dialog
+     */
+    public $krajeeDialogSettings = [];
 
     /**
      * @var array the HTML attributes for the save/apply action button. If this is set to `false`, it will not be
@@ -444,7 +452,7 @@ class DynaGrid extends Widget
         if (empty($this->theme)) {
             $this->theme = $this->_module->defaultTheme;
         }
-        if (!isset($this->_pageSize) && $this->allowPageSetting) {
+        if (!isset($this->_pageSize) || $this->_pageSize === null) {
             $this->_pageSize = $this->_module->defaultPageSize;
         }
         $this->_requestSubmit = $this->options['id'] . '-dynagrid';
@@ -937,7 +945,7 @@ class DynaGrid extends Widget
      */
     protected function applyPageSize()
     {
-        if (isset($this->_pageSize) && $this->allowPageSetting) {
+        if (isset($this->_pageSize) && $this->_pageSize !== '' && $this->allowPageSetting) {
             /** @var \yii\data\BaseDataProvider $dataProvider */
             $dataProvider = $this->gridOptions['dataProvider'];
             if ($dataProvider instanceof ArrayDataProvider) {
@@ -1076,6 +1084,7 @@ class DynaGrid extends Widget
                     'deleteConfirmation' => $this->deleteConfirmation,
                     'isPjax' => $this->_isPjax,
                     'pjaxId' => $this->_pjaxId,
+                    'krajeeDialogSettings' => $this->krajeeDialogSettings,
                 ]
             );
         }
@@ -1095,6 +1104,7 @@ class DynaGrid extends Widget
                     'deleteConfirmation' => $this->deleteConfirmation,
                     'isPjax' => $this->_isPjax,
                     'pjaxId' => $this->_pjaxId,
+                    'krajeeDialogSettings' => $this->krajeeDialogSettings,
                 ]
             );
         }
@@ -1148,6 +1158,7 @@ class DynaGrid extends Widget
     {
         $view = $this->getView();
         DynaGridAsset::register($view);
+        Dialog::widget($this->krajeeDialogSettings);
         Html::addCssClass($this->messageOptions, 'dynagrid-submit-message');
         $options = Json::encode(
             [
@@ -1156,6 +1167,7 @@ class DynaGrid extends Widget
                 'deleteConfirmation' => $this->deleteConfirmation,
                 'modalId' => $this->_gridModalId,
                 'dynaGridId' => $this->options['id'],
+                'dialogLib' => ArrayHelper::getValue($this->krajeeDialogSettings, 'libName', 'krajeeDialog')
             ]
         );
         $id = "jQuery('[name=\"{$this->_requestSubmit}\"]')";

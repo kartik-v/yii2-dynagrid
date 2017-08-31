@@ -1,10 +1,13 @@
 Change Log: `yii2-dynagrid`
 ===========================
 
-## Version 1.4.6 (_under development_)
+## Version 1.4.6
 
-**Date:** 18-Aug-2017
+**Date:** 31-Aug-2017
 
+- (enh #168): Allow pageSize to be null when allowPageSetting is `false`.
+- (enh #167): Enhance dialog for confirmation & prompts to use Krajee Dialog extension.
+- (bug #166): Fix bug in client script causing dynagrid to break after filtering.
 - (enh #165): Eliminate dependency on Yii session component for module init.
 - (enh #163): Add ability to configure db connection component.
 - Code optimizations for Dynagrid jQuery plugin.

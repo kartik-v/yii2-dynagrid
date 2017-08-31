@@ -53,7 +53,7 @@ class DynaGridConfig extends Model
     /**
      * @var integer the grid page size
      */
-    public $pageSize;
+    public $pageSize = null;
     /**
      * @var string the filter identifier
      */
@@ -69,7 +69,7 @@ class DynaGridConfig extends Model
     /**
      * @var string the currently selected grid theme
      */
-    public $theme;
+    public $theme = null;
 
     /**
      * @inheritdoc
@@ -82,7 +82,7 @@ class DynaGridConfig extends Model
         $module = Config::initModule(Module::classname());
         return [
             [['id', 'hiddenColumns', 'visibleColumns', 'pageSize', 'filterId', 'sortId', 'theme'], 'safe'],
-            [['pageSize', 'theme'], 'required'],
+            ['theme', 'required'],
             ['pageSize', 'integer', 'min' => $module->minPageSize, 'max' => $module->maxPageSize],
             ['pageSize', 'default', 'value' => $module->defaultPageSize],
             ['theme', 'default', 'value' => $module->defaultTheme],
