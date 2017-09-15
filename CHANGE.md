@@ -3,8 +3,9 @@ Change Log: `yii2-dynagrid`
 
 ## Version 1.4.6
 
-**Date:** 31-Aug-2017
+**Date:** 15-Sep-2017
 
+- (enh #169): Enhance to generate unique input identifiers for dynagrid config & settings (allows multiple dynagrids to be rendered on same page).
 - (enh #168): Allow pageSize to be null when allowPageSetting is `false`.
 - (enh #167): Enhance dialog for confirmation & prompts to use Krajee Dialog extension.
 - (bug #166): Fix bug in client script causing dynagrid to break after filtering.

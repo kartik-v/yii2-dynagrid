@@ -16,7 +16,8 @@ use kartik\dynagrid\models\DynaGridSettings;
  * @var string           $requestSubmit
  */
 $module = Module::fetchModule();
-$listOptions = ['class' => 'form-control dynagrid-detail-list'];
+$id = $model->dynaGridId;
+$listOptions = ['id' => "settingsId-{$id}", 'class' => 'form-control dynagrid-detail-list'];
 $data = $model->getDtlList();
 if (count($data) == 0) {
     $listOptions['prompt'] = Yii::t('kvdynagrid', 'Select...', ['category' => $model->category]);
@@ -56,18 +57,18 @@ echo $form->field($model, 'name', [
             )
         ]
     ]
-])->textInput(['class' => 'form-control dynagrid-detail-name'])->hint($hint);
+])->textInput(['class' => 'form-control dynagrid-detail-name', 'id' => "name-{$id}"])->hint($hint);
 echo $form->field($model, 'settingsId')->listBox($data, $listOptions);
 ?>
     <div class="dynagrid-settings-text">
         <?= $model->getDataConfig() ?>
     </div>
 <?php
-echo Html::activeHiddenInput($model, 'dynaGridId');
-echo Html::activeHiddenInput($model, 'category');
-echo Html::activeHiddenInput($model, 'storage');
-echo Html::activeHiddenInput($model, 'userSpecific');
-echo Html::activeHiddenInput($model, 'dbUpdateNameOnly');
+echo Html::activeHiddenInput($model, 'dynaGridId', ['id' => "dynaGridId-{$id}"]);
+echo Html::activeHiddenInput($model, 'category', ['id' => "category-{$id}"]);
+echo Html::activeHiddenInput($model, 'storage', ['id' => "storage-{$id}"]);
+echo Html::activeHiddenInput($model, 'userSpecific', ['id' => "userSpecific-{$id}"]);
+echo Html::activeHiddenInput($model, 'dbUpdateNameOnly', ['id' => "dbUpdateNameOnly-{$id}"]);
 echo Html::hiddenInput('deleteDetailFlag', 0);
 echo Html::hiddenInput('configHashData', $model->getHashSignature());
 echo Html::hiddenInput($requestSubmit, 1);

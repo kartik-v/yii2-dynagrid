@@ -24,6 +24,7 @@ use yii\bootstrap\Modal;
  * @var array                                 $toggleButtonGrid
  */
 
+$dynagridId = substr($model->id, 0, -9);
 $options1 = ArrayHelper::merge($model->widgetOptions, [
     'items' => $model->visibleColumns,
     'connected' => true,
@@ -56,7 +57,7 @@ Modal::begin([
                     <div class="col-sm-<?= $col ?>">
                         <?= $form->field($model, 'pageSize',
                             ['addon' => ['append' => ['content' => Yii::t('kvdynagrid', 'rows per page')]]])
-                            ->textInput(['class' => 'form-control'])
+                            ->textInput(['class' => 'form-control', 'id' => "pageSize-{$dynagridId}"])
                             ->hint(Yii::t('kvdynagrid', "Integer between {min} to {max}", [
                                 'min' => $module->minPageSize,
                                 'max' => $module->maxPageSize
@@ -67,18 +68,18 @@ Modal::begin([
                     <div class="col-sm-<?= $col ?>">
                         <?= $form->field($model, 'theme')->widget(Select2::classname(), [
                             'data' => $model->themeList,
-                            'options' => ['placeholder' => Yii::t('kvdynagrid', 'Select a theme...')],
+                            'options' => ['placeholder' => Yii::t('kvdynagrid', 'Select a theme...'), 'id' => "theme-{$dynagridId}"],
                             'pluginOptions' => ['allowClear' => true]
                         ])->hint(Yii::t('kvdynagrid', 'Select theme to style grid')); ?>
                     </div>
                 <?php else: ?>
-                    <?= Html::activeHiddenInput($model, 'theme') ?>
+                    <?= Html::activeHiddenInput($model, 'theme', ['id' => "theme-{$dynagridId}"]) ?>
                 <?php endif; ?>
                 <?php if ($allowFilterSetting): ?>
                     <div class="col-sm-<?= $col ?>">
                         <?= $form->field($model, 'filterId')->widget(Select2::classname(), [
                             'data' => $model->filterList,
-                            'options' => ['placeholder' => Yii::t('kvdynagrid', 'Select a filter...')],
+                            'options' => ['placeholder' => Yii::t('kvdynagrid', 'Select a filter...'), 'id' => "filterId-{$dynagridId}"],
                             'pluginOptions' => ['allowClear' => true]
                         ])->hint(Yii::t('kvdynagrid', 'Set default grid filter criteria')) ?>
                     </div>
@@ -87,7 +88,7 @@ Modal::begin([
                     <div class="col-sm-<?= $col ?>">
                         <?= $form->field($model, 'sortId')->widget(Select2::classname(), [
                             'data' => $model->sortList,
-                            'options' => ['placeholder' => Yii::t('kvdynagrid', 'Select a sort...')],
+                            'options' => ['placeholder' => Yii::t('kvdynagrid', 'Select a sort...'), 'id' => "sortId-{$dynagridId}"],
                             'pluginOptions' => ['allowClear' => true]
                         ])->hint(Yii::t('kvdynagrid', 'Set default grid sort criteria')) ?>
                     </div>

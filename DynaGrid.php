@@ -352,6 +352,31 @@ class DynaGrid extends Widget
     protected $_store;
 
     /**
+     * Is column visible
+     *
+     * @param mixed $column
+     *
+     * @return mixed
+     */
+    protected static function isVisible($column)
+    {
+        return is_array($column) && !ArrayHelper::getValue($column, 'visible', true) ? false : true;
+    }
+
+    /**
+     * Can the column be reordered
+     *
+     * @param mixed $column
+     *
+     * @return boolean
+     */
+    protected function canReorder($column)
+    {
+        return is_array($column) && ArrayHelper::getValue($column, 'order', self::ORDER_MIDDLE) != self::ORDER_MIDDLE
+            ? false : true;
+    }
+
+    /**
      * Get the default action button option settings
      *
      * @param string $type the button type
@@ -667,7 +692,7 @@ class DynaGrid extends Widget
             $this->_visibleKeys = []; //take visible keys from grid config
             $this->_pageSize = $this->_module->defaultPageSize; //take pagesize from module configuration
             foreach ($this->_columns as $key => $column) {
-                if ($this->canReorder($column) && ArrayHelper::getValue($column, 'visible', true) === true) {
+                if (static::canReorder($column) && static::isVisible($column)) {
                     $this->_visibleKeys[] = $key;
                 }
             }
@@ -1181,31 +1206,5 @@ class DynaGrid extends Widget
             });";
         }
         $view->registerJs($js);
-    }
-
-    /**
-     * Is column visible
-     *
-     * @param mixed $column
-     *
-     * @return mixed
-     */
-    protected function isVisible($column)
-    {
-        return (!is_array($column) || empty($column['visible']) || $column['visible'] === true) &&
-        (empty($column['hidden']) || $column['hidden'] !== true);
-    }
-
-    /**
-     * Can the column be reordered
-     *
-     * @param mixed $column
-     *
-     * @return boolean
-     */
-    protected function canReorder($column)
-    {
-        return (is_array($column) && ArrayHelper::getValue($column, 'order', self::ORDER_MIDDLE) != self::ORDER_MIDDLE)
-            ? false : true;
     }
 }
