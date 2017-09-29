@@ -1,6 +1,12 @@
 Change Log: `yii2-dynagrid`
 ===========================
 
+## Version 1.4.7 (_under development_)
+
+**Date:** 29-Sep-2017
+
+- (enh #170): Add ability to configure one's own module identifier.
+
 ## Version 1.4.6
 
 **Date:** 15-Sep-2017

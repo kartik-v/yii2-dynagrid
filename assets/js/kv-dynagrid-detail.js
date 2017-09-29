@@ -2,7 +2,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
- * @version   1.4.6
+ * @version   1.4.7
  *
  * JQuery Plugin for yii2-dynagridDetail. Allows saving/deleting the dynagridDetail 
  * filter or sort details.
@@ -19,7 +19,7 @@
             return value === null || value === undefined || value === [] || value === '' || trim && $.trim(value) === '';
         },
         handler: function ($el, event, callback) {
-            var self = this, ns = '.dynagridDetail', ev = event.split(' ').join(ns + ' ') + ns;
+            var ns = '.dynagridDetail', ev = event.split(' ').join(ns + ' ') + ns;
             if (!$el || !$el.length) {
                 return;
             }
@@ -41,7 +41,7 @@
         constructor: DynagridDetail,
         init: function () {
             var self = this, $modal = $('#' + self.modalId), $dynaGridId = $('#' + self.dynaGridId),
-                $form = self.$element.closest('form'), $body = $('body');
+                $form = self.$element.closest('form');
             $modal.insertAfter($dynaGridId);
             self.$form = $form;
             self.$formContainer = $form.parent();
@@ -109,7 +109,8 @@
             }, 1000);
         },
         _submit: function() {
-            this._submitForm(self.submitMessage);
+            var self = this;
+            self._submitForm(self.submitMessage);
         },
         _delete: function() {
             var self = this, $el, dialogLib = window[self.dialogLib];
@@ -126,7 +127,7 @@
                     self._submitForm(self.deleteMessage);
                 }
             });
-        },
+        }
     };
 
     // dynagridDetail plugin definition
@@ -154,6 +155,6 @@
         configUrl: '',
         modalId: '',
         dynaGridId: '',
-        dialogLib: krajeeDialog
+        dialogLib: 'krajeeDialog'
     };
 }(window.jQuery));

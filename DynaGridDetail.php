@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
- * @version   1.4.6
+ * @version   1.4.7
  */
 
 namespace kartik\dynagrid;
@@ -111,11 +111,12 @@ class DynaGridDetail extends Widget
     {
         if (empty($this->model) || !$this->model instanceof DynaGridSettings) {
             throw new InvalidConfigException(
-                "You must enter a valid 'model' for DynaGridDetail extending from '" . DynaGridSettings::classname() . "'"
+                "You must enter a valid 'model' for DynaGridDetail extending from '" . DynaGridSettings::classname(
+                ) . "'"
             );
         }
         parent::init();
-        $this->_module = Config::initModule(Module::classname());
+        $this->_module = Config::getModule($this->moduleId, Module::classname());
         $this->_requestSubmit = $this->options['id'] . '-dynagrid-detail';
         $request = Yii::$app->request;
         $this->_isSubmit = !empty($_POST[$this->_requestSubmit]) &&
@@ -131,23 +132,26 @@ class DynaGridDetail extends Widget
     {
         $this->saveDetail();
         $params = ['title' => static::getCat($this->model->category, true)];
-        $title = Yii::t('kvdynagrid', "Save / Edit Grid {title}", $params);
+        $title = Yii::t('kvdynagrid', 'Save / Edit Grid {title}', $params);
         $icon = "<i class='glyphicon glyphicon-{$this->model->category}'></i> ";
-        Modal::begin([
-            'header' => '<h3 class="modal-title">' . $icon . $title . '</h3>',
-            'toggleButton' => $this->toggleButton,
-            'options' => ['id' => $this->id]
-        ]);
-        echo $this->render($this->_module->settingsView, [
-            'model' => $this->model,
-            'requestSubmit' => $this->_requestSubmit
-        ]);
+        Modal::begin(
+            [
+                'header' => '<h3 class="modal-title">' . $icon . $title . '</h3>',
+                'toggleButton' => $this->toggleButton,
+                'options' => ['id' => $this->id],
+            ]
+        );
+        echo $this->render(
+            $this->_module->settingsView,
+            ['model' => $this->model, 'moduleId' => $this->moduleId, 'requestSubmit' => $this->_requestSubmit]
+        );
         Modal::end();
         parent::run();
     }
 
     /**
      * Check and validate any detail record to save or delete
+     *
      * @throws InvalidCallException
      */
     protected function saveDetail()
@@ -179,15 +183,23 @@ class DynaGridDetail extends Widget
         $view = $this->getView();
         DynaGridDetailAsset::register($view);
         Html::addCssClass($this->messageOptions, 'dynagrid-submit-message');
-        $options = Json::encode([
-            'submitMessage' => Html::tag('div', $this->submitMessage, $this->messageOptions),
-            'deleteMessage' => Html::tag('div', $this->deleteMessage, $this->messageOptions),
-            'deleteConfirmation' => $this->deleteConfirmation,
-            'configUrl' => Url::to([$this->_module->settingsConfigAction]),
-            'modalId' => $this->id,
-            'dynaGridId' => $this->model->dynaGridId,
-            'dialogLib' => ArrayHelper::getValue($this->krajeeDialogSettings, 'libName', 'krajeeDialog')
-        ]);
+        if (isset($this->_module->settingsConfigAction)) {
+            $action = $this->_module->settingsConfigAction;
+        } else {
+            $action = '/' . $this->moduleId . '/settings/get-config';
+        }
+        $action = (array) $action;
+        $options = Json::encode(
+            [
+                'submitMessage' => Html::tag('div', $this->submitMessage, $this->messageOptions),
+                'deleteMessage' => Html::tag('div', $this->deleteMessage, $this->messageOptions),
+                'deleteConfirmation' => $this->deleteConfirmation,
+                'configUrl' => Url::to($action),
+                'modalId' => $this->id,
+                'dynaGridId' => $this->model->dynaGridId,
+                'dialogLib' => ArrayHelper::getValue($this->krajeeDialogSettings, 'libName', 'krajeeDialog'),
+            ]
+        );
         $id = "#{$this->model->key}";
         $dynagrid = $this->model->dynaGridId;
         $js = "jQuery('{$id}').dynagridDetail({$options});\njQuery('#{$dynagrid}').after(jQuery('{$id}'));";

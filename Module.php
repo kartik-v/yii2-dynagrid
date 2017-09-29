@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
- * @version   1.4.6
+ * @version   1.4.7
  */
 
 namespace kartik\dynagrid;
@@ -88,10 +88,11 @@ class Module extends \kartik\base\Module
     public $settingsView = 'settings';
 
     /**
-     * @var mixed the action URL for displaying the dynagrid detail configuration settings
-     * on the dynagrid detail settings form
+     * @var mixed the action URL for displaying the dynagrid detail configuration settings on the dynagrid detail
+     * settings form. If this is not set it will default to `<moduleId>/settings/get-config`, where `<moduleId>` is
+     * the module identifier for the dynagrid module.
      */
-    public $settingsConfigAction = '/dynagrid/settings/get-config';
+    public $settingsConfigAction;
 
     /**
      * @var array the theme configuration for the gridview
@@ -158,18 +159,6 @@ class Module extends \kartik\base\Module
     {
         parent::init();
         $this->initSettings();
-    }
-
-    /**
-     * Gets the module instance
-     *
-     * @param string $module the module name
-     *
-     * @return Module
-     */
-    public static function fetchModule($module = self::MODULE)
-    {
-        return Config::getModule($module);
     }
 
     /**

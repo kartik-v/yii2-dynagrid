@@ -4,12 +4,13 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
- * @version   1.4.6
+ * @version   1.4.7
  */
 
 namespace kartik\dynagrid\controllers;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\web\Controller;
 use yii\web\Response;
 use kartik\dynagrid\models\DynaGridSettings;
@@ -24,7 +25,7 @@ class SettingsController extends Controller
     /**
      * Fetch dynagrid setting configuration
      *
-     * @return string
+     * @return mixed
      */
     public function actionGetConfig()
     {
