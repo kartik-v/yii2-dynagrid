@@ -38,6 +38,10 @@ The latest version of the module is v1.4.7. Refer the [CHANGE LOG](https://githu
 - With v1.2.0, the Dynagrid is revamped to include a `DynaGridStore` object and ability to save, update, or delete grid personalizations including grid filter and sort.
 - With v1.1.0, the DynaGrid includes Pjax support. To enable Pjax processing, set `gridOptions['pjax']` property to `true` and control pjax behavior using `gridOptions['pjaxSettings']`.
 
+How to contribute via a pull request?
+-------------------------------------
+Refer this [git workflow for contributors](.github/GIT-WORKFLOW.md).
+
 ### Demo
 You can see detailed [documentation](http://demos.krajee.com/dynagrid) or view a [complete demo](http://demos.krajee.com/dynagrid-demo) on usage of the extension.
 
