@@ -63,3 +63,4 @@ return [
     'grid' => 'tableau',
     'rows per page' => 'lignes par page',
     'sort' => 'tri',
+ ];
