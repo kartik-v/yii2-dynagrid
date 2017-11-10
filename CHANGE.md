@@ -1,6 +1,14 @@
 Change Log: `yii2-dynagrid`
 ===========================
 
+## Version 1.4.8 (_under development_)
+
+**Date:** 10-Nov-2017
+
+- (enh #180): Enhance dynagrid config form when all settings are hidden.
+- (enh #177, #178): Update French Translations.
+- (enh #176): Update German Translations.
+
 ## Version 1.4.7
 
 **Date:** 23-Oct-2017
