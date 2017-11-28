@@ -12,7 +12,7 @@ namespace kartik\dynagrid;
 use kartik\base\Config;
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
@@ -24,7 +24,7 @@ use yii\web\Cookie;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.2.0
  */
-class DynaGridStore extends Object
+class DynaGridStore extends BaseObject
 {
     /**
      * Grid configuration storage
