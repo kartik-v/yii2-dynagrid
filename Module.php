@@ -168,7 +168,7 @@ class Module extends \kartik\base\Module
     {
         $this->dbSettings += [
             'connection' => 'db',
-            'tableName' => 'tbl_dynagrid',
+            'tableName' => '{{%dynagrid}}',
             'idAttr' => 'id',
             'filterAttr' => 'filter_id',
             'sortAttr' => 'sort_id',
@@ -176,7 +176,7 @@ class Module extends \kartik\base\Module
         ];
         $this->dbSettingsDtl += [
             'connection' => 'db',
-            'tableName' => 'tbl_dynagrid_dtl',
+            'tableName' => '{{%dynagrid_dtl}}',
             'idAttr' => 'id',
             'categoryAttr' => 'category',
             'nameAttr' => 'name',
