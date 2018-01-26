@@ -11,8 +11,8 @@ namespace kartik\dynagrid;
 
 use kartik\base\Config;
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\base\BaseObject;
+use yii\base\InvalidConfigException;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
@@ -131,7 +131,7 @@ class DynaGridStore extends BaseObject
      * Fetches and return the list of detail values for
      * session or cookie storage
      *
-     * @param array $config the storage configuration
+     * @param array  $config the storage configuration
      * @param string $cat the detail category
      *
      * @return array

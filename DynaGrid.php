@@ -1074,13 +1074,15 @@ class DynaGrid extends Widget
         $dynagrid = '';
         $dynagridFilter = '';
         $dynagridSort = '';
-        $model = new DynaGridSettings([
-            'moduleId' => $this->moduleId,
-            'dynaGridId' => $this->options['id'],
-            'storage' => $this->storage,
-            'userSpecific' => $this->userSpecific,
-            'dbUpdateNameOnly' => $this->dbUpdateNameOnly
-        ]);
+        $model = new DynaGridSettings(
+            [
+                'moduleId' => $this->moduleId,
+                'dynaGridId' => $this->options['id'],
+                'storage' => $this->storage,
+                'userSpecific' => $this->userSpecific,
+                'dbUpdateNameOnly' => $this->dbUpdateNameOnly,
+            ]
+        );
         /** @var ActiveDataProvider $dataProvider */
         $dataProvider = $this->gridOptions['dataProvider'];
         $sort = $dataProvider->getSort();
@@ -1236,11 +1238,28 @@ class DynaGrid extends Widget
         $js = "{$id}.dynagrid({$options});\n";
         // pjax related reset
         if ($this->_isPjax) {
-            $js .= " $('#{$this->_pjaxId}').on('pjax:complete', function () {
+            $cleanup = $this->pjaxCleanupJs('grid') . $this->pjaxCleanupJs('filter') . $this->pjaxCleanupJs('sort');
+            $js .= " jQuery('#{$this->_pjaxId}').on('pjax:beforeReplace', function () {
+                {$cleanup}
+            });";
+            $js .= " jQuery('#{$this->_pjaxId}').on('pjax:end', function () {
                 {$id}.dynagrid({$options});
                 {$id}.dynagrid('reset');
             });";
         }
         $view->registerJs($js);
+    }
+
+    /**
+     * Generates the cleanup client script for modals
+     *
+     * @param string $type the modal container type 'grid', 'filter', or 'sort'
+     *
+     * @return string
+     */
+    protected function pjaxCleanupJs($type)
+    {
+        $id = "_{$type}ModalId";
+        return 'jQuery("#' . $this->$id . '").remove();';
     }
 }
