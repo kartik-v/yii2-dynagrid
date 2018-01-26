@@ -3,16 +3,16 @@
 /**
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @version   1.4.8
  */
 
 namespace kartik\dynagrid\models;
 
-use Yii;
-use yii\base\Model;
 use kartik\base\Config;
 use kartik\dynagrid\Module;
+use Yii;
+use yii\base\Model;
 
 /**
  * Model for the dynagrid configuration

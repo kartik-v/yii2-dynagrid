@@ -1,7 +1,7 @@
 /*!
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @version   1.4.8
  *
  * Styling for yii2-dynagrid.
@@ -40,8 +40,7 @@
 .dynagrid-settings-text ul {
     border: 1px solid #ddd;
     border-radius: 4px;
-    padding: 8px;
-    padding-left: 24px;
+    padding: 8px 8px 8px 24px;
     list-style-type: square;
 }
 

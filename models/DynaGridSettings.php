@@ -3,19 +3,19 @@
 /**
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @version   1.4.8
  */
 
 namespace kartik\dynagrid\models;
 
+use kartik\base\Config;
+use kartik\dynagrid\DynaGrid;
+use kartik\dynagrid\DynaGridStore;
+use kartik\dynagrid\Module;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Inflector;
-use kartik\base\Config;
-use kartik\dynagrid\Module;
-use kartik\dynagrid\DynaGrid;
-use kartik\dynagrid\DynaGridStore;
 
 /**
  * Model for the dynagrid filter or sort configuration
@@ -81,12 +81,31 @@ class DynaGridSettings extends Model
     public $data;
 
     /**
+     * @var Module the Dynagrid module
+     */
+    protected $_module;
+
+    /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['moduleId', 'category', 'storage', 'userSpecific', 'dbUpdateNameOnly', 'name', 'dynaGridId', 'settingsId', 'key', 'data'], 'safe'],
+            [
+                [
+                    'moduleId',
+                    'category',
+                    'storage',
+                    'userSpecific',
+                    'dbUpdateNameOnly',
+                    'name',
+                    'dynaGridId',
+                    'settingsId',
+                    'key',
+                    'data',
+                ],
+                'safe',
+            ],
             [['name'], 'required'],
         ];
     }
@@ -126,7 +145,7 @@ class DynaGridSettings extends Model
             'category' => $this->category,
             'storage' => $this->storage,
             'userSpecific' => $this->userSpecific,
-            'dbUpdateNameOnly' => $this->dbUpdateNameOnly
+            'dbUpdateNameOnly' => $this->dbUpdateNameOnly,
         ];
         if (!empty($this->settingsId)) {
             $settings['dtlKey'] = $this->settingsId;
@@ -157,14 +176,16 @@ class DynaGridSettings extends Model
      */
     public function deleteSettings()
     {
-        $master = new DynaGridStore([
-            'id' => $this->dynaGridId,
-            'moduleId' => $this->moduleId,
-            'category' => DynaGridStore::STORE_GRID,
-            'storage' => $this->storage,
-            'userSpecific' => $this->userSpecific,
-            'dbUpdateNameOnly' => $this->dbUpdateNameOnly
-        ]);
+        $master = new DynaGridStore(
+            [
+                'id' => $this->dynaGridId,
+                'moduleId' => $this->moduleId,
+                'category' => DynaGridStore::STORE_GRID,
+                'storage' => $this->storage,
+                'userSpecific' => $this->userSpecific,
+                'dbUpdateNameOnly' => $this->dbUpdateNameOnly,
+            ]
+        );
         $config = $this->storage == DynaGrid::TYPE_DB ? null : $master->fetch();
         $master->deleteConfig($this->category, $config);
         $this->getStore()->delete();
@@ -202,11 +223,11 @@ class DynaGridSettings extends Model
                 $out .= "<li>{$label} = {$value}</li>";
             }
         } else {
-            foreach ($data as $attribute => $direction) {
+            foreach ($data as $attribute => $dir) {
                 $label = isset($attribute['label']) ? $attribute['label'] : Inflector::camel2words($attribute);
-                $icon = $direction === SORT_DESC ? 'glyphicon glyphicon-sort-by-alphabet-alt' : 'glyphicon glyphicon-sort-by-alphabet';
-                $dir = $direction === SORT_DESC ? Yii::t('kvdynagrid', 'descending') : Yii::t('kvdynagrid', 'ascending');
-                $out .= "<li>{$label} <span class='{$icon}'></span> <span class='label label-default'>{$dir}</span></li>";
+                $icon = $dir === SORT_DESC ? 'glyphicon glyphicon-sort-by-alphabet-alt' : 'glyphicon glyphicon-sort-by-alphabet';
+                $d = $dir === SORT_DESC ? Yii::t('kvdynagrid', 'descending') : Yii::t('kvdynagrid', 'ascending');
+                $out .= "<li>{$label} <span class='{$icon}'></span> <span class='label label-default'>{$d}</span></li>";
             }
         }
         $out .= '</ul>';
@@ -217,6 +238,7 @@ class DynaGridSettings extends Model
      * Gets a hashed signature for specific attribute data passed between server and client
      *
      * @param array $attribs the list of attributes whose data is to be hashed
+     *
      * @return string the hashed signature output
      * @throws \yii\base\InvalidConfigException
      */
@@ -231,7 +253,7 @@ class DynaGridSettings extends Model
                 $out .= $attr === 'userSpecific' || $attr === 'dbUpdateOnly' ? !!$this->$attr : $this->$attr;
             }
         }
-        $module = Config::getModule($this->moduleId, Module::className());
+        $module = $this->getModule();
         return Yii::$app->security->hashData($out, $module->configEncryptSalt);
     }
 
@@ -239,7 +261,7 @@ class DynaGridSettings extends Model
      * Validate signature of the hashed data submitted via hidden fields from the filter/sort update form
      *
      * @param string $hashData the hashed data to match
-     * @param array $attribs the list of attributes against which data hashed is to be validated
+     * @param array  $attribs the list of attributes against which data hashed is to be validated
      *
      * @return boolean|string returns true if valid else the validation error message
      */
@@ -247,7 +269,7 @@ class DynaGridSettings extends Model
     {
         $origHash = $this->getHashSignature($attribs);
         $params = YII_DEBUG ? '<pre>OLD HASH:<br>' . $origHash . '<br>NEW HASH:<br>' . $hashData . '</pre>' : '';
-        $module = Config::getModule($this->moduleId, Module::className());
+        $module = $this->getModule();
         return (Yii::$app->security->validateData($hashData, $module->configEncryptSalt) && $hashData === $origHash) ?
             true :
             Yii::t(
@@ -255,5 +277,18 @@ class DynaGridSettings extends Model
                 'Operation disallowed! Invalid request signature detected for dynagrid settings. {params}',
                 ['params' => $params]
             );
+    }
+
+    /**
+     * Returns the Dynagrid module instance
+     *
+     * @return Module
+     */
+    protected function getModule()
+    {
+        if (!isset($this->_module)) {
+            $this->_module = Config::getModule($this->moduleId, Module::className());
+        }
+        return $this->_module;
     }
 }

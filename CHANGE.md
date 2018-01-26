@@ -5,6 +5,7 @@ Change Log: `yii2-dynagrid`
 
 **Date:** _work in progress_
 
+- Update copyright year to current.
 - (enh #188): Reset and cleanup bootstrap modals on pjax reload.
 - (enh #183, #182): Update DynaGridStore.php for yii 2.0.13 support.
 - (enh #180): Enhance dynagrid config form when all settings are hidden.

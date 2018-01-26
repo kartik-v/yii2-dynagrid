@@ -1,7 +1,7 @@
 /*!
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @version   1.4.8
  *
  * JQuery Plugin for yii2-dynagrid.
@@ -28,12 +28,12 @@
             window[id] = objActiveForm;
         },
         handler: function ($el, event, callback) {
-            var self = this, ns = '.dynagrid', ev = event.split(' ').join(ns + ' ') + ns;
+            var ns = '.dynagrid', ev = event.split(' ').join(ns + ' ') + ns;
             if (!$el || !$el.length) {
                 return;
             }
             $el.off(ev).on(ev, callback);
-        }            
+        }
     };
     Dynagrid = function (element, options) {
         var self = this;
@@ -97,7 +97,7 @@
             }).get().join(',');
 
         },
-        _submitForm: function(msg) {
+        _submitForm: function (msg) {
             var self = this, $form = self.$form, $formContainer = self.$formContainer;
             $form.hide();
             $formContainer.prepend(msg);
@@ -105,13 +105,13 @@
                 $form.submit();
             }, 1000);
         },
-        _submit: function() {
+        _submit: function () {
             var self = this;
             self._setColumnKeys();
             self.$visibleKeys.val(self.visibleKeys);
             self._submitForm(self.submitMessage);
         },
-        _delete: function() {
+        _delete: function () {
             var self = this, $el, dialogLib = window[self.dialogLib];
             dialogLib.confirm(self.deleteConfirmation, function (result) {
                 if (result) {

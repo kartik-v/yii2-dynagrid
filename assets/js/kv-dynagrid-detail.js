@@ -1,7 +1,7 @@
 /*!
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @version   1.4.8
  *
  * JQuery Plugin for yii2-dynagridDetail. Allows saving/deleting the dynagridDetail 
@@ -13,7 +13,7 @@
 (function ($) {
     "use strict";
     var $h, DynagridDetail;
-    
+
     $h = {
         isEmpty: function (value, trim) {
             return value === null || value === undefined || value === [] || value === '' || trim && $.trim(value) === '';
@@ -24,7 +24,7 @@
                 return;
             }
             $el.off(ev).on(ev, callback);
-        }            
+        }
     };
 
     DynagridDetail = function (element, options) {
@@ -100,7 +100,7 @@
                 });
             });
         },
-        _submitForm: function(msg) {
+        _submitForm: function (msg) {
             var self = this, $form = self.$form, $formContainer = self.$formContainer;
             $form.hide();
             $formContainer.prepend(msg);
@@ -108,11 +108,11 @@
                 $form.submit();
             }, 1000);
         },
-        _submit: function() {
+        _submit: function () {
             var self = this;
             self._submitForm(self.submitMessage);
         },
-        _delete: function() {
+        _delete: function () {
             var self = this, $el, dialogLib = window[self.dialogLib];
             if ($h.isEmpty(self.$list.val())) {
                 self.$form.trigger('reset.yiiActiveForm');

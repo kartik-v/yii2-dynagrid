@@ -3,17 +3,16 @@
 /**
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2017
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @version   1.4.8
  */
 
 namespace kartik\dynagrid\controllers;
 
+use kartik\dynagrid\models\DynaGridSettings;
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\web\Controller;
 use yii\web\Response;
-use kartik\dynagrid\models\DynaGridSettings;
 
 /**
  * SettingsController will manage the actions for dynagrid settings
@@ -36,7 +35,7 @@ class SettingsController extends Controller
         if ($model->load($request->post()) && $model->validate()) {
             $validate = $model->validateSignature($request->post('configHashData', ''));
             if ($validate === true) {
-                $out = ['status' => 'success', 'content' => print_r($model->getDataConfig(), true)];
+                $out = ['status' => 'success', 'content' => var_export($model->getDataConfig(), true)];
             } else {
                 $out = ['status' => 'error', 'content' => '<div class="alert alert-danger">' . $validate . '</div>'];
             }
