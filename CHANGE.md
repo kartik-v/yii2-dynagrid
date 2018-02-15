@@ -1,9 +1,9 @@
 Change Log: `yii2-dynagrid`
 ===========================
 
-## Version 1.4.8 (_under development_)
+## Version 1.4.8
 
-**Date:** _work in progress_
+**Date:** 15-Feb-2018
 
 - Update copyright year to current.
 - (enh #188): Reset and cleanup bootstrap modals on pjax reload.
