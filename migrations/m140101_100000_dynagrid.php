@@ -5,6 +5,7 @@
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @version   1.4.8
  */
+namespace kartik\dynagrid\migrations;
 
 use yii\db\Schema;
 use yii\db\Migration;
@@ -24,7 +25,7 @@ class m140101_100000_dynagrid extends Migration
     {
         $tableOptions = '';
 
-        if (Yii::$app->db->driverName === 'mysql') {
+        if ($this->db->driverName === 'mysql') {
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB';
         }
 
