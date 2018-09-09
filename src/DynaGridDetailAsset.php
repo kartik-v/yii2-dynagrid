@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
- * @version   1.4.8
+ * @version   1.4.9
  */
 
 namespace kartik\dynagrid;
@@ -19,6 +19,11 @@ use kartik\base\AssetBundle;
  */
 class DynaGridDetailAsset extends AssetBundle
 {
+    /**
+     * @inheritdoc
+     */
+    public $depends = ["kartik\\dynagrid\\DynaGridAsset"];
+
     /**
      * @inheritdoc
      */

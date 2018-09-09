@@ -2,6 +2,7 @@ yii2-dynagrid
 =============
 
 [![Latest Stable Version](https://poser.pugx.org/kartik-v/yii2-dynagrid/v/stable)](https://packagist.org/packages/kartik-v/yii2-dynagrid)
+[![Latest Unstable Version](https://poser.pugx.org/kartik-v/yii2-dynagrid/v/unstable)](https://packagist.org/packages/kartik-v/yii2-dynagrid)
 [![License](https://poser.pugx.org/kartik-v/yii2-dynagrid/license)](https://packagist.org/packages/kartik-v/yii2-dynagrid)
 [![Total Downloads](https://poser.pugx.org/kartik-v/yii2-dynagrid/downloads)](https://packagist.org/packages/kartik-v/yii2-dynagrid)
 [![Monthly Downloads](https://poser.pugx.org/kartik-v/yii2-dynagrid/d/monthly)](https://packagist.org/packages/kartik-v/yii2-dynagrid)

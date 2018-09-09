@@ -4,12 +4,13 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
- * @version   1.4.8
+ * @version   1.4.9
  */
 
 namespace kartik\dynagrid;
 
 use kartik\base\Config;
+use kartik\base\Widget;
 use kartik\dialog\Dialog;
 use kartik\dynagrid\models\DynaGridConfig;
 use kartik\dynagrid\models\DynaGridSettings;
@@ -17,7 +18,6 @@ use kartik\grid\GridView;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
-use yii\base\Widget;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
 use yii\data\DataProviderInterface;
@@ -377,9 +377,11 @@ class DynaGrid extends Widget
      * @param string $type the button type
      *
      * @return array the button settings
+     * @throws InvalidConfigException
      */
-    protected static function getDefaultButtonOptions($type)
+    protected function getDefaultButtonOptions($type)
     {
+        $isBs4 = $this->isBs4();
         if ($type === 'submit') {
             return [
                 'type' => 'button',
@@ -393,17 +395,17 @@ class DynaGrid extends Widget
         if ($type === 'reset') {
             return [
                 'type' => 'reset',
-                'icon' => 'repeat',
+                'icon' => $isBs4 ? 'redo' : 'repeat',
                 'label' => Yii::t('kvdynagrid', 'Reset'),
                 'title' => Yii::t('kvdynagrid', 'Abort any changes and reset settings'),
-                'class' => 'btn btn-default',
+                'class' => 'btn ' . $this->getDefaultBtnCss(),
                 'data-pjax' => false,
             ];
         }
         if ($type === 'delete') {
             return [
                 'type' => 'button',
-                'icon' => 'trash',
+                'icon' => $isBs4 ? 'trash-alt' : 'trash',
                 'label' => Yii::t('kvdynagrid', 'Trash'),
                 'title' => Yii::t('kvdynagrid', 'Remove saved grid settings'),
                 'class' => 'btn btn-danger',
@@ -425,6 +427,8 @@ class DynaGrid extends Widget
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
+     * @throws \Exception
      */
     public function run()
     {
@@ -435,6 +439,7 @@ class DynaGrid extends Widget
 
     /**
      * Initialize the module based on module identifier
+     * @throws InvalidConfigException
      */
     protected function initModule()
     {
@@ -446,7 +451,13 @@ class DynaGrid extends Widget
             }
             $this->moduleId = Module::MODULE;
         }
-        $this->_module = Config::getModule($this->moduleId, Module::className());
+        $this->_module = Config::getModule($this->moduleId, Module::class);
+        if (empty($this->gridOptions['bsVersion']) && isset($this->bsVersion)) {
+            $this->gridOptions['bsVersion'] = $this->bsVersion;
+        }
+        if (isset($this->_module->bsVersion) && !isset($this->bsVersion)) {
+            $this->bsVersion = $this->_module->bsVersion;
+        }
     }
 
     /**
@@ -575,6 +586,7 @@ class DynaGrid extends Widget
 
     /**
      * Reconfigure columns with unique keys
+     * @throws InvalidConfigException
      */
     protected function configureColumns()
     {
@@ -599,6 +611,7 @@ class DynaGrid extends Widget
      * @param mixed $column
      *
      * @return mixed
+     * @throws InvalidConfigException
      */
     protected function getColumnKey($column)
     {
@@ -641,6 +654,7 @@ class DynaGrid extends Widget
 
     /**
      * Applies the current grid configuration
+     * @throws InvalidConfigException
      */
     protected function applyGridConfig()
     {
@@ -667,6 +681,7 @@ class DynaGrid extends Widget
      * @param boolean $current whether it is the currently set grid configuraton
      *
      * @return array
+     * @throws InvalidConfigException
      */
     protected function getGridConfig($current = false)
     {
@@ -691,8 +706,9 @@ class DynaGrid extends Widget
     /**
      * Update configuration
      *
-     * @param array   $config the dynagrid configuration
+     * @param array $config the dynagrid configuration
      * @param boolean $delete the deletion flag
+     * @throws InvalidConfigException
      */
     protected function saveGridConfig($config, $delete)
     {
@@ -733,6 +749,7 @@ class DynaGrid extends Widget
      * @param array $data the stored data to be parsed
      *
      * @return void
+     * @throws InvalidConfigException
      */
     protected function parseData($data)
     {
@@ -759,6 +776,7 @@ class DynaGrid extends Widget
      * Parses the grid detail configuration (for filter or sort).
      *
      * @param string $category one of 'filter' or 'sort'
+     * @throws InvalidConfigException
      */
     protected function parseDetailData($category)
     {
@@ -784,6 +802,7 @@ class DynaGrid extends Widget
 
     /**
      * Sets widget columns for display in [[\kartik\sortable\Sortable]] widget
+     * @throws InvalidConfigException
      */
     protected function setWidgetColumns()
     {
@@ -849,6 +868,7 @@ class DynaGrid extends Widget
      * @param mixed $column the column object / configuration
      *
      * @return string
+     * @throws InvalidConfigException
      */
     protected function getColumnLabel($key, $column)
     {
@@ -937,7 +957,7 @@ class DynaGrid extends Widget
         if ($options === false) {
             return '';
         }
-        $defaultOptions = static::getDefaultButtonOptions($type);
+        $defaultOptions = $this->getDefaultButtonOptions($type);
         if (!is_array($options)) {
             $options = $defaultOptions;
         } else {
@@ -946,7 +966,7 @@ class DynaGrid extends Widget
         $icon = ArrayHelper::remove($options, 'icon', '');
         $label = '';
         if (!empty($icon)) {
-            $label = '<span class="glyphicon glyphicon-' . $icon . '"></span> ';
+            $label = '<span class="' . $this->getDefaultIconPrefix() . $icon . '"></span> ';
         }
         $label .= ArrayHelper::remove($options, 'label', '');
         Html::addCssClass($options, "dynagrid-{$type}");
@@ -1068,12 +1088,15 @@ class DynaGrid extends Widget
 
     /**
      * Initialize the grid view for dynagrid
+     * @throws InvalidConfigException
+     * @throws \Exception
      */
     protected function initGrid()
     {
         $dynagrid = '';
         $dynagridFilter = '';
         $dynagridSort = '';
+        $isBs4 = $this->isBs4();
         $model = new DynaGridSettings(
             [
                 'moduleId' => $this->moduleId,
@@ -1122,6 +1145,11 @@ class DynaGrid extends Widget
                     'allowFilterSetting' => $this->allowFilterSetting,
                     'allowSortSetting' => $this->allowSortSetting,
                     'moduleId' => $this->moduleId,
+                    'isBs4' => $isBs4,
+                    'isPjax' => $this->_isPjax,
+                    'pjaxId' => $this->_pjaxId,
+                    'defaultIconPrefix' => $this->getDefaultIconPrefix(),
+                    'defaultButtonCss' => $this->getDefaultBtnCss(),
                 ]
             );
         }
@@ -1133,6 +1161,7 @@ class DynaGrid extends Widget
             $dynagridFilter = DynaGridDetail::widget(
                 [
                     'id' => $this->_filterModalId,
+                    'bsVersion' => $this->bsVersion,
                     'model' => $model,
                     'moduleId' => $this->moduleId,
                     'toggleButton' => $this->toggleButtonFilter,
@@ -1181,18 +1210,22 @@ class DynaGrid extends Widget
      * Sets the personalization toggle button
      *
      * @param string $cat the category 'grid', 'filter', or 'sort'
+     * @throws InvalidConfigException
      */
     protected function setToggleButton($cat)
     {
         $setting = 'toggleButton' . ucfirst($cat);
+        $isBs4 = $this->isBs4();
+        $defaultCss = $isBs4 ? 'outline-secondary' : 'default';
+        $defaultIconPrefix = $isBs4 ? 'fas fa-fw fa-' : 'glyphicon glyphicon-';
         $btnClass = ($this->matchPanelStyle && $cat == 'grid' && !empty($this->gridOptions['panel'])) ?
-            'btn btn-' . ArrayHelper::getValue($this->gridOptions['panel'], 'type', 'default') :
-            'btn btn-default';
+            'btn btn-' . ArrayHelper::getValue($this->gridOptions['panel'], 'type', $defaultCss) :
+            'btn btn-' . $defaultCss;
         Html::addCssClass($this->$setting, $btnClass);
         if ($cat == DynaGridStore::STORE_GRID) {
             $this->toggleButtonGrid = ArrayHelper::merge(
                 [
-                    'label' => '<i class="glyphicon glyphicon-wrench"></i>',
+                    'label' => '<i class="' . $defaultIconPrefix . 'wrench"></i>',
                     'title' => Yii::t('kvdynagrid', 'Personalize grid settings'),
                     'data-pjax' => false,
                 ],
@@ -1201,7 +1234,7 @@ class DynaGrid extends Widget
         } else {
             $this->$setting = ArrayHelper::merge(
                 [
-                    'label' => "<i class='glyphicon glyphicon-{$cat}'></i>",
+                    'label' => '<i class="' . $defaultIconPrefix . $cat . '"></i>',
                     'title' => Yii::t(
                         'kvdynagrid',
                         'Save / edit grid {category}',
@@ -1216,6 +1249,7 @@ class DynaGrid extends Widget
 
     /**
      * Registers client assets
+     * @throws \Exception
      */
     protected function registerAssets()
     {

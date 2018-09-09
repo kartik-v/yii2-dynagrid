@@ -2,7 +2,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @package yii2-dynagrid
- * @version 1.4.8
+ * @version 1.4.9
  */
 
 use kartik\base\Config;
@@ -17,8 +17,11 @@ use yii\helpers\Html;
  * @var Module           $module
  * @var string           $moduleId
  * @var string           $requestSubmit
+ * @var string           $saveIcon
+ * @var string           $removeIcon
  */
-$module = Config::getModule($moduleId, Module::className());
+/** @noinspection PhpUnhandledExceptionInspection */
+$module = Config::getModule($moduleId, Module::class);
 $id = $model->dynaGridId;
 $listOptions = ['id' => "settingsId-{$id}", 'class' => 'form-control dynagrid-detail-list'];
 $data = $model->getDtlList();
@@ -46,23 +49,22 @@ if ($model->storage === DynaGrid::TYPE_DB && $model->dbUpdateNameOnly) {
             $params
         ) . '</em>';
 }
-echo $form->field(
-    $model, 'name', [
-    'addon' => [
+/** @noinspection PhpUnhandledExceptionInspection */
+echo $form->field($model, 'name', ['addon' => [
         'append' => [
             'asButton' => true,
             'content' => Html::button(
-                    '<span class="glyphicon glyphicon-ok"></span>',
+                    $saveIcon,
                     ['title' => Yii::t('kvdynagrid', 'Save'), 'class' => 'dynagrid-detail-save btn btn-primary']
                 ) .
                 Html::button(
-                    '<span class="glyphicon glyphicon-remove"></span>',
+                    $removeIcon,
                     ['title' => Yii::t('kvdynagrid', 'Delete'), 'class' => 'dynagrid-detail-delete btn btn-danger']
                 ),
         ],
     ],
-]
-)->textInput(['class' => 'form-control dynagrid-detail-name', 'id' => "name-{$id}"])->hint($hint);
+])->textInput(['class' => 'form-control dynagrid-detail-name', 'id' => "name-{$id}"])->hint($hint);
+/** @noinspection PhpUnhandledExceptionInspection */
 echo $form->field($model, 'settingsId')->listBox($data, $listOptions);
 ?>
     <div class="dynagrid-settings-text">

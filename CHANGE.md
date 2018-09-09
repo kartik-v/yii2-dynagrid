@@ -1,6 +1,16 @@
 Change Log: `yii2-dynagrid`
 ===========================
 
+## Version 1.4.9
+
+**Date:** _under development_
+
+- Move all source code to `src` directory.
+- Updates to support Bootstrap v4.x.
+- (enh #192): Update Spanish Translations.
+- (enh #191): Correct m140101_100000_dynagrid.php.
+- (enh #189): Update Ukranian Translations.
+
 ## Version 1.4.8
 
 **Date:** 15-Feb-2018

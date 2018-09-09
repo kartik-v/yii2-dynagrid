@@ -2,7 +2,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
- * @version   1.4.8
+ * @version   1.4.9
  *
  * JQuery Plugin for yii2-dynagrid.
  * 
@@ -152,12 +152,12 @@
                     initS2Loading($el.attr('id'), '.select2-container--krajee'); // jshint ignore:line
                 });
             });
-            $form.find('[data-krajee-sortable]').each(function () {
+            $form.find('[data-krajee-kvHtml5Sortable]').each(function () {
                 var $el = $(this);
-                if ($el.data('sortable')) {
-                    $el.sortable('destroy');
+                if ($el.data('kvHtml5Sortable')) {
+                    $el.kvHtml5Sortable('destroy');
                 }
-                $el.sortable(window[$el.attr('data-krajee-sortable')]);
+                $el.kvHtml5Sortable(window[$el.attr('data-krajee-kvHtml5Sortable')]);
             });
         }
     };

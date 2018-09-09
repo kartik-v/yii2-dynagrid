@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
- * @version   1.4.8
+ * @version   1.4.9
  */
 
 namespace kartik\dynagrid;
@@ -15,7 +15,6 @@ use kartik\dynagrid\models\DynaGridSettings;
 use Yii;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
-use yii\bootstrap\Modal;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
@@ -127,25 +126,40 @@ class DynaGridDetail extends Widget
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function run()
     {
         $this->saveDetail();
+        $isBs4 = $this->isBs4();
         $params = ['title' => static::getCat($this->model->category, true)];
         $title = Yii::t('kvdynagrid', 'Save / Edit Grid {title}', $params);
-        $icon = "<i class='glyphicon glyphicon-{$this->model->category}'></i> ";
-        Modal::begin(
-            [
-                'header' => '<h3 class="modal-title">' . $icon . $title . '</h3>',
-                'toggleButton' => $this->toggleButton,
-                'options' => ['id' => $this->id],
-            ]
-        );
+        $icon = '<i class="' . $this->getDefaultIconPrefix() . $this->model->category . '"></i> ';
+        /**
+         * @var \yii\bootstrap\Modal $modalClass
+         */
+        $modalClass = $isBs4 ? 'yii\bootstrap4\Modal' : 'yii\bootstrap\Modal';
+        $hdr = $icon . $title;
+        $modalOpts =  ['toggleButton' => $this->toggleButton, 'options' => ['id' => $this->id]];
+        if ($isBs4) {
+            $modalOpts['title'] = $hdr;
+        } else {
+            $modalOpts['header'] = '<h3 class="modal-title">' . $hdr . '</h3>';
+        }
+        $modalClass::begin($modalOpts);
+        $prefix = $this->getDefaultIconPrefix();
         echo $this->render(
             $this->_module->settingsView,
-            ['model' => $this->model, 'moduleId' => $this->moduleId, 'requestSubmit' => $this->_requestSubmit]
+            [
+                'model' => $this->model,
+                'moduleId' => $this->moduleId,
+                'requestSubmit' => $this->_requestSubmit,
+                'isBs4' => $this->isBs4(),
+                'saveIcon' => Html::tag('i', '', ['class' => $prefix . ($isBs4 ? 'check' : 'ok')]),
+                'removeIcon' => Html::tag('i', '', ['class' => $prefix . ($isBs4 ? 'times' : 'remove')])
+            ]
         );
-        Modal::end();
+        $modalClass::end();
         parent::run();
     }
 

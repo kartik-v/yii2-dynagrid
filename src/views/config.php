@@ -2,7 +2,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @package yii2-dynagrid
- * @version 1.4.8
+ * @version 1.4.9
  */
 
 use kartik\base\Config;
@@ -16,16 +16,19 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
- * @var yii\web\View   $this
+ * @var yii\web\View $this
  * @var DynaGridConfig $model
- * @var ActiveForm     $form
- * @var Module         $module
- * @var string         $moduleId
- * @var boolean        $allowPageSetting
- * @var boolean        $allowThemeSetting
- * @var boolean        $allowFilterSetting
- * @var boolean        $allowSortSetting
- * @var array          $toggleButtonGrid
+ * @var ActiveForm $form
+ * @var Module $module
+ * @var string $moduleId
+ * @var boolean $allowPageSetting
+ * @var boolean $allowThemeSetting
+ * @var boolean $allowFilterSetting
+ * @var boolean $allowSortSetting
+ * @var boolean $isBs4
+ * @var string $defaultBtnCss
+ * @var string $defaultIconPrefix
+ * @var array $toggleButtonGrid
  */
 
 $dynagridId = substr($model->id, 0, -9);
@@ -45,49 +48,55 @@ $options2 = ArrayHelper::merge(
         'options' => ['class' => 'sortable-hidden'],
     ]
 );
-$module = Config::getModule($moduleId, Module::className());
+/** @noinspection PhpUnhandledExceptionInspection */
+$module = Config::getModule($moduleId, Module::class);
 $cols = (int)$allowPageSetting + (int)$allowThemeSetting + (int)$allowFilterSetting + (int)$allowSortSetting;
 $col = $cols == 0 ? 0 : 12 / $cols;
 ?>
 <?php
-Modal::begin(
-    [
-        'header' => '<h3 class="modal-title"><i class="glyphicon glyphicon-wrench"></i> ' .
-            Yii::t('kvdynagrid', 'Personalize Grid Configuration') . '</h3>',
-        'footer' => $model->footer,
-        'toggleButton' => $toggleButtonGrid,
-        'size' => Modal::SIZE_LARGE,
-        'options' => ['id' => $id],
-    ]
-);
+/**
+ * @var \yii\bootstrap\Modal $modalClass
+ */
+$modalClass = $isBs4 ? 'yii\bootstrap4\Modal' : 'yii\bootstrap\Modal';
+$hdr = '<i class="' . $defaultIconPrefix . 'wrench"></i> ' . Yii::t('kvdynagrid', 'Personalize Grid Configuration');
+$modalOpts = [
+    'footer' => $model->footer,
+    'toggleButton' => $toggleButtonGrid,
+    'size' => Modal::SIZE_LARGE,
+    'options' => ['id' => $id],
+];
+if ($isBs4) {
+    $modalOpts['title'] = $hdr;
+} else {
+    $modalOpts['header'] = '<h3 class="modal-title">' . $hdr . '</h3>';
+}
+$modalClass::begin($modalOpts);
 ?>
 
-    <div class="dynagrid-config-form">
+	<div class="dynagrid-config-form">
 
         <?php $form = ActiveForm::begin(['options' => ['data-pjax' => false]]); ?>
 
         <?php if ($col > 0) : ?>
-            <div class="row">
+			<div class="row">
                 <?php if ($allowPageSetting) : ?>
-                    <div class="col-sm-<?= $col ?>">
-                        <?= $form->field(
-                            $model,
-                            'pageSize',
-                            ['addon' => ['append' => ['content' => Yii::t('kvdynagrid', 'rows per page')]]]
-                        )->textInput(['class' => 'form-control', 'id' => "pageSize-{$dynagridId}"])
-                                 ->hint(
-                                     Yii::t(
-                                         'kvdynagrid',
-                                         'Integer between {min} to {max}',
-                                         ['min' => $module->minPageSize, 'max' => $module->maxPageSize]
-                                     )
-                                 ) ?>
-                    </div>
+					<div class="col-sm-<?= $col ?>">
+                        <?= $form->field($model, 'pageSize', [
+                            'addon' => ['append' => ['content' => Yii::t('kvdynagrid', 'rows per page')]],
+                        ])->textInput(['class' => 'form-control', 'id' => "pageSize-{$dynagridId}"])->hint(
+                            Yii::t(
+                                'kvdynagrid',
+                                'Integer between {min} to {max}',
+                                ['min' => $module->minPageSize, 'max' => $module->maxPageSize]
+                            )
+                        );
+                        ?>
+					</div>
                 <?php endif; ?>
                 <?php if ($allowThemeSetting) : ?>
-                    <div class="col-sm-<?= $col ?>">
+					<div class="col-sm-<?= $col ?>">
                         <?= $form->field($model, 'theme')->widget(
-                            Select2::classname(),
+                            Select2::class,
                             [
                                 'data' => $model->themeList,
                                 'options' => [
@@ -96,13 +105,14 @@ Modal::begin(
                                 ],
                                 'pluginOptions' => ['allowClear' => true],
                             ]
-                        )->hint(Yii::t('kvdynagrid', 'Select theme to style grid')); ?>
-                    </div>
+                        )->hint(Yii::t('kvdynagrid', 'Select theme to style grid'));
+                        ?>
+					</div>
                 <?php endif; ?>
                 <?php if ($allowFilterSetting) : ?>
-                    <div class="col-sm-<?= $col ?>">
+					<div class="col-sm-<?= $col ?>">
                         <?= $form->field($model, 'filterId')->widget(
-                            Select2::classname(),
+                            Select2::class,
                             [
                                 'data' => $model->filterList,
                                 'options' => [
@@ -112,12 +122,12 @@ Modal::begin(
                                 'pluginOptions' => ['allowClear' => true],
                             ]
                         )->hint(Yii::t('kvdynagrid', 'Set default grid filter criteria')) ?>
-                    </div>
+					</div>
                 <?php endif; ?>
                 <?php if ($allowSortSetting) : ?>
-                    <div class="col-sm-<?= $col ?>">
+					<div class="col-sm-<?= $col ?>">
                         <?= $form->field($model, 'sortId')->widget(
-                            Select2::classname(),
+                            Select2::class,
                             [
                                 'data' => $model->sortList,
                                 'options' => [
@@ -127,24 +137,24 @@ Modal::begin(
                                 'pluginOptions' => ['allowClear' => true],
                             ]
                         )->hint(Yii::t('kvdynagrid', 'Set default grid sort criteria')) ?>
-                    </div>
+					</div>
                 <?php endif; ?>
-            </div>
+			</div>
         <?php endif; ?>
-        <div class="dynagrid-column-label">
+		<div class="dynagrid-column-label">
             <?= Yii::t('kvdynagrid', 'Configure Order and Display of Grid Columns') ?>
-        </div>
-        <div class="row">
-            <div class="col-sm-5">
+		</div>
+		<div class="row">
+			<div class="col-sm-5">
                 <?= Sortable::widget($options1); ?>
-            </div>
-            <div class="col-sm-2 text-center">
-                <div class="dynagrid-sortable-separator"><i class="glyphicon glyphicon-resize-horizontal"></i></div>
-            </div>
-            <div class="col-sm-5">
+			</div>
+			<div class="col-sm-2 text-center">
+				<div class="dynagrid-sortable-separator"><i class="glyphicon glyphicon-resize-horizontal"></i></div>
+			</div>
+			<div class="col-sm-5">
                 <?= Sortable::widget($options2); ?>
-            </div>
-        </div>
+			</div>
+		</div>
         <?= $allowThemeSetting ? '' : Html::activeHiddenInput($model, 'theme', ['id' => "theme-{$dynagridId}"]) ?>
         <?= Html::hiddenInput('deleteFlag', 0) ?>
         <?= Html::hiddenInput($model->id, 1) ?>
@@ -152,6 +162,6 @@ Modal::begin(
 
         <?php ActiveForm::end(); ?>
 
-    </div> <!-- .dynagrid-config-form -->
+	</div> <!-- .dynagrid-config-form -->
 
-<?php Modal::end(); ?>
+<?php $modalClass::end(); ?>
