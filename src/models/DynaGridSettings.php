@@ -15,6 +15,7 @@ use kartik\dynagrid\DynaGridStore;
 use kartik\dynagrid\Module;
 use Yii;
 use yii\base\Model;
+use yii\base\InvalidConfigException;
 use yii\helpers\Inflector;
 
 /**
@@ -157,6 +158,7 @@ class DynaGridSettings extends Model
      * Fetches grid configuration settings from store
      *
      * @return mixed
+     * @throws InvalidConfigException
      */
     public function fetchSettings()
     {
@@ -195,6 +197,7 @@ class DynaGridSettings extends Model
      * Gets list of values (for filter or sort category)
      *
      * @return mixed
+     * @throws InvalidConfigException
      */
     public function getDtlList()
     {
@@ -205,6 +208,7 @@ class DynaGridSettings extends Model
      * Gets data configuration as a HTML list markup
      *
      * @return string
+     * @throws InvalidConfigException
      */
     public function getDataConfig()
     {
@@ -240,7 +244,7 @@ class DynaGridSettings extends Model
      * @param array $attribs the list of attributes whose data is to be hashed
      *
      * @return string the hashed signature output
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function getHashSignature($attribs = [])
     {
@@ -261,9 +265,10 @@ class DynaGridSettings extends Model
      * Validate signature of the hashed data submitted via hidden fields from the filter/sort update form
      *
      * @param string $hashData the hashed data to match
-     * @param array  $attribs the list of attributes against which data hashed is to be validated
+     * @param array $attribs the list of attributes against which data hashed is to be validated
      *
      * @return boolean|string returns true if valid else the validation error message
+     * @throws InvalidConfigException
      */
     public function validateSignature($hashData = '', $attribs = [])
     {
@@ -283,11 +288,12 @@ class DynaGridSettings extends Model
      * Returns the Dynagrid module instance
      *
      * @return Module
+     * @throws InvalidConfigException
      */
     protected function getModule()
     {
         if (!isset($this->_module)) {
-            $this->_module = Config::getModule($this->moduleId, Module::className());
+            $this->_module = Config::getModule($this->moduleId, Module::class);
         }
         return $this->_module;
     }

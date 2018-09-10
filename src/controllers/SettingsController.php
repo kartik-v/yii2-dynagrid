@@ -11,6 +11,7 @@ namespace kartik\dynagrid\controllers;
 
 use kartik\dynagrid\models\DynaGridSettings;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\web\Controller;
 use yii\web\Response;
 
@@ -25,6 +26,7 @@ class SettingsController extends Controller
      * Fetch dynagrid setting configuration
      *
      * @return mixed
+     * @throws  InvalidConfigException
      */
     public function actionGetConfig()
     {

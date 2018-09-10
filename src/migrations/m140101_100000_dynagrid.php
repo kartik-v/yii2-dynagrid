@@ -7,7 +7,6 @@
  */
 namespace kartik\dynagrid\migrations;
 
-use yii\db\Schema;
 use yii\db\Migration;
 
 /**

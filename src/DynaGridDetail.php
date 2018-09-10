@@ -111,11 +111,11 @@ class DynaGridDetail extends Widget
         if (empty($this->model) || !$this->model instanceof DynaGridSettings) {
             throw new InvalidConfigException(
                 "You must enter a valid 'model' for DynaGridDetail extending from '" .
-                DynaGridSettings::classname() . "'"
+                DynaGridSettings::class . "'"
             );
         }
         parent::init();
-        $this->_module = Config::getModule($this->moduleId, Module::classname());
+        $this->_module = Config::getModule($this->moduleId, Module::class);
         $this->_requestSubmit = $this->options['id'] . '-dynagrid-detail';
         $request = Yii::$app->request;
         $this->_isSubmit = !empty($_POST[$this->_requestSubmit]) &&
@@ -167,6 +167,7 @@ class DynaGridDetail extends Widget
      * Check and validate any detail record to save or delete
      *
      * @throws InvalidCallException
+     * @throws InvalidConfigException
      */
     protected function saveDetail()
     {

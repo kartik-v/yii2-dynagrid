@@ -86,7 +86,7 @@ class DynaGridConfig extends Model
         /**
          * @var Module $module
          */
-        $module = Config::getModule($this->moduleId, Module::classname());
+        $module = Config::getModule($this->moduleId, Module::class);
         return [
             [['id', 'hiddenColumns', 'visibleColumns', 'pageSize', 'filterId', 'sortId', 'theme'], 'safe'],
             ['theme', 'required'],

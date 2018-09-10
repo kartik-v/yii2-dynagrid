@@ -158,7 +158,7 @@ class DynaGridStore extends BaseObject
      */
     public function init()
     {
-        $this->_module = Config::getModule($this->moduleId, Module::className());
+        $this->_module = Config::getModule($this->moduleId, Module::class);
         $this->_isMaster = ($this->category == self::STORE_GRID) ? true : false;
         if ($this->_module == null || !$this->_module instanceof Module) {
             throw new InvalidConfigException(
@@ -210,9 +210,11 @@ class DynaGridStore extends BaseObject
             case Dynagrid::TYPE_DB:
                 $key = $this->_isMaster ? $this->_mstKey : $this->_dtlKey;
                 $config = $this->getDataFromDb($col, $key);
+                /*
                 if ($this->_isMaster && $col !== 'dataAttr') {
-                    //die('<pre>' . var_dump($config, true) . '</pre>');
+                    die('<pre>' . var_dump($config, true) . '</pre>');
                 }
+                */
                 break;
             default:
                 throw new InvalidConfigException('Unknown storage: ' . $this->storage);

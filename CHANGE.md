@@ -3,7 +3,7 @@ Change Log: `yii2-dynagrid`
 
 ## Version 1.4.9
 
-**Date:** _under development_
+**Date:** 10-Sep-2018
 
 - Move all source code to `src` directory.
 - Updates to support Bootstrap v4.x.
