@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
- * @version   1.4.9
+ * @version   1.5.0
  */
 
 namespace kartik\dynagrid;
@@ -89,6 +89,34 @@ class DynaGridDetail extends Widget
     public $pjaxId;
 
     /**
+     * @var string the icon that will be displayed as the label for grid filter personalization button. This is not
+     * HTML encoded. Defaults to `<i class="glyphicon glyphicon-filter"></i>` for [[bsVersion]] set to `3.x` and
+     * `<i class="fas fa-fw fa-filter"></i>` for [[bsVersion]] set to `4.x`.
+     */
+    public $iconFilter;
+
+    /**
+     * @var string the icon that will be displayed as the label for grid sort personalization button. This is not
+     * HTML encoded. Defaults to `<i class="glyphicon glyphicon-sort"></i>` for [[bsVersion]] set to `3.x` and
+     * `<i class="fas fa-fw fa-sort"></i>` for [[bsVersion]] set to `4.x`.
+     */
+    public $iconSort;
+
+    /**
+     * @var string the icon for the save button within the dynagrid configuration form. This is not HTML encoded.
+     * Defaults to `<i class="glyphicon glyphicon-save"></i>` for [[bsVersion]] set to `3.x` and
+     * `<i class="fas fa-save"></i>` for [[bsVersion]] set to `4.x`.
+     */
+    public $iconConfirm;
+
+    /**
+     * @var string the icon for the save button within the dynagrid configuration form. This is not HTML encoded.
+     * Defaults to `<i class="glyphicon glyphicon-remove"></i>` for [[bsVersion]] set to `3.x` and
+     * `<i class="fas fa-times"></i>` for [[bsVersion]] set to `4.x`.
+     */
+    public $iconRemove;
+
+    /**
      * @var string request param name which will show the grid configuration submitted
      */
     protected $_requestSubmit;
@@ -133,8 +161,9 @@ class DynaGridDetail extends Widget
         $this->saveDetail();
         $isBs4 = $this->isBs4();
         $params = ['title' => static::getCat($this->model->category, true)];
-        $title = Yii::t('kvdynagrid', 'Save / Edit Grid {title}', $params);
-        $icon = '<i class="' . $this->getDefaultIconPrefix() . $this->model->category . '"></i> ';
+        $catIcon = 'icon' . ucfirst($this->model->category);
+        $icon = $this->$catIcon;
+        $title = Yii::t('kvdynagrid', 'Save / Edit Grid {title}', $params) ;
         /**
          * @var \yii\bootstrap\Modal $modalClass
          */
@@ -155,8 +184,8 @@ class DynaGridDetail extends Widget
                 'moduleId' => $this->moduleId,
                 'requestSubmit' => $this->_requestSubmit,
                 'isBs4' => $this->isBs4(),
-                'saveIcon' => Html::tag('i', '', ['class' => $prefix . ($isBs4 ? 'check' : 'ok')]),
-                'removeIcon' => Html::tag('i', '', ['class' => $prefix . ($isBs4 ? 'times' : 'remove')])
+                'iconConfirm' => $this->iconConfirm,
+                'iconRemove' => $this->iconRemove
             ]
         );
         $modalClass::end();

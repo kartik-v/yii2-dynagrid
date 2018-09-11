@@ -1,6 +1,13 @@
 Change Log: `yii2-dynagrid`
 ===========================
 
+## Version 1.5.0
+
+**Date:** 11-Sep-2018
+
+- (enh #195): Ability to configure all icons.
+- (bug #194): Correct dynagrid sortable initializations.
+
 ## Version 1.4.9
 
 **Date:** 10-Sep-2018

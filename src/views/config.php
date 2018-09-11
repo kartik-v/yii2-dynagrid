@@ -2,7 +2,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @package yii2-dynagrid
- * @version 1.4.9
+ * @version 1.5.0
  */
 
 use kartik\base\Config;
@@ -26,8 +26,8 @@ use yii\helpers\Html;
  * @var boolean $allowFilterSetting
  * @var boolean $allowSortSetting
  * @var boolean $isBs4
- * @var string $defaultBtnCss
- * @var string $defaultIconPrefix
+ * @var string $iconPersonalize
+ * @var string $iconSortableSeparator
  * @var array $toggleButtonGrid
  */
 
@@ -58,7 +58,7 @@ $col = $cols == 0 ? 0 : 12 / $cols;
  * @var \yii\bootstrap\Modal $modalClass
  */
 $modalClass = $isBs4 ? 'yii\bootstrap4\Modal' : 'yii\bootstrap\Modal';
-$hdr = '<i class="' . $defaultIconPrefix . 'wrench"></i> ' . Yii::t('kvdynagrid', 'Personalize Grid Configuration');
+$hdr = $iconPersonalize . ' ' . Yii::t('kvdynagrid', 'Personalize Grid Configuration');
 $modalOpts = [
     'footer' => $model->footer,
     'toggleButton' => $toggleButtonGrid,
@@ -149,7 +149,7 @@ $modalClass::begin($modalOpts);
                 <?= Sortable::widget($options1); ?>
 			</div>
 			<div class="col-sm-2 text-center">
-				<div class="dynagrid-sortable-separator"><i class="glyphicon glyphicon-resize-horizontal"></i></div>
+				<div class="dynagrid-sortable-separator"><?= $iconSortableSeparator ?></div>
 			</div>
 			<div class="col-sm-5">
                 <?= Sortable::widget($options2); ?>

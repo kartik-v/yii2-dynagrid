@@ -140,4 +140,4 @@ such formulae columns and its dependencies to `DynaGrid::ORDER_FIX_LEFT`, so tha
 
 ## License
 
-**yii2-dynagrid** is released under the BSD 3-Clause License. See the bundled `LICENSE.md` for details.
+**yii2-dynagrid** is released under the BSD-3-Clause License. See the bundled `LICENSE.md` for details.

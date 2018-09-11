@@ -2,7 +2,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
- * @version   1.4.9
+ * @version   1.5.0
  *
  * JQuery Plugin for yii2-dynagrid.
  * 
@@ -124,16 +124,18 @@
             });
         },
         _reset: function () {
-            var self = this;
-            self.$visibleEl.sortable('destroy').html(self.visibleContent);
-            self.$hiddenEl.sortable('destroy').html(self.hiddenContent);
+            var self = this, $visEl = self.$visibleEl, $hidEl = self.$hiddenEl, $form = self.$form;
+            $visEl.kvHtml5Sortable('destroy');
+            $visEl.html(self.visibleContent);
+            $hidEl.kvHtml5Sortable('destroy');
+            $hidEl.html(self.hiddenContent);
             self._setColumnKeys();
             self.$formContainer.find('.dynagrid-submit-message').remove();
-            self.$visibleEl.sortable(self.visibleSortableOptions);
-            self.$hiddenEl.sortable(self.hiddenSortableOptions);
-            self.$form.trigger('reset.yiiActiveForm');
+            $visEl.kvHtml5Sortable(self.visibleSortableOptions);
+            $hidEl.kvHtml5Sortable(self.hiddenSortableOptions);
+            $form.trigger('reset.yiiActiveForm');
             setTimeout(function () {
-                self.$form.find("select").trigger("change");
+                $form.find("select").trigger("change");
             }, 100);
         },
         reset: function () {

@@ -2,7 +2,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
  * @package yii2-dynagrid
- * @version 1.4.9
+ * @version 1.5.0
  */
 
 use kartik\base\Config;
@@ -17,8 +17,8 @@ use yii\helpers\Html;
  * @var Module           $module
  * @var string           $moduleId
  * @var string           $requestSubmit
- * @var string           $saveIcon
- * @var string           $removeIcon
+ * @var string           $iconConfirm
+ * @var string           $iconRemove
  */
 /** @noinspection PhpUnhandledExceptionInspection */
 $module = Config::getModule($moduleId, Module::class);
@@ -54,11 +54,11 @@ echo $form->field($model, 'name', ['addon' => [
         'append' => [
             'asButton' => true,
             'content' => Html::button(
-                    $saveIcon,
+                    $iconConfirm,
                     ['title' => Yii::t('kvdynagrid', 'Save'), 'class' => 'dynagrid-detail-save btn btn-primary']
                 ) .
                 Html::button(
-                    $removeIcon,
+                    $iconRemove,
                     ['title' => Yii::t('kvdynagrid', 'Delete'), 'class' => 'dynagrid-detail-delete btn btn-danger']
                 ),
         ],

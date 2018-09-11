@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
- * @version   1.4.9
+ * @version   1.5.0
  */
 
 namespace kartik\dynagrid;
@@ -44,27 +44,32 @@ class DynaGrid extends Widget
     use DynaGridTrait;
 
     /**
-     * Session storage
+     * @var string session storage type
      */
     const TYPE_SESSION = 'session';
+
     /**
-     * Cookie storage
+     * @var string cookie storage type
      */
     const TYPE_COOKIE = 'cookie';
+
     /**
-     * Database storage
+     * @var string database storage type
      */
     const TYPE_DB = 'db';
+
     /**
-     * Fix column to the left
+     * @var string fix column to the left
      */
     const ORDER_FIX_LEFT = 'fixleft';
+
     /**
-     * Fix column to the right
+     * @var string fix column to the right
      */
     const ORDER_FIX_RIGHT = 'fixright';
+
     /**
-     * Fix column to the middle
+     * @var string fix column to the middle
      */
     const ORDER_MIDDLE = 'middle';
 
@@ -223,7 +228,9 @@ class DynaGrid extends Widget
     /**
      * @var array the HTML attributes for the save/apply action button. If this is set to `false`, it will not be
      * displayed. The following special variables are supported:
-     * - `icon`: _string_, the glyphicon class suffix for the button. Defaults to `save`.
+     * - `icon`: _string_, the icon class suffix for the button. Defaults to `save`.
+     * - `prefix`: _string_, the icon class prefix for the button. Defaults to `glyphicon glyphicon-` for [[bsVersion]]
+     *    set to `3.x` and `fas fa-` for [[bsVersion]] set to `4.x`.
      * - `label`: _string_, the label for the action button. Defaults to empty string.
      * - `title`: _string_, the title for the action button. Defaults to `Save grid settings`.
      */
@@ -232,7 +239,10 @@ class DynaGrid extends Widget
     /**
      * @var array|boolean the HTML attributes for the reset action button. If this is set to `false`, it will not be
      * displayed. The following special variables are supported:
-     * - `icon`: _string_, the glyphicon class suffix for the button. Defaults to `repeat`.
+     * - `icon`: _string_, the icon class suffix for the button. Defaults to `repeat` for [[bsVersion]]
+     *    set to `3.x` and `redo` for [[bsVersion]] set to `4.x`.
+     * - `prefix`: _string_, the icon class prefix for the button. Defaults to `glyphicon glyphicon-` for [[bsVersion]]
+     *    set to `3.x` and `fas fa-` for [[bsVersion]] set to `4.x`.
      * - `label`: _string_, the label for the action button. Defaults to empty string.
      * - `title`: _string_, the title for the action button. Defaults to `Abort any changes and reset settings`.
      */
@@ -241,23 +251,70 @@ class DynaGrid extends Widget
     /**
      * @var array|boolean the HTML attributes for the delete/trash action button. If this is set to `false`, it will
      * not be displayed. The following special variables are supported:
-     * - `icon`: _string_, the glyphicon class suffix for the button. Defaults to `trash`.
+     * - `icon`: _string_, the icon class suffix for the button. Defaults to `trash` for [[bsVersion]]
+     *    set to `3.x` and `trash-alt` for [[bsVersion]] set to `4.x`.
+     * - `prefix`: _string_, the icon class prefix for the button. Defaults to `glyphicon glyphicon-` for [[bsVersion]]
+     *    set to `3.x` and `fas fa-` for [[bsVersion]] set to `4.x`.
      * - `label`: _string_, the label for the action button. Defaults to empty string.
      * - `title`: _string_, the title for the action button. Defaults to `Remove saved grid settings`.
      */
     public $deleteButtonOptions = [];
 
     /**
-     * @var string the icon that will be displayed for each VISIBLE column heading in the column reordering pane.
-     * This is not HTML encoded.
+     * @var string the icon that will be displayed on the dynagrid personalize button as well as the personalize modal
+     * dialog header. This is not HTML encoded.  Defaults to `<i class="glyphicon glyphicon-wrench"></i>` for
+     * [[bsVersion]] set to `3.x` and `<i class="fas fa-fw fa-wrench"></i>` for [[bsVersion]] set to `4.x`.
      */
-    public $iconVisibleColumn = '<i class="glyphicon glyphicon-eye-open"></i>';
+    public $iconPersonalize;
+
+    /**
+     * @var string the icon that will be displayed as the label for grid filter personalization button. This is not
+     * HTML encoded. Defaults to `<i class="glyphicon glyphicon-filter"></i>` for [[bsVersion]] set to `3.x` and
+     * `<i class="fas fa-fw fa-filter"></i>` for [[bsVersion]] set to `4.x`.
+     */
+    public $iconFilter;
+
+    /**
+     * @var string the icon that will be displayed as the label for grid sort personalization button. This is not
+     * HTML encoded. Defaults to `<i class="glyphicon glyphicon-sort"></i>` for [[bsVersion]] set to `3.x` and
+     * `<i class="fas fa-fw fa-sort"></i>` for [[bsVersion]] set to `4.x`.
+     */
+    public $iconSort;
+
+    /**
+     * @var string the icon for the save button within the dynagrid configuration form. This is not HTML encoded.
+     * Defaults to `<i class="glyphicon glyphicon-save"></i>` for [[bsVersion]] set to `3.x` and
+     * `<i class="fas fa-save"></i>` for [[bsVersion]] set to `4.x`.
+     */
+    public $iconConfirm;
+
+    /**
+     * @var string the icon for the save button within the dynagrid configuration form. This is not HTML encoded.
+     * Defaults to `<i class="glyphicon glyphicon-remove"></i>` for [[bsVersion]] set to `3.x` and
+     * `<i class="fas fa-times"></i>` for [[bsVersion]] set to `4.x`.
+     */
+    public $iconRemove;
+
+    /**
+     * @var string the icon that will be displayed for each VISIBLE column heading in the column reordering pane.
+     * This is not HTML encoded. Defaults to `<i class="glyphicon glyphicon-eye-open"></i>` for [[bsVersion]]
+     *    set to `3.x` and `<i class="fas fa-eye"></i>` for [[bsVersion]] set to `4.x`.
+     */
+    public $iconVisibleColumn;
 
     /**
      * @var string the icon that will be displayed for each HIDDEN column heading in the column reordering pane.
-     * This is not HTML encoded.
+     * This is not HTML encoded.  Defaults to `<i class="glyphicon glyphicon-eye-close"></i>` for [[bsVersion]]
+     *    set to `3.x` and `<i class="fas fa-eye-slash"></i>` for [[bsVersion]] set to `4.x`.
      */
-    public $iconHiddenColumn = '<i class="glyphicon glyphicon-eye-close"></i>';
+    public $iconHiddenColumn;
+
+    /**
+     * @var string the icon that will be displayed separating the visible and hidden columns in the column reordering
+     * pane. This is not HTML encoded.  Defaults to `<i class="glyphicon glyphicon-resize-horizontal"></i>` for
+     * [[bsVersion]] set to `3.x` and `<i class="fas fa-arrows-alt-h"></i>` for [[bsVersion]] set to `4.x`.
+     */
+    public $iconSortableSeparator;
 
     /**
      * @var array the cached columns configuration
@@ -358,6 +415,22 @@ class DynaGrid extends Widget
      * @var DynaGridStore the storage instance
      */
     protected $_store;
+
+    /**
+     * @var array the configuration for icons set as `$key => $setting`, where `$key` is the icon property in DynaGrid
+     * widget and the `$setting` is an array of 2 values - the first value in the array is the icon suffix CSS class for
+     * Bootstrap 3.x and the second value in the array is the icon suffix CSS class for Bootstrap 4.x.
+     */
+    protected static $_icons = [
+        'iconVisibleColumn' => ['eye-open', 'eye'],
+        'iconHiddenColumn' => ['eye-close', 'eye-slash'],
+        'iconSortableSeparator' => ['resize-horizontal', 'arrows-alt-h'],
+        'iconPersonalize' => ['wrench', 'wrench fa-fw'],
+        'iconFilter' => ['filter', 'filter fa-fw'],
+        'iconSort' => ['sort', 'sort fa-fw'],
+        'iconConfirm' => ['ok', 'check'],
+        'iconRemove' => ['remove', 'times'],
+    ];
 
     /**
      * Is column visible
@@ -461,6 +534,22 @@ class DynaGrid extends Widget
     }
 
     /**
+     * Initializes icon properties with default values
+     * @throws InvalidConfigException
+     */
+    protected function initIcons()
+    {
+        $isBs4 = $this->isBs4();
+        $prefix = $this->getDefaultIconPrefix();
+        foreach (static::$_icons as $icon => $setting) {
+            if (!isset($this->$icon)) {
+                $css = !$isBs4 ? $setting[0] : $setting[1];
+                $this->$icon = Html::tag('i', '', ['class' => $prefix . $css]);
+            }
+        }
+    }
+
+    /**
      * Initializes widget settings and options
      *
      * @throws InvalidConfigException
@@ -486,6 +575,7 @@ class DynaGrid extends Widget
                 $this->$key = $setting;
             }
         }
+        $this->initIcons();
         if (empty($this->columns) || !is_array($this->columns)) {
             throw new InvalidConfigException("The 'columns' configuration must be setup as a valid array.");
         }
@@ -926,6 +1016,7 @@ class DynaGrid extends Widget
      * Load configuration attributes into DynaGridConfig model
      *
      * @param DynaGridConfig $model
+     * @throws InvalidConfigException
      */
     protected function loadAttributes($model)
     {
@@ -949,6 +1040,7 @@ class DynaGrid extends Widget
      * @param string $type the button type
      *
      * @return string the rendered button
+     * @throws InvalidConfigException
      */
     protected function renderActionButton($type)
     {
@@ -964,9 +1056,10 @@ class DynaGrid extends Widget
             $options = ArrayHelper::merge($defaultOptions, $options);
         }
         $icon = ArrayHelper::remove($options, 'icon', '');
+        $prefix = ArrayHelper::remove($options, 'prefix', $this->getDefaultIconPrefix());
         $label = '';
         if (!empty($icon)) {
-            $label = '<span class="' . $this->getDefaultIconPrefix() . $icon . '"></span> ';
+            $label = '<i class="' . $prefix . $icon . '"></i> ';
         }
         $label .= ArrayHelper::remove($options, 'label', '');
         Html::addCssClass($options, "dynagrid-{$type}");
@@ -1148,53 +1241,44 @@ class DynaGrid extends Widget
                     'isBs4' => $isBs4,
                     'isPjax' => $this->_isPjax,
                     'pjaxId' => $this->_pjaxId,
-                    'defaultIconPrefix' => $this->getDefaultIconPrefix(),
-                    'defaultButtonCss' => $this->getDefaultBtnCss(),
+                    'iconPersonalize' => $this->iconPersonalize,
+                    'iconSortableSeparator' => $this->iconSortableSeparator,
                 ]
             );
         }
+        $opts = [
+            'bsVersion' => $this->bsVersion,
+            'model' => $model,
+            'moduleId' => $this->moduleId,
+            'submitMessage' => $this->submitMessage,
+            'deleteMessage' => $this->deleteMessage,
+            'messageOptions' => $this->messageOptions,
+            'deleteConfirmation' => $this->deleteConfirmation,
+            'isPjax' => $this->_isPjax,
+            'pjaxId' => $this->_pjaxId,
+            'krajeeDialogSettings' => $this->krajeeDialogSettings,
+            'iconFilter' => $this->iconFilter,
+            'iconSort' => $this->iconSort,
+            'iconConfirm' => $this->iconConfirm,
+            'iconRemove' => $this->iconRemove,
+        ];
         if ($this->showFilter) {
             $this->setToggleButton(DynaGridStore::STORE_FILTER);
             $model->category = DynaGridStore::STORE_FILTER;
             $model->key = $this->_filterKey;
             $model->data = array_filter($this->gridOptions['filterModel']->attributes);
-            $dynagridFilter = DynaGridDetail::widget(
-                [
-                    'id' => $this->_filterModalId,
-                    'bsVersion' => $this->bsVersion,
-                    'model' => $model,
-                    'moduleId' => $this->moduleId,
-                    'toggleButton' => $this->toggleButtonFilter,
-                    'submitMessage' => $this->submitMessage,
-                    'deleteMessage' => $this->deleteMessage,
-                    'messageOptions' => $this->messageOptions,
-                    'deleteConfirmation' => $this->deleteConfirmation,
-                    'isPjax' => $this->_isPjax,
-                    'pjaxId' => $this->_pjaxId,
-                    'krajeeDialogSettings' => $this->krajeeDialogSettings,
-                ]
-            );
+            $opts['id'] = $this->_filterModalId;
+            $opts['toggleButton'] = $this->toggleButtonFilter;
+            $dynagridFilter = DynaGridDetail::widget($opts);
         }
         if ($this->showSort) {
             $this->setToggleButton(DynaGridStore::STORE_SORT);
             $model->category = DynaGridStore::STORE_SORT;
             $model->key = $this->_sortKey;
             $model->data = $isValidSort ? $sort->getAttributeOrders() : [];
-            $dynagridSort = DynaGridDetail::widget(
-                [
-                    'id' => $this->_sortModalId,
-                    'model' => $model,
-                    'moduleId' => $this->moduleId,
-                    'toggleButton' => $this->toggleButtonSort,
-                    'submitMessage' => $this->submitMessage,
-                    'deleteMessage' => $this->deleteMessage,
-                    'messageOptions' => $this->messageOptions,
-                    'deleteConfirmation' => $this->deleteConfirmation,
-                    'isPjax' => $this->_isPjax,
-                    'pjaxId' => $this->_pjaxId,
-                    'krajeeDialogSettings' => $this->krajeeDialogSettings,
-                ]
-            );
+            $opts['id'] = $this->_sortModalId;
+            $opts['toggleButton'] = $this->toggleButtonSort;
+            $dynagridSort = DynaGridDetail::widget($opts);
         }
         $tags = ArrayHelper::getValue($this->gridOptions, 'replaceTags', []);
         $tags += [
@@ -1217,7 +1301,6 @@ class DynaGrid extends Widget
         $setting = 'toggleButton' . ucfirst($cat);
         $isBs4 = $this->isBs4();
         $defaultCss = $isBs4 ? 'outline-secondary' : 'default';
-        $defaultIconPrefix = $isBs4 ? 'fas fa-fw fa-' : 'glyphicon glyphicon-';
         $btnClass = ($this->matchPanelStyle && $cat == 'grid' && !empty($this->gridOptions['panel'])) ?
             'btn btn-' . ArrayHelper::getValue($this->gridOptions['panel'], 'type', $defaultCss) :
             'btn btn-' . $defaultCss;
@@ -1225,16 +1308,17 @@ class DynaGrid extends Widget
         if ($cat == DynaGridStore::STORE_GRID) {
             $this->toggleButtonGrid = ArrayHelper::merge(
                 [
-                    'label' => '<i class="' . $defaultIconPrefix . 'wrench"></i>',
+                    'label' => $this->iconPersonalize,
                     'title' => Yii::t('kvdynagrid', 'Personalize grid settings'),
                     'data-pjax' => false,
                 ],
                 $this->toggleButtonGrid
             );
         } else {
+            $catIcon = 'icon' . ucfirst($cat);
             $this->$setting = ArrayHelper::merge(
                 [
-                    'label' => '<i class="' . $defaultIconPrefix . $cat . '"></i>',
+                    'label' => $this->$catIcon,
                     'title' => Yii::t(
                         'kvdynagrid',
                         'Save / edit grid {category}',
