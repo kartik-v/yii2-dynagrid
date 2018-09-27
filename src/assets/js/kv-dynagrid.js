@@ -125,14 +125,10 @@
         },
         _reset: function () {
             var self = this, $visEl = self.$visibleEl, $hidEl = self.$hiddenEl, $form = self.$form;
-            $visEl.kvHtml5Sortable('destroy');
             $visEl.html(self.visibleContent);
-            $hidEl.kvHtml5Sortable('destroy');
             $hidEl.html(self.hiddenContent);
             self._setColumnKeys();
             self.$formContainer.find('.dynagrid-submit-message').remove();
-            $visEl.kvHtml5Sortable(self.visibleSortableOptions);
-            $hidEl.kvHtml5Sortable(self.hiddenSortableOptions);
             $form.trigger('reset.yiiActiveForm');
             setTimeout(function () {
                 $form.find("select").trigger("change");
