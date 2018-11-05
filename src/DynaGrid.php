@@ -752,7 +752,7 @@ class DynaGrid extends Widget
         if ($this->_isSubmit) {
             $delete = ArrayHelper::getValue($_POST, 'deleteFlag', 0) == 1;
             $this->saveGridConfig($config, $delete);
-            Yii::$app->controller->refresh();
+            return Yii::$app->controller->refresh();
         } else {
             $this->loadGridConfig($config);
             $this->setWidgetColumns();
