@@ -1,6 +1,13 @@
 Change Log: `yii2-dynagrid`
 ===========================
 
+## Version 1.5.1
+
+**Date:** _under development_
+
+- Update README.
+- (enh #197): Correct current controller action refresh.
+
 ## Version 1.5.0
 
 **Date:** 11-Sep-2018
