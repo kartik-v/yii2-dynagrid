@@ -25,6 +25,7 @@ use yii\data\Sort;
 use yii\data\SqlDataProvider;
 use yii\db\ActiveQuery;
 use yii\db\ActiveQueryInterface;
+use yii\db\QueryInterface;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
