@@ -5,6 +5,7 @@ Change Log: `yii2-dynagrid`
 
 **Date:** _under development_
 
+- (enh #202, #203): Correct attribute label parsing.
 - Update README.
 - (enh #197): Correct current controller action refresh.
 
