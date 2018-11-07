@@ -1003,12 +1003,15 @@ class DynaGrid extends Widget
             $query = $provider->query;
             $model = new $query->modelClass;
             return $model->getAttributeLabel($attribute);
-        }
-        $models = $provider->getModels();
-        if (($model = reset($models)) instanceof Model) {
+        } elseif ($provider instanceof ActiveDataProvider && $provider->query instanceof QueryInterface) {
             return $model->getAttributeLabel($attribute);
         } else {
-            return Inflector::camel2words($attribute);
+            $models = $provider->getModels();
+            if (($model = reset($models)) instanceof Model) {
+                return $model->getAttributeLabel($attribute);
+            } else {
+                return Inflector::camel2words($attribute);
+            }
         }
     }
 
