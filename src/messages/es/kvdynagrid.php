@@ -58,7 +58,7 @@ return [
     'Sort Configuration' => 'Configurar orden',
     'Sort Name' => 'Nombre del orden',
     'Trash' => 'Papelera',
-    'Trashing all personalizations' => 'Elimimar todas las opciones personalizadas',
+    'Trashing all personalizations' => 'Eliminar todas las opciones personalizadas',
     'Visible Columns' => 'Columnas visibles',
     'ascending' => 'Ascendente',
     'descending' => 'Descendente',
