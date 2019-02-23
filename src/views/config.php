@@ -1,8 +1,8 @@
 <?php
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2018
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
  * @package yii2-dynagrid
- * @version 1.5.0
+ * @version 1.5.1
  */
 
 use kartik\base\Config;

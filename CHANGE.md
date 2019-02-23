@@ -3,7 +3,7 @@ Change Log: `yii2-dynagrid`
 
 ## Version 1.5.1
 
-**Date:** _under development_
+**Date:** 24-Feb-2019
 
 - (bug #211): Correct bootstrap Modal class parsing.
 - (enh #202, #203): Correct attribute label parsing.
