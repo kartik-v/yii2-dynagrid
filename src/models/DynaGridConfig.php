@@ -3,8 +3,8 @@
 /**
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
- * @version   1.5.1
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2021
+ * @version   1.5.2
  */
 
 namespace kartik\dynagrid\models;
@@ -87,6 +87,7 @@ class DynaGridConfig extends Model
          * @var Module $module
          */
         $module = Config::getModule($this->moduleId, Module::class);
+
         return [
             [['id', 'hiddenColumns', 'visibleColumns', 'pageSize', 'filterId', 'sortId', 'theme'], 'safe'],
             ['theme', 'required'],

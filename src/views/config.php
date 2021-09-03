@@ -1,11 +1,12 @@
 <?php
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2021
  * @package yii2-dynagrid
- * @version 1.5.1
+ * @version 1.5.2
  */
 
 use kartik\base\Config;
+use kartik\base\Widget;
 use kartik\dynagrid\models\DynaGridConfig;
 use kartik\dynagrid\Module;
 use kartik\form\ActiveForm;
@@ -15,6 +16,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
+ * @var string $id
  * @var yii\web\View $this
  * @var DynaGridConfig $model
  * @var ActiveForm $form
@@ -24,10 +26,11 @@ use yii\helpers\Html;
  * @var boolean $allowThemeSetting
  * @var boolean $allowFilterSetting
  * @var boolean $allowSortSetting
- * @var boolean $isBs4
  * @var string $iconPersonalize
  * @var string $iconSortableSeparator
  * @var array $toggleButtonGrid
+ * @var boolean $notBs3
+ * @var Widget $modalClass
  */
 
 $dynagridId = substr($model->id, 0, -9);
@@ -53,33 +56,32 @@ $cols = (int)$allowPageSetting + (int)$allowThemeSetting + (int)$allowFilterSett
 $col = $cols == 0 ? 0 : 12 / $cols;
 ?>
 <?php
-/**
- * @var \yii\bootstrap\Modal|yii\bootstrap4\Modal $modalClass
- */
-$modalClass = $isBs4 ? 'yii\bootstrap4\Modal' : 'yii\bootstrap\Modal';
-$hdr = $iconPersonalize . ' ' . Yii::t('kvdynagrid', 'Personalize Grid Configuration');
+$hdr = $iconPersonalize.' '.Yii::t('kvdynagrid', 'Personalize Grid Configuration');
 $modalOpts = [
     'footer' => $model->footer,
     'toggleButton' => $toggleButtonGrid,
     'size' => $modalClass::SIZE_LARGE,
     'options' => ['id' => $id],
 ];
-if ($isBs4) {
+if ($notBs3) {
     $modalOpts['title'] = $hdr;
 } else {
-    $modalOpts['header'] = '<h3 class="modal-title">' . $hdr . '</h3>';
+    $modalOpts['header'] = '<h3 class="modal-title">'.$hdr.'</h3>';
 }
 $modalClass::begin($modalOpts);
 ?>
 
-	<div class="dynagrid-config-form">
+    <div class="dynagrid-config-form">
 
-        <?php $form = ActiveForm::begin(['options' => ['data-pjax' => false]]); ?>
+        <?php
+        $form = ActiveForm::begin(['options' => ['data-pjax' => false]]); ?>
 
-        <?php if ($col > 0) : ?>
-			<div class="row">
-                <?php if ($allowPageSetting) : ?>
-					<div class="col-sm-<?= $col ?>">
+        <?php
+        if ($col > 0) : ?>
+            <div class="row">
+                <?php
+                if ($allowPageSetting) : ?>
+                    <div class="col-sm-<?= $col ?>">
                         <?= $form->field($model, 'pageSize', [
                             'addon' => ['append' => ['content' => Yii::t('kvdynagrid', 'rows per page')]],
                         ])->textInput(['class' => 'form-control', 'id' => "pageSize-{$dynagridId}"])->hint(
@@ -90,10 +92,12 @@ $modalClass::begin($modalOpts);
                             )
                         );
                         ?>
-					</div>
-                <?php endif; ?>
-                <?php if ($allowThemeSetting) : ?>
-					<div class="col-sm-<?= $col ?>">
+                    </div>
+                <?php
+                endif; ?>
+                <?php
+                if ($allowThemeSetting) : ?>
+                    <div class="col-sm-<?= $col ?>">
                         <?= $form->field($model, 'theme')->widget(
                             Select2::class,
                             [
@@ -106,10 +110,12 @@ $modalClass::begin($modalOpts);
                             ]
                         )->hint(Yii::t('kvdynagrid', 'Select theme to style grid'));
                         ?>
-					</div>
-                <?php endif; ?>
-                <?php if ($allowFilterSetting) : ?>
-					<div class="col-sm-<?= $col ?>">
+                    </div>
+                <?php
+                endif; ?>
+                <?php
+                if ($allowFilterSetting) : ?>
+                    <div class="col-sm-<?= $col ?>">
                         <?= $form->field($model, 'filterId')->widget(
                             Select2::class,
                             [
@@ -121,10 +127,12 @@ $modalClass::begin($modalOpts);
                                 'pluginOptions' => ['allowClear' => true],
                             ]
                         )->hint(Yii::t('kvdynagrid', 'Set default grid filter criteria')) ?>
-					</div>
-                <?php endif; ?>
-                <?php if ($allowSortSetting) : ?>
-					<div class="col-sm-<?= $col ?>">
+                    </div>
+                <?php
+                endif; ?>
+                <?php
+                if ($allowSortSetting) : ?>
+                    <div class="col-sm-<?= $col ?>">
                         <?= $form->field($model, 'sortId')->widget(
                             Select2::class,
                             [
@@ -136,31 +144,35 @@ $modalClass::begin($modalOpts);
                                 'pluginOptions' => ['allowClear' => true],
                             ]
                         )->hint(Yii::t('kvdynagrid', 'Set default grid sort criteria')) ?>
-					</div>
-                <?php endif; ?>
-			</div>
-        <?php endif; ?>
-		<div class="dynagrid-column-label">
+                    </div>
+                <?php
+                endif; ?>
+            </div>
+        <?php
+        endif; ?>
+        <div class="dynagrid-column-label">
             <?= Yii::t('kvdynagrid', 'Configure Order and Display of Grid Columns') ?>
-		</div>
-		<div class="row">
-			<div class="col-sm-5">
+        </div>
+        <div class="row">
+            <div class="col-sm-5">
                 <?= Sortable::widget($options1); ?>
-			</div>
-			<div class="col-sm-2 text-center">
-				<div class="dynagrid-sortable-separator"><?= $iconSortableSeparator ?></div>
-			</div>
-			<div class="col-sm-5">
+            </div>
+            <div class="col-sm-2 text-center">
+                <div class="dynagrid-sortable-separator"><?= $iconSortableSeparator ?></div>
+            </div>
+            <div class="col-sm-5">
                 <?= Sortable::widget($options2); ?>
-			</div>
-		</div>
+            </div>
+        </div>
         <?= $allowThemeSetting ? '' : Html::activeHiddenInput($model, 'theme', ['id' => "theme-{$dynagridId}"]) ?>
         <?= Html::hiddenInput('deleteFlag', 0) ?>
         <?= Html::hiddenInput($model->id, 1) ?>
         <?= Html::hiddenInput('visibleKeys') ?>
 
-        <?php ActiveForm::end(); ?>
+        <?php
+        ActiveForm::end(); ?>
 
-	</div> <!-- .dynagrid-config-form -->
+    </div> <!-- .dynagrid-config-form -->
 
-<?php $modalClass::end(); ?>
+<?php
+$modalClass::end(); ?>

@@ -3,12 +3,13 @@
 /**
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
- * @version   1.5.1
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2021
+ * @version   1.5.2
  */
 
 namespace kartik\dynagrid;
 
+use Exception;
 use kartik\base\Config;
 use kartik\base\Widget;
 use kartik\dialog\Dialog;
@@ -20,6 +21,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
+use yii\data\BaseDataProvider;
 use yii\data\DataProviderInterface;
 use yii\data\Sort;
 use yii\data\SqlDataProvider;
@@ -436,26 +438,27 @@ class DynaGrid extends Widget
     /**
      * Is column visible
      *
-     * @param mixed $column
+     * @param  mixed  $column
      *
-     * @return mixed
+     * @return bool
+     * @throws Exception
      */
     protected static function isVisible($column)
     {
-        return is_array($column) && !ArrayHelper::getValue($column, 'visible', true) ? false : true;
+        return !(is_array($column) && !ArrayHelper::getValue($column, 'visible', true));
     }
 
     /**
      * Get the default action button option settings
      *
-     * @param string $type the button type
+     * @param  string  $type  the button type
      *
      * @return array the button settings
-     * @throws InvalidConfigException
+     * @throws InvalidConfigException|Exception
      */
     protected function getDefaultButtonOptions($type)
     {
-        $isBs4 = $this->isBs4();
+        $notBs3 = !$this->isBs(3);
         if ($type === 'submit') {
             return [
                 'type' => 'button',
@@ -469,23 +472,24 @@ class DynaGrid extends Widget
         if ($type === 'reset') {
             return [
                 'type' => 'reset',
-                'icon' => $isBs4 ? 'redo' : 'repeat',
+                'icon' => $notBs3 ? 'redo' : 'repeat',
                 'label' => Yii::t('kvdynagrid', 'Reset'),
                 'title' => Yii::t('kvdynagrid', 'Abort any changes and reset settings'),
-                'class' => 'btn ' . $this->getDefaultBtnCss(),
+                'class' => 'btn '.$this->getDefaultBtnCss(),
                 'data-pjax' => false,
             ];
         }
         if ($type === 'delete') {
             return [
                 'type' => 'button',
-                'icon' => $isBs4 ? 'trash-alt' : 'trash',
+                'icon' => $notBs3 ? 'trash-alt' : 'trash',
                 'label' => Yii::t('kvdynagrid', 'Trash'),
                 'title' => Yii::t('kvdynagrid', 'Remove saved grid settings'),
                 'class' => 'btn btn-danger',
                 'data-pjax' => false,
             ];
         }
+
         return [];
     }
 
@@ -502,7 +506,7 @@ class DynaGrid extends Widget
     /**
      * @inheritdoc
      * @throws InvalidConfigException
-     * @throws \Exception
+     * @throws Exception
      */
     public function run()
     {
@@ -521,6 +525,7 @@ class DynaGrid extends Widget
             $this->_module = Module::getInstance();
             if (isset($this->_module)) {
                 $this->moduleId = $this->_module->id;
+
                 return;
             }
             $this->moduleId = Module::MODULE;
@@ -536,16 +541,16 @@ class DynaGrid extends Widget
 
     /**
      * Initializes icon properties with default values
-     * @throws InvalidConfigException
+     * @throws InvalidConfigException|Exception
      */
     protected function initIcons()
     {
-        $isBs4 = $this->isBs4();
+        $notBs3 = !$this->isBs(3);
         $prefix = $this->getDefaultIconPrefix();
         foreach (static::$_icons as $icon => $setting) {
             if (!isset($this->$icon)) {
-                $css = !$isBs4 ? $setting[0] : $setting[1];
-                $this->$icon = Html::tag('i', '', ['class' => $prefix . $css]);
+                $css = !$notBs3 ? $setting[0] : $setting[1];
+                $this->$icon = Html::tag('i', '', ['class' => $prefix.$css]);
             }
         }
     }
@@ -563,12 +568,12 @@ class DynaGrid extends Widget
             );
         }
         $this->initModule();
-        $this->_gridModalId = $this->options['id'] . '-grid-modal';
-        $this->_filterModalId = $this->options['id'] . '-filter-modal';
-        $this->_sortModalId = $this->options['id'] . '-sort-modal';
-        $this->_filterKey = $this->options['id'] . '-filter-key';
-        $this->_sortKey = $this->options['id'] . '-sort-key';
-        $this->_pjaxId = $this->options['id'] . '-pjax';
+        $this->_gridModalId = $this->options['id'].'-grid-modal';
+        $this->_filterModalId = $this->options['id'].'-filter-modal';
+        $this->_sortModalId = $this->options['id'].'-sort-modal';
+        $this->_filterKey = $this->options['id'].'-filter-key';
+        $this->_sortKey = $this->options['id'].'-sort-key';
+        $this->_pjaxId = $this->options['id'].'-pjax';
         foreach ($this->_module->dynaGridOptions as $key => $setting) {
             if (is_array($setting) && !empty($setting) && !empty($this->$key)) {
                 $this->$key = ArrayHelper::merge($setting, $this->$key);
@@ -595,6 +600,7 @@ class DynaGrid extends Widget
         }
         /** @var DataProviderInterface $dataProvider */
         $dataProvider = $this->gridOptions['dataProvider'];
+        /** @noinspection PhpStrictComparisonWithOperandsOfDifferentTypesInspection */
         if ($dataProvider->getSort() === false) {
             $this->showSort = false;
             $this->allowSortSetting = false;
@@ -612,7 +618,7 @@ class DynaGrid extends Widget
         if (!isset($this->_pageSize) || $this->_pageSize === null) {
             $this->_pageSize = $this->_module->defaultPageSize;
         }
-        $this->_requestSubmit = $this->options['id'] . '-dynagrid';
+        $this->_requestSubmit = $this->options['id'].'-dynagrid';
         $this->_model = new DynaGridConfig(['moduleId' => $this->moduleId]);
         $this->_isSubmit = !empty($_POST[$this->_requestSubmit]) && $this->_model->load(Yii::$app->request->post()) &&
             $this->_model->validate();
@@ -638,24 +644,26 @@ class DynaGrid extends Widget
     /**
      * Can the column be reordered
      *
-     * @param mixed $column
+     * @param  mixed  $column
      *
      * @return boolean
+     * @throws Exception
      */
     protected function canReorder($column)
     {
-        return is_array($column) && ArrayHelper::getValue($column, 'order', self::ORDER_MIDDLE) != self::ORDER_MIDDLE
-            ? false : true;
+        $mid = self::ORDER_MIDDLE;
+
+        return !(is_array($column) && ArrayHelper::getValue($column, 'order', $mid) != $mid);
     }
 
     /**
      * Initialize the data provider
      *
-     * @param Model $searchModel
+     * @param  Model  $searchModel
      */
     protected function initDataProvider($searchModel)
     {
-        /** @noinspection PhpUndefinedMethodInspection */
+        /** @noinspection PhpPossiblePolymorphicInvocationInspection */
         $this->gridOptions['dataProvider'] = $searchModel->search(Yii::$app->request->getQueryParams());
     }
 
@@ -685,7 +693,7 @@ class DynaGrid extends Widget
         foreach ($this->_columns as $column) {
             $columnKey = $this->getColumnKey($column);
             for ($j = 0; true; $j++) {
-                $suffix = ($j) ? '_' . $j : '';
+                $suffix = ($j) ? '_'.$j : '';
                 $columnKey .= $suffix;
                 if (!array_key_exists($columnKey, $columnsByKey)) {
                     break;
@@ -699,9 +707,9 @@ class DynaGrid extends Widget
     /**
      * Generate an unique column key
      *
-     * @param mixed $column
+     * @param  mixed  $column
      *
-     * @return mixed
+     * @return false|string
      * @throws InvalidConfigException
      */
     protected function getColumnKey($column)
@@ -720,15 +728,16 @@ class DynaGrid extends Widget
         } else {
             $columnKey = null;
         }
+
         return hash('crc32', $columnKey);
     }
 
     /**
      * Finds the matches for a string column format
      *
-     * @param string $column
+     * @param  string  $column
      *
-     * @return mixed
+     * @return array
      * @throws InvalidConfigException
      */
     protected function matchColumnString($column)
@@ -736,10 +745,11 @@ class DynaGrid extends Widget
         $matches = [];
         if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/u', $column, $matches)) {
             throw new InvalidConfigException(
-                "Invalid column configuration for '{$column}'. The column must be specified " .
+                "Invalid column configuration for '{$column}'. The column must be specified ".
                 "in the format of 'attribute', 'attribute:format' or 'attribute:format: label'."
             );
         }
+
         return $matches;
     }
 
@@ -753,6 +763,7 @@ class DynaGrid extends Widget
         if ($this->_isSubmit) {
             $delete = ArrayHelper::getValue($_POST, 'deleteFlag', 0) == 1;
             $this->saveGridConfig($config, $delete);
+
             return Yii::$app->controller->refresh();
         } else {
             $this->loadGridConfig($config);
@@ -764,12 +775,14 @@ class DynaGrid extends Widget
         $this->applyPageSize();
         $this->applyTheme();
         $this->applyColumns();
+
+        return null;
     }
 
     /**
      * Gets the current grid configuration
      *
-     * @param boolean $current whether it is the currently set grid configuraton
+     * @param  boolean  $current  whether it is the currently set grid configuraton
      *
      * @return array
      * @throws InvalidConfigException
@@ -785,6 +798,7 @@ class DynaGrid extends Widget
                 'sort' => $this->_sortId,
             ];
         }
+
         return !$this->_isSubmit ? $this->_store->fetch() : [
             'page' => $this->_model->pageSize,
             'theme' => $this->_model->theme,
@@ -797,8 +811,8 @@ class DynaGrid extends Widget
     /**
      * Update configuration
      *
-     * @param array $config the dynagrid configuration
-     * @param boolean $delete the deletion flag
+     * @param  array  $config  the dynagrid configuration
+     * @param  boolean  $delete  the deletion flag
      * @throws InvalidConfigException
      */
     protected function saveGridConfig($config, $delete)
@@ -813,7 +827,7 @@ class DynaGrid extends Widget
     /**
      * Load grid configuration from specific storage
      *
-     * @param array $config the configuration to load
+     * @param  array  $config  the configuration to load
      *
      * @throws InvalidConfigException
      */
@@ -837,7 +851,7 @@ class DynaGrid extends Widget
      * - grid master settings: the theme, pagesize, visible keys
      * - grid detail settings: filter and sort configuration
      *
-     * @param array $data the stored data to be parsed
+     * @param  array  $data  the stored data to be parsed
      *
      * @return void
      * @throws InvalidConfigException
@@ -866,7 +880,7 @@ class DynaGrid extends Widget
     /**
      * Parses the grid detail configuration (for filter or sort).
      *
-     * @param string $category one of 'filter' or 'sort'
+     * @param  string  $category  one of 'filter' or 'sort'
      * @throws InvalidConfigException
      */
     protected function parseDetailData($category)
@@ -904,13 +918,13 @@ class DynaGrid extends Widget
         // Ensure visible keys is not empty. If it is so, then grid will display all columns.
         $this->_visibleKeys = array_filter($this->_visibleKeys);
         $showAll = !is_array($this->_visibleKeys) || empty($this->_visibleKeys);
-        $indicator = Html::tag('span', $this->iconVisibleColumn, ['class' => 'icon-visible-column']) .
+        $indicator = Html::tag('span', $this->iconVisibleColumn, ['class' => 'icon-visible-column']).
             Html::tag('span', $this->iconHiddenColumn, ['class' => 'icon-hidden-column']);
         foreach ($this->_columns as $key => $column) {
             $order = ArrayHelper::getValue($column, 'order', self::ORDER_MIDDLE);
-            $disabled = ($order == self::ORDER_MIDDLE) ? false : true;
+            $disabled = $order != self::ORDER_MIDDLE;
             $widgetColumns = [
-                'content' => (empty($indicator) ? '' : $indicator . ' ') . $this->getColumnLabel($key, $column),
+                'content' => (empty($indicator) ? '' : $indicator.' ').$this->getColumnLabel($key, $column),
                 'options' => ['id' => $key],
             ];
 
@@ -937,7 +951,7 @@ class DynaGrid extends Widget
     /**
      * Generates the config for sortable widget header
      *
-     * @param string $label
+     * @param  string  $label
      *
      * @return array
      */
@@ -955,8 +969,8 @@ class DynaGrid extends Widget
     /**
      * Fetches the column label
      *
-     * @param mixed $key the column key
-     * @param mixed $column the column object / configuration
+     * @param  mixed  $key  the column key
+     * @param  mixed  $column  the column object / configuration
      *
      * @return string
      * @throws InvalidConfigException
@@ -969,6 +983,7 @@ class DynaGrid extends Widget
             if (isset($matches[5])) {
                 return $matches[5];
             } //header specified is in the format "attribute:format:label"
+
             return $this->getAttributeLabel($attribute);
         } else {
             $label = $key;
@@ -984,6 +999,7 @@ class DynaGrid extends Widget
                     $label = Inflector::camel2words(end($class));
                 }
             }
+
             return trim(strip_tags(str_replace(['<br>', '<br/>'], ' ', $label)));
         }
     }
@@ -1003,6 +1019,7 @@ class DynaGrid extends Widget
             /** @var ActiveQuery $query */
             $query = $provider->query;
             $model = new $query->modelClass;
+
             return $model->getAttributeLabel($attribute);
         } elseif ($provider instanceof ActiveDataProvider && $provider->query instanceof QueryInterface) {
             return Inflector::camel2words($attribute);
@@ -1019,7 +1036,7 @@ class DynaGrid extends Widget
     /**
      * Load configuration attributes into DynaGridConfig model
      *
-     * @param DynaGridConfig $model
+     * @param  DynaGridConfig  $model
      * @throws InvalidConfigException
      */
     protected function loadAttributes($model)
@@ -1032,7 +1049,7 @@ class DynaGrid extends Widget
         $model->filterId = $this->_filterId;
         $model->sortId = $this->_sortId;
         $model->widgetOptions = $this->sortableOptions;
-        $model->footer = $this->renderActionButton('delete') . $this->renderActionButton('reset') .
+        $model->footer = $this->renderActionButton('delete').$this->renderActionButton('reset').
             $this->renderActionButton('submit');
         $themes = array_keys($this->_module->themeConfig);
         $model->themeList = array_combine($themes, $themes);
@@ -1041,7 +1058,7 @@ class DynaGrid extends Widget
     /**
      * Renders the action button
      *
-     * @param string $type the button type
+     * @param  string  $type  the button type
      *
      * @return string the rendered button
      * @throws InvalidConfigException
@@ -1063,10 +1080,11 @@ class DynaGrid extends Widget
         $prefix = ArrayHelper::remove($options, 'prefix', $this->getDefaultIconPrefix());
         $label = '';
         if (!empty($icon)) {
-            $label = '<i class="' . $prefix . $icon . '"></i> ';
+            $label = '<i class="'.$prefix.$icon.'"></i> ';
         }
         $label .= ArrayHelper::remove($options, 'label', '');
         Html::addCssClass($options, "dynagrid-{$type}");
+
         return Html::button($label, $options);
     }
 
@@ -1112,14 +1130,16 @@ class DynaGrid extends Widget
      */
     protected function applyPageSize()
     {
-        if (isset($this->_pageSize) && $this->_pageSize !== '' && $this->allowPageSetting) {
-            /** @var \yii\data\BaseDataProvider $dataProvider */
+        if (isset($this->_pageSize) && $this->_pageSize != '' && $this->allowPageSetting) {
+            /** @var BaseDataProvider $dataProvider */
             $dataProvider = $this->gridOptions['dataProvider'];
             if ($dataProvider instanceof ArrayDataProvider) {
                 $dataProvider->refresh();
             }
             if ($this->_pageSize > 0) {
-                $dataProvider->setPagination(['pageSize' => $this->_pageSize]);
+                $pagination = $dataProvider->getPagination();
+                $pagination->pageSize = $this->_pageSize;
+                $dataProvider->setPagination($pagination);
             } else {
                 $dataProvider->setPagination(false);
             }
@@ -1186,14 +1206,14 @@ class DynaGrid extends Widget
     /**
      * Initialize the grid view for dynagrid
      * @throws InvalidConfigException
-     * @throws \Exception
+     * @throws Exception
      */
     protected function initGrid()
     {
         $dynagrid = '';
         $dynagridFilter = '';
         $dynagridSort = '';
-        $isBs4 = $this->isBs4();
+        $notBs3 = !$this->isBs(3);
         $model = new DynaGridSettings(
             [
                 'moduleId' => $this->moduleId,
@@ -1242,7 +1262,8 @@ class DynaGrid extends Widget
                     'allowFilterSetting' => $this->allowFilterSetting,
                     'allowSortSetting' => $this->allowSortSetting,
                     'moduleId' => $this->moduleId,
-                    'isBs4' => $isBs4,
+                    'notBs3' => $notBs3,
+                    'modalClass' => $this->getBSClass('Modal'),
                     'isPjax' => $this->_isPjax,
                     'pjaxId' => $this->_pjaxId,
                     'iconPersonalize' => $this->iconPersonalize,
@@ -1297,17 +1318,20 @@ class DynaGrid extends Widget
     /**
      * Sets the personalization toggle button
      *
-     * @param string $cat the category 'grid', 'filter', or 'sort'
-     * @throws InvalidConfigException
+     * @param  string  $cat  the category 'grid', 'filter', or 'sort'
+     * @throws InvalidConfigException|Exception
      */
     protected function setToggleButton($cat)
     {
-        $setting = 'toggleButton' . ucfirst($cat);
-        $isBs4 = $this->isBs4();
-        $defaultCss = $isBs4 ? 'outline-secondary' : 'default';
+        $setting = 'toggleButton'.ucfirst($cat);
+        $notBs3 = !$this->isBs(3);
+        $defaultCss = $notBs3 ? 'outline-secondary' : 'default';
+        $type = ArrayHelper::getValue($this->gridOptions['panel'], 'type', $defaultCss);
+        if (!$this->isBs(3) && $type == GridView::TYPE_DEFAULT) {
+            $type = 'light border-secondary';
+        }
         $btnClass = ($this->matchPanelStyle && $cat == 'grid' && !empty($this->gridOptions['panel'])) ?
-            'btn btn-' . ArrayHelper::getValue($this->gridOptions['panel'], 'type', $defaultCss) :
-            'btn btn-' . $defaultCss;
+            "btn btn-{$type}" : "btn btn-".$defaultCss;
         Html::addCssClass($this->$setting, $btnClass);
         if ($cat == DynaGridStore::STORE_GRID) {
             $this->toggleButtonGrid = ArrayHelper::merge(
@@ -1319,7 +1343,7 @@ class DynaGrid extends Widget
                 $this->toggleButtonGrid
             );
         } else {
-            $catIcon = 'icon' . ucfirst($cat);
+            $catIcon = 'icon'.ucfirst($cat);
             $this->$setting = ArrayHelper::merge(
                 [
                     'label' => $this->$catIcon,
@@ -1337,7 +1361,7 @@ class DynaGrid extends Widget
 
     /**
      * Registers client assets
-     * @throws \Exception
+     * @throws Exception
      */
     protected function registerAssets()
     {
@@ -1360,7 +1384,7 @@ class DynaGrid extends Widget
         $js = "{$id}.dynagrid({$options});\n";
         // pjax related reset
         if ($this->_isPjax) {
-            $cleanup = $this->pjaxCleanupJs('grid') . $this->pjaxCleanupJs('filter') . $this->pjaxCleanupJs('sort');
+            $cleanup = $this->pjaxCleanupJs('grid').$this->pjaxCleanupJs('filter').$this->pjaxCleanupJs('sort');
             $js .= " jQuery('#{$this->_pjaxId}').on('pjax:beforeReplace', function () {
                 {$cleanup}
             });";
@@ -1375,13 +1399,14 @@ class DynaGrid extends Widget
     /**
      * Generates the cleanup client script for modals
      *
-     * @param string $type the modal container type 'grid', 'filter', or 'sort'
+     * @param  string  $type  the modal container type 'grid', 'filter', or 'sort'
      *
      * @return string
      */
     protected function pjaxCleanupJs($type)
     {
         $id = "_{$type}ModalId";
-        return 'jQuery("#' . $this->$id . '").remove();';
+
+        return 'jQuery("#'.$this->$id.'").remove();';
     }
 }

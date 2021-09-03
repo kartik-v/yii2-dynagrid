@@ -3,12 +3,13 @@
 /**
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
- * @version   1.5.1
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2021
+ * @version   1.5.2
  */
 
 namespace kartik\dynagrid;
 
+use Exception;
 use kartik\base\Config;
 use Yii;
 use yii\base\BaseObject;
@@ -159,7 +160,7 @@ class DynaGridStore extends BaseObject
     public function init()
     {
         $this->_module = Config::getModule($this->moduleId, Module::class);
-        $this->_isMaster = ($this->category == self::STORE_GRID) ? true : false;
+        $this->_isMaster = $this->category == self::STORE_GRID;
         if ($this->_module == null || !$this->_module instanceof Module) {
             throw new InvalidConfigException(
                 'The "dynagrid" module MUST be setup in your Yii configuration file and assigned to "\kartik\dynagrid\Module" class.'
@@ -176,7 +177,7 @@ class DynaGridStore extends BaseObject
      */
     public function setKey()
     {
-        $this->_mstKey = $this->generateKey(true);
+        $this->_mstKey = $this->generateKey();
         if (!$this->_isMaster) {
             $this->_dtlKey = empty($this->dtlKey) ? $this->generateKey(false) : $this->dtlKey;
         }
@@ -202,7 +203,7 @@ class DynaGridStore extends BaseObject
                 break;
             case Dynagrid::TYPE_COOKIE:
                 $newConfig = static::parseConfig(Yii::$app->request->cookies->getValue($this->_mstKey, false));
-                if (!empty($newConfig) && $newConfig !== false) {
+                if (!empty($newConfig)) {
                     $config = $this->fetchConfig($newConfig);
                 }
                 //die('<pre>' . var_dump($config, true) . '</pre>');
@@ -444,9 +445,10 @@ class DynaGridStore extends BaseObject
     /**
      * Fetches configuration for session or cookie storage
      *
-     * @param array Json::decoded config array
+     * @param  array Json::decoded config array
      *
      * @return boolean|array configuration for master or detail
+     * @throws Exception
      */
     protected function fetchConfig($config)
     {
@@ -458,17 +460,18 @@ class DynaGridStore extends BaseObject
             return false;
         }
         $newConfig = ArrayHelper::getValue($cat, $this->_dtlKey, []);
-        $data = empty($newConfig) ? false : ArrayHelper::getValue($newConfig, 'data', false);
-        return $data;
+
+        return empty($newConfig) ? false : ArrayHelper::getValue($newConfig, 'data', false);
     }
 
     /**
      * Fetch and return the relevant column data from database
      *
-     * @param string $col the column type
-     * @param string $id the primary key value
+     * @param  string  $col  the column type
+     * @param  string  $id  the primary key value
      *
      * @return boolean|null|string
+     * @throws Exception
      */
     protected function getDataFromDb($col, $id)
     {

@@ -3,8 +3,8 @@
 /**
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2019
- * @version   1.5.1
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2021
+ * @version   1.5.2
  */
 
 namespace kartik\dynagrid;
@@ -94,37 +94,14 @@ class Module extends \kartik\base\Module
     public $settingsConfigAction;
 
     /**
-     * @var array the theme configuration for the gridview
-     */
-    public $themeConfig = [
-        'simple-default' => [
-            'panel' => false,
-            'bordered' => false,
-            'striped' => false,
-            'hover' => true,
-            'layout' => self::LAYOUT_1,
-        ],
-        'simple-bordered' => ['panel' => false, 'striped' => false, 'hover' => true, 'layout' => self::LAYOUT_1],
-        'simple-condensed' => [
-            'panel' => false,
-            'striped' => false,
-            'condensed' => true,
-            'hover' => true,
-            'layout' => self::LAYOUT_1,
-        ],
-        'simple-striped' => ['panel' => false, 'layout' => self::LAYOUT_1],
-        'panel-default' => ['panel' => ['type' => GridView::TYPE_DEFAULT, 'before' => self::LAYOUT_2]],
-        'panel-primary' => ['panel' => ['type' => GridView::TYPE_PRIMARY, 'before' => self::LAYOUT_2]],
-        'panel-info' => ['panel' => ['type' => GridView::TYPE_INFO, 'before' => self::LAYOUT_2]],
-        'panel-danger' => ['panel' => ['type' => GridView::TYPE_DANGER, 'before' => self::LAYOUT_2]],
-        'panel-success' => ['panel' => ['type' => GridView::TYPE_SUCCESS, 'before' => self::LAYOUT_2]],
-        'panel-warning' => ['panel' => ['type' => GridView::TYPE_WARNING, 'before' => self::LAYOUT_2]],
-    ];
-
-    /**
      * @var integer the default theme for the gridview.
      */
     public $defaultTheme = 'panel-primary';
+
+    /**
+     * @var array the theme configuration for the gridview
+     */
+    public $themeConfig;
 
     /**
      * @var integer the default pagesize for the gridview.
@@ -161,10 +138,53 @@ class Module extends \kartik\base\Module
     }
 
     /**
+     * Initialize theme configuration
+     * @throws \Exception
+     */
+    public function initThemeConfig()
+    {
+        if (isset($this->themeConfig)) {
+            return;
+        }
+        $cfg = [
+            'simple-default' => [
+                'panel' => false,
+                'bordered' => false,
+                'striped' => false,
+                'hover' => true,
+                'layout' => self::LAYOUT_1,
+            ],
+            'simple-bordered' => ['panel' => false, 'striped' => false, 'hover' => true, 'layout' => self::LAYOUT_1],
+            'simple-condensed' => [
+                'panel' => false,
+                'striped' => false,
+                'condensed' => true,
+                'hover' => true,
+                'layout' => self::LAYOUT_1,
+            ],
+            'simple-striped' => ['panel' => false, 'layout' => self::LAYOUT_1],
+            'panel-default' => ['panel' => ['type' => GridView::TYPE_DEFAULT, 'before' => self::LAYOUT_2]],
+            'panel-light' => ['panel' => ['type' => GridView::TYPE_LIGHT, 'before' => self::LAYOUT_2]],
+            'panel-dark' => ['panel' => ['type' => GridView::TYPE_DARK, 'before' => self::LAYOUT_2]],
+            'panel-primary' => ['panel' => ['type' => GridView::TYPE_PRIMARY, 'before' => self::LAYOUT_2]],
+            'panel-secondary' => ['panel' => ['type' => GridView::TYPE_SECONDARY, 'before' => self::LAYOUT_2]],
+            'panel-info' => ['panel' => ['type' => GridView::TYPE_INFO, 'before' => self::LAYOUT_2]],
+            'panel-danger' => ['panel' => ['type' => GridView::TYPE_DANGER, 'before' => self::LAYOUT_2]],
+            'panel-success' => ['panel' => ['type' => GridView::TYPE_SUCCESS, 'before' => self::LAYOUT_2]],
+            'panel-warning' => ['panel' => ['type' => GridView::TYPE_WARNING, 'before' => self::LAYOUT_2]],
+        ];
+        if ($this->isBs(3)) {
+            unset($cfg['panel-light'], $cfg['panel-dark'], $cfg['panel-secondary']);
+        }
+        $this->themeConfig = $cfg;
+    }
+
+    /**
      * Initialize module level settings
      */
     public function initSettings()
     {
+        $this->initThemeConfig();
         $this->dbSettings += [
             'connection' => 'db',
             'tableName' => 'tbl_dynagrid',
@@ -196,8 +216,8 @@ class Module extends \kartik\base\Module
                 'sortableOptions' => [],
                 'userSpecific' => true,
                 'columns' => [],
-                'submitMessage' => Yii::t('kvdynagrid', 'Saving and applying configuration') . ' &hellip;',
-                'deleteMessage' => Yii::t('kvdynagrid', 'Trashing all personalizations') . ' &hellip;',
+                'submitMessage' => Yii::t('kvdynagrid', 'Saving and applying configuration').' &hellip;',
+                'deleteMessage' => Yii::t('kvdynagrid', 'Trashing all personalizations').' &hellip;',
                 'deleteConfirmation' => Yii::t('kvdynagrid', 'Are you sure you want to delete the setting?'),
                 'messageOptions' => [],
             ], $this->dynaGridOptions

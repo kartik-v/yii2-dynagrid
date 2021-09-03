@@ -1,6 +1,13 @@
 Change Log: `yii2-dynagrid`
 ===========================
 
+## Version 1.5.2
+
+**Date:** 03-Sep-2021
+
+- (enh #228): Enhancements to support Bootstrap v5.x.
+- (enh #227): Correct grid pagination assignment.
+
 ## Version 1.5.1
 
 **Date:** 24-Feb-2019
