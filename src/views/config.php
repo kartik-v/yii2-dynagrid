@@ -1,11 +1,12 @@
 <?php
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2021
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
  * @package yii2-dynagrid
- * @version 1.5.2
+ * @version 1.5.3
  */
 
 use kartik\base\Config;
+use kartik\base\Lib;
 use kartik\base\Widget;
 use kartik\dynagrid\models\DynaGridConfig;
 use kartik\dynagrid\Module;
@@ -33,7 +34,7 @@ use yii\helpers\Html;
  * @var Widget $modalClass
  */
 
-$dynagridId = substr($model->id, 0, -9);
+$dynagridId = Lib::substr($model->id, 0, -9);
 $options1 = ArrayHelper::merge(
     $model->widgetOptions,
     [

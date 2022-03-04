@@ -1,7 +1,7 @@
 /**
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2021
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
  * @version   1.4.1
  */
 --

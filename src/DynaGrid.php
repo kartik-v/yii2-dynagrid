@@ -3,14 +3,15 @@
 /**
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2021
- * @version   1.5.2
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
+ * @version   1.5.3
  */
 
 namespace kartik\dynagrid;
 
 use Exception;
 use kartik\base\Config;
+use kartik\base\Lib;
 use kartik\base\Widget;
 use kartik\dialog\Dialog;
 use kartik\dynagrid\models\DynaGridConfig;
@@ -743,7 +744,7 @@ class DynaGrid extends Widget
     protected function matchColumnString($column)
     {
         $matches = [];
-        if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/u', $column, $matches)) {
+        if (!Lib::preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/u', $column, $matches)) {
             throw new InvalidConfigException(
                 "Invalid column configuration for '{$column}'. The column must be specified ".
                 "in the format of 'attribute', 'attribute:format' or 'attribute:format: label'."
@@ -1000,7 +1001,7 @@ class DynaGrid extends Widget
                 }
             }
 
-            return trim(strip_tags(str_replace(['<br>', '<br/>'], ' ', $label)));
+            return Lib::trim(strip_tags(str_replace(['<br>', '<br/>'], ' ', $label)));
         }
     }
 

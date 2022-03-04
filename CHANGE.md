@@ -1,6 +1,12 @@
 Change Log: `yii2-dynagrid`
 ===========================
 
+## Version 1.5.3
+
+**Date:** 04-Mar-2022
+
+- Enhance compatibility for PHP 8.1.
+
 ## Version 1.5.2
 
 **Date:** 03-Sep-2021

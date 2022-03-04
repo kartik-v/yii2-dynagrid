@@ -3,8 +3,8 @@
 /**
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2021
- * @version   1.5.2
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
+ * @version   1.5.3
  */
 
 namespace kartik\dynagrid\models;
@@ -16,7 +16,6 @@ use kartik\dynagrid\Module;
 use Yii;
 use yii\base\Model;
 use yii\base\InvalidConfigException;
-use yii\helpers\Inflector;
 
 /**
  * Model for the dynagrid filter or sort configuration
@@ -224,13 +223,13 @@ class DynaGridSettings extends Model
         $out = "<label>{$attrLabel}</label>\n<ul>";
         if ($this->category === DynaGridStore::STORE_FILTER) {
             foreach ($data as $attribute => $value) {
-                $label = $attribute['label'] ?? Inflector::camel2words($attribute);
+                $label = $this->getAttributeLabel($attribute);
                 $value = is_array($value) ? print_r($value, true) : $value;
                 $out .= "<li>{$label} = {$value}</li>";
             }
         } else {
             foreach ($data as $attribute => $dir) {
-                $label = $attribute['label'] ?? Inflector::camel2words($attribute);
+                $label = $this->getAttributeLabel($attribute);
                 $icon = $dir === SORT_DESC ? 'glyphicon glyphicon-sort-by-alphabet-alt' : 'glyphicon glyphicon-sort-by-alphabet';
                 $d = $dir === SORT_DESC ? Yii::t('kvdynagrid', 'descending') : Yii::t('kvdynagrid', 'ascending');
                 $out .= "<li>{$label} <span class='{$icon}'></span> <span class='label label-default'>{$d}</span></li>";

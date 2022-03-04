@@ -3,8 +3,8 @@
 /**
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2021
- * @version   1.5.2
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
+ * @version   1.5.3
  */
 
 namespace kartik\dynagrid;
@@ -14,52 +14,68 @@ use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
- * The dynamic grid module for Yii Framework 2.0.
+ * Module for configuring and enabling the dynamic grid functionality for Yii2.
+ *
+ * Setup the module in your Yii configuration file with a name `dynagrid` as shown below. In addition, you must also
+ * register the `gridview` module as described in the [yii2-dynagrid documentation](http://demos.krajee.com/dynagrid#module)
+ * and [yii2-grid documentation](http://demos.krajee.com/grid#module).
+ *
+ * ```php
+ * 'modules'=>[
+ *    'dynagrid'=>[
+ *         'class'=>'\kartik\dynagrid\Module',
+ *         // other settings (refer documentation)
+ *     ],
+ *     'gridview'=>[
+ *         'class'=>'\kartik\grid\Module',
+ *         // other module settings
+ *     ],
+ * ],
+ * ```
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
- * @since 1.0
  */
 class Module extends \kartik\base\Module
 {
     /**
-     * Dynagrid module name
+     * @var string dynagrid module name
      */
     const MODULE = 'dynagrid';
     /**
-     * Dynagrid layout type 1
+     * @var string dynagrid layout type 1
      */
     const LAYOUT_1 = "<hr>{dynagrid}<hr>\n{summary}\n{items}\n{pager}";
     /**
-     * Dynagrid layout type 2
+     * @var string dynagrid layout type 2
      */
     const LAYOUT_2 = "&nbsp;";
     /**
-     * Cookie expiry (used for dynagrid configuration storage)
+     * @var int cookie expiry (used for dynagrid configuration storage)
      */
     const COOKIE_EXPIRY = 8640000; // 100 days
 
     /**
-     * @var array the settings for the cookie to be used in saving the dynagrid setup
-     * @see \yii\web\Cookie
+     * @var array the settings for the web cookie object ([[yii\web\Cookie]]) to be used in saving the dynagrid setup.
+     * @see yii\web\Cookie
      */
     public $cookieSettings = [];
 
     /**
-     * @var array the settings for the database table to store the dynagrid setup
-     * The following parameters are supported:
-     * - tableName: _string_, the name of the database table, that will store the dynagrid settings.
+     * @var array the settings for the database table to store the dynagrid setup. The following parameters are
+     * supported:
+     * - `tableName`: _string_, the name of the database table, that will store the dynagrid settings.
      *   Defaults to `tbl_dynagrid`.
-     * - idAttr: _string_, the attribute name for the configuration id . Defaults to `id`.
-     * - filterAttr: _string_, the attribute name for the filter setting id. Defaults to `filter_id`.
-     * - sortAttr: _string_, the attribute name for the filter setting id. Defaults to `sort_id`.
-     * - dataAttr: _string_, the attribute name for grid column data configuration. Defaults to `data`.
+     * - `idAttr`: _string_, the attribute name for the configuration id . Defaults to `id`.
+     * - `filterAttr`: _string_, the attribute name for the filter setting id. Defaults to `filter_id`.
+     * - `sortAttr`: _string_, the attribute name for the filter setting id. Defaults to `sort_id`.
+     * - `dataAttr`: _string_, the attribute name for grid column data configuration. Defaults to `data`.
      */
     public $dbSettings = [];
 
     /**
      * @var array the settings for the detail database table to store the dynagrid filter and sort settings.
      * The following parameters are supported:
-     * - tableName: _string_, the name of the database table, that will store the dynagrid settings.
+     * - tableName: _string_, the name of the database table, that will store the dynagrid detail settings.
      *   Defaults to `tbl_dynagrid_dtl`.
      * - idAttr: _string_, the attribute name for the detail configuration id. Defaults to `id`.
      * - categoryAttr: _string_, the attribute name for the detail category (values currently possible are 'filter' or
