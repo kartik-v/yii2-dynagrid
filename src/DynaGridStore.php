@@ -4,13 +4,14 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
- * @version   1.5.3
+ * @version   1.5.4
  */
 
 namespace kartik\dynagrid;
 
 use Exception;
 use kartik\base\Config;
+use kartik\base\Lib;
 use Yii;
 use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
@@ -434,7 +435,7 @@ class DynaGridStore extends BaseObject
     {
         $key = $this->id;
         if (!$master) {
-            $key .= '_' . $this->category . '_' . hash('crc32', strtolower($this->name));
+            $key .= '_' . $this->category . '_' . hash('crc32', Lib::strtolower($this->name));
         }
         if ($this->userSpecific) {
             $key .= '_' . Yii::$app->user->id;

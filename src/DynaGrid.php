@@ -4,7 +4,7 @@
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
- * @version   1.5.3
+ * @version   1.5.4
  */
 
 namespace kartik\dynagrid;
@@ -803,7 +803,7 @@ class DynaGrid extends Widget
         return !$this->_isSubmit ? $this->_store->fetch() : [
             'page' => $this->_model->pageSize,
             'theme' => $this->_model->theme,
-            'keys' => explode(',', $_POST['visibleKeys']),
+            'keys' => Lib::explode(',', $_POST['visibleKeys']),
             'filter' => $this->_model->filterId,
             'sort' => $this->_model->sortId,
         ];
@@ -996,12 +996,12 @@ class DynaGrid extends Widget
                 } elseif (!empty($column['attribute'])) {
                     $label = $this->getAttributeLabel($column['attribute']);
                 } elseif (!empty($column['class'])) {
-                    $class = explode('\\', $column['class']);
+                    $class = Lib::explode('\\', $column['class']);
                     $label = Inflector::camel2words(end($class));
                 }
             }
 
-            return Lib::trim(strip_tags(str_replace(['<br>', '<br/>'], ' ', $label)));
+            return Lib::trim(Lib::strip_tags(Lib::str_replace(['<br>', '<br/>'], ' ', $label)));
         }
     }
 
