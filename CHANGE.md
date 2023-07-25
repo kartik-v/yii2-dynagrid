@@ -1,6 +1,13 @@
 Change Log: `yii2-dynagrid`
 ===========================
 
+## Version 1.5.5
+
+**Date:** 25-Jul-2023.
+
+- (enh #242): Enhance Dynagrid layout parts rendering to prevent wrong Bootstrap 5 plugin initializations.
+- (enh #241): Proper defaulting of pageSize by cross checking pageSize setting in dataProvider pagination.
+
 ## Version 1.5.4
 
 **Date:** 29-Apr-2022

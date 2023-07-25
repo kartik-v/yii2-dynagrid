@@ -3,8 +3,8 @@
 /**
  * @package   yii2-dynagrid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
- * @version   1.5.4
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2023
+ * @version   1.5.5
  */
 
 namespace kartik\dynagrid;
@@ -17,6 +17,7 @@ use kartik\dialog\Dialog;
 use kartik\dynagrid\models\DynaGridConfig;
 use kartik\dynagrid\models\DynaGridSettings;
 use kartik\grid\GridView;
+use Throwable;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
@@ -421,6 +422,16 @@ class DynaGrid extends Widget
     protected $_store;
 
     /**
+     * @var DynaGridSettings the settings model
+     */
+    protected $_settingsModel;
+
+    /**
+     * @var array widget options for [[DynaGridDetail]]
+     */
+    protected $_detailOptions;
+
+    /**
      * @var array the configuration for icons set as `$key => $setting`, where `$key` is the icon property in DynaGrid
      * widget and the `$setting` is an array of 2 values - the first value in the array is the icon suffix CSS class for
      * Bootstrap 3.x and the second value in the array is the icon suffix CSS class for Bootstrap 4.x.
@@ -601,12 +612,12 @@ class DynaGrid extends Widget
         }
         /** @var DataProviderInterface $dataProvider */
         $dataProvider = $this->gridOptions['dataProvider'];
-        /** @noinspection PhpStrictComparisonWithOperandsOfDifferentTypesInspection */
         if ($dataProvider->getSort() === false) {
             $this->showSort = false;
             $this->allowSortSetting = false;
         }
-        if ($dataProvider->getPagination() === false) {
+        $pagination = $dataProvider->getPagination();
+        if ($pagination === false) {
             $this->allowPageSetting = false;
         }
         if (empty($this->gridOptions['filterModel'])) {
@@ -616,8 +627,9 @@ class DynaGrid extends Widget
         if (empty($this->theme)) {
             $this->theme = $this->_module->defaultTheme;
         }
-        if (!isset($this->_pageSize) || $this->_pageSize === null) {
-            $this->_pageSize = $this->_module->defaultPageSize;
+        if (!isset($this->_pageSize)) {
+            $this->_pageSize = isset($pagination->pageSize) && $pagination->pageSize != $pagination->defaultPageSize ?
+                $pagination->pageSize : $this->_module->defaultPageSize;
         }
         $this->_requestSubmit = $this->options['id'].'-dynagrid';
         $this->_model = new DynaGridConfig(['moduleId' => $this->moduleId]);
@@ -1211,11 +1223,7 @@ class DynaGrid extends Widget
      */
     protected function initGrid()
     {
-        $dynagrid = '';
-        $dynagridFilter = '';
-        $dynagridSort = '';
-        $notBs3 = !$this->isBs(3);
-        $model = new DynaGridSettings(
+        $this->_settingsModel = new DynaGridSettings(
             [
                 'moduleId' => $this->moduleId,
                 'dynaGridId' => $this->options['id'],
@@ -1224,57 +1232,9 @@ class DynaGrid extends Widget
                 'dbUpdateNameOnly' => $this->dbUpdateNameOnly,
             ]
         );
-        /** @var ActiveDataProvider $dataProvider */
-        $dataProvider = $this->gridOptions['dataProvider'];
-        $sort = $dataProvider->getSort();
-        $isValidSort = ($sort instanceof Sort);
-        if ($this->showPersonalize) {
-            $this->setToggleButton(DynaGridStore::STORE_GRID);
-            if ($this->allowFilterSetting || $this->allowSortSetting) {
-                $store = new DynaGridStore(
-                    [
-                        'id' => $this->options['id'],
-                        'moduleId' => $this->moduleId,
-                        'category' => DynaGridStore::STORE_GRID,
-                        'storage' => $this->storage,
-                        'userSpecific' => $this->userSpecific,
-                        'dbUpdateNameOnly' => $this->dbUpdateNameOnly,
-                    ]
-                );
-                if ($this->allowFilterSetting) {
-                    $this->_model->filterId = $this->_filterId;
-                    $this->_model->filterList = $store->getDtlList(DynaGridStore::STORE_FILTER);
-                }
-                if ($this->allowSortSetting && $isValidSort) {
-                    $sort->enableMultiSort = $this->enableMultiSort;
-                    $dataProvider->setSort($sort);
-                    $this->_model->sortId = $this->_sortId;
-                    $this->_model->sortList = $store->getDtlList(DynaGridStore::STORE_SORT);
-                }
-            }
-            $dynagrid = $this->render(
-                $this->_module->configView,
-                [
-                    'model' => $this->_model,
-                    'toggleButtonGrid' => $this->toggleButtonGrid,
-                    'id' => $this->_gridModalId,
-                    'allowPageSetting' => $this->allowPageSetting,
-                    'allowThemeSetting' => $this->allowThemeSetting,
-                    'allowFilterSetting' => $this->allowFilterSetting,
-                    'allowSortSetting' => $this->allowSortSetting,
-                    'moduleId' => $this->moduleId,
-                    'notBs3' => $notBs3,
-                    'modalClass' => $this->getBSClass('Modal'),
-                    'isPjax' => $this->_isPjax,
-                    'pjaxId' => $this->_pjaxId,
-                    'iconPersonalize' => $this->iconPersonalize,
-                    'iconSortableSeparator' => $this->iconSortableSeparator,
-                ]
-            );
-        }
-        $opts = [
+        $this->_detailOptions = [
             'bsVersion' => $this->bsVersion,
-            'model' => $model,
+            'model' => $this->_settingsModel,
             'moduleId' => $this->moduleId,
             'submitMessage' => $this->submitMessage,
             'deleteMessage' => $this->deleteMessage,
@@ -1288,32 +1248,122 @@ class DynaGrid extends Widget
             'iconConfirm' => $this->iconConfirm,
             'iconRemove' => $this->iconRemove,
         ];
-        if ($this->showFilter) {
-            $this->setToggleButton(DynaGridStore::STORE_FILTER);
-            $model->category = DynaGridStore::STORE_FILTER;
-            $model->key = $this->_filterKey;
-            $model->data = array_filter($this->gridOptions['filterModel']->attributes);
-            $opts['id'] = $this->_filterModalId;
-            $opts['toggleButton'] = $this->toggleButtonFilter;
-            $dynagridFilter = DynaGridDetail::widget($opts);
-        }
-        if ($this->showSort) {
-            $this->setToggleButton(DynaGridStore::STORE_SORT);
-            $model->category = DynaGridStore::STORE_SORT;
-            $model->key = $this->_sortKey;
-            $model->data = $isValidSort ? $sort->getAttributeOrders() : [];
-            $opts['id'] = $this->_sortModalId;
-            $opts['toggleButton'] = $this->toggleButtonSort;
-            $dynagridSort = DynaGridDetail::widget($opts);
-        }
         $tags = ArrayHelper::getValue($this->gridOptions, 'replaceTags', []);
-        $tags += [
-            '{dynagrid}' => $dynagrid,
-            '{dynagridFilter}' => $dynagridFilter,
-            '{dynagridSort}' => $dynagridSort,
-        ];
+        $tags['{dynagrid}'] = [$this, 'renderDynagrid'];
+        $tags['{dynagridFilter}'] = [$this, 'renderDynagridFilter'];
+        $tags['{dynagridSort}'] = [$this, 'renderDynagridSort'];
         $this->gridOptions['replaceTags'] = $tags;
         $this->registerAssets();
+    }
+
+    /**
+     * Renders main dynagrid personalization settings.
+     *
+     * @return string
+     * @throws InvalidConfigException
+     */
+    public function renderDynagrid()
+    {
+        if (!$this->showPersonalize) {
+            return '';
+        }
+        /** @var ActiveDataProvider $dataProvider */
+        $dataProvider = $this->gridOptions['dataProvider'];
+        $sort = $dataProvider->getSort();
+        $isValidSort = ($sort instanceof Sort);
+        $this->setToggleButton(DynaGridStore::STORE_GRID);
+        if ($this->allowFilterSetting || $this->allowSortSetting) {
+            $store = new DynaGridStore(
+                [
+                    'id' => $this->options['id'],
+                    'moduleId' => $this->moduleId,
+                    'category' => DynaGridStore::STORE_GRID,
+                    'storage' => $this->storage,
+                    'userSpecific' => $this->userSpecific,
+                    'dbUpdateNameOnly' => $this->dbUpdateNameOnly,
+                ]
+            );
+            if ($this->allowFilterSetting) {
+                $this->_model->filterId = $this->_filterId;
+                $this->_model->filterList = $store->getDtlList(DynaGridStore::STORE_FILTER);
+            }
+            if ($this->allowSortSetting && $isValidSort) {
+                $sort->enableMultiSort = $this->enableMultiSort;
+                $dataProvider->setSort($sort);
+                $this->_model->sortId = $this->_sortId;
+                $this->_model->sortList = $store->getDtlList(DynaGridStore::STORE_SORT);
+            }
+        }
+
+        return $this->render(
+            $this->_module->configView,
+            [
+                'model' => $this->_model,
+                'toggleButtonGrid' => $this->toggleButtonGrid,
+                'id' => $this->_gridModalId,
+                'allowPageSetting' => $this->allowPageSetting,
+                'allowThemeSetting' => $this->allowThemeSetting,
+                'allowFilterSetting' => $this->allowFilterSetting,
+                'allowSortSetting' => $this->allowSortSetting,
+                'moduleId' => $this->moduleId,
+                'notBs3' => !$this->isBs(3),
+                'modalClass' => $this->getBSClass('Modal'),
+                'isPjax' => $this->_isPjax,
+                'pjaxId' => $this->_pjaxId,
+                'iconPersonalize' => $this->iconPersonalize,
+                'iconSortableSeparator' => $this->iconSortableSeparator,
+            ]
+        );
+    }
+
+    /**
+     * Renders dynagrid filter configuration details.
+     *
+     * @return string
+     * @throws InvalidConfigException|Throwable
+     */
+    public function renderDynagridFilter()
+    {
+        if (!$this->showFilter) {
+            return '';
+        }
+        $model = $this->_settingsModel;
+        $options = $this->_detailOptions;
+        $this->setToggleButton(DynaGridStore::STORE_FILTER);
+        $model->category = DynaGridStore::STORE_FILTER;
+        $model->key = $this->_filterKey;
+        $model->data = array_filter($this->gridOptions['filterModel']->attributes);
+        $options['id'] = $this->_filterModalId;
+        $options['toggleButton'] = $this->toggleButtonFilter;
+
+        return DynaGridDetail::widget($options);
+    }
+
+    /**
+     * Renders dynagrid sort configuration details.
+     *
+     * @return string
+     * @throws InvalidConfigException|Throwable
+     */
+    public function renderDynagridSort()
+    {
+        if (!$this->showSort) {
+            return '';
+        }
+        $model = $this->_settingsModel;
+        $options = $this->_detailOptions;
+        /** @var ActiveDataProvider $dataProvider */
+        $dataProvider = $this->gridOptions['dataProvider'];
+        $sort = $dataProvider->getSort();
+        $isValidSort = ($sort instanceof Sort);
+        $this->setToggleButton(DynaGridStore::STORE_SORT);
+        $model->category = DynaGridStore::STORE_SORT;
+        $model->key = $this->_sortKey;
+        $model->data = $isValidSort ? $sort->getAttributeOrders() : [];
+        $options['id'] = $this->_sortModalId;
+        $options['toggleButton'] = $this->toggleButtonSort;
+
+        return DynaGridDetail::widget($options);
     }
 
     /**
