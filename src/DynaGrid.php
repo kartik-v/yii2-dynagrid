@@ -1031,7 +1031,7 @@ class DynaGrid extends Widget
         if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
             /** @var ActiveQuery $query */
             $query = $provider->query;
-            $model = new $query->modelClass;
+            $model = Yii::createObject($query->modelClass);
 
             return $model->getAttributeLabel($attribute);
         } elseif ($provider instanceof ActiveDataProvider && $provider->query instanceof QueryInterface) {
