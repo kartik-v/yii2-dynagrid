@@ -1,6 +1,10 @@
 Change Log: `yii2-dynagrid`
 ===========================
 
+## Version 1.5.6
+
+- (bugfix #246): ensure DI support by using Yii::createObject() instead of "new $model"
+
 ## Version 1.5.5
 
 **Date:** 25-Jul-2023.
